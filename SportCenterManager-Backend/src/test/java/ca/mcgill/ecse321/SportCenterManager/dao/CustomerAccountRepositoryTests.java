@@ -1,4 +1,4 @@
 package ca.mcgill.ecse321.SportCenterManager.dao;
 
-public class AccountRepositoryTests {
+public class CustomerAccountRepositoryTests {
 }
