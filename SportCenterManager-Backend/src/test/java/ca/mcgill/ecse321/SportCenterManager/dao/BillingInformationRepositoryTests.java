@@ -2,7 +2,9 @@ package ca.mcgill.ecse321.SportCenterManager.dao;
 
 import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -17,12 +19,12 @@ public class BillingInformationRepositoryTests {
     private BillingInformationRepository billingInformationRepository;
     @Autowired
     private CustomerAccountRepository customerAccountRepository;
-
+    @AfterEach
     public void clearDatabase(){
         billingInformationRepository.deleteAll();
         customerAccountRepository.deleteAll();
     }
-
+    @Test
     public void testPersistAndLoadBillingInformation(){
         // Create CustomerAccount
         String customerName = "Thibaut";
