@@ -1,51 +1,80 @@
 package ca.mcgill.ecse321.SportCenterManager.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
+
+import java.io.Serializable;
+import java.util.Objects;
+
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+
+@Entity
 public class Registration
 {
-  private Session session;
-  private CustomerAccount customerAccount;
 
-  public Registration(Session aSession, CustomerAccount aCustomerAccount)
-  {
-    if (!setSession(aSession))
-    {
-      throw new RuntimeException("Unable to create Registration due to aSession. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
-    if (!setCustomerAccount(aCustomerAccount))
-    {
-      throw new RuntimeException("Unable to create Registration due to aCustomerAccount. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
+  @EmbeddedId
+  private Key key;
+  
+  @SuppressWarnings("unused")
+  private Registration() {  
   }
+  
+  public Registration(Key aKey)
+  {
+	  this.key = aKey;
+  }
+  
+  public Key getKey() {
+	  return key;
+  }
+  
+  public void setKey(Key aKey) {
+	  this.key = aKey;
+  }
+  
+  @Embeddable
+  public static class Key implements Serializable {
+	  @ManyToOne
+	  private Session session;
+	  @ManyToOne
+	  private CustomerAccount customerAccount;
+	  
+	  public Key(Session session, CustomerAccount customerAccount) {
+		  this.session = session;
+		  this.customerAccount = customerAccount;
+	  }
+	  
+	  public Session getSession() {
+		  return session;
+	  }
+	  
+	  public void setSession(Session aSession) {
+		  this.session = aSession;
+	  }
+	  
+	  public CustomerAccount getCustomerAccount() {
+		  return customerAccount;
+	  }
+	  
+	  public void setCustomerAccount(CustomerAccount aCustomerAccount) {
+		  this.customerAccount = aCustomerAccount;
+	  }
+	  
+	  @Override
+      public boolean equals(Object obj) {
+          if (!(obj instanceof Key)) {
+              return false;
+          }
+          Key other = (Key) obj;
+          return this.getSession().getId() == other.getSession().getId()
+                  && this.getCustomerAccount().getId() == other.getCustomerAccount().getId();
+      }
 
-  public Session getSession()
-  {
-    return session;
-  }
-  
-  public CustomerAccount getCustomerAccount()
-  {
-    return customerAccount;
-  }
-  
-  public boolean setSession(Session aNewSession)
-  {
-    boolean wasSet = false;
-    if (aNewSession != null)
-    {
-      session = aNewSession;
-      wasSet = true;
-    }
-    return wasSet;
-  }
-  
-  public boolean setCustomerAccount(CustomerAccount aNewCustomerAccount)
-  {
-    boolean wasSet = false;
-    if (aNewCustomerAccount != null)
-    {
-      customerAccount = aNewCustomerAccount;
-      wasSet = true;
-    }
-    return wasSet;
+      @Override
+      public int hashCode() {
+          return Objects.hash(this.getSession().getId(), this.getCustomerAccount().getId());
+      }
+	  
   }
 }
