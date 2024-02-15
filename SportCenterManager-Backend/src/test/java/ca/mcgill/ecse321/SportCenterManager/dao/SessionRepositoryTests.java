@@ -58,7 +58,7 @@ public class SessionRepositoryTests {
     session = sessionRepository.save(session);
     int sessionId = session.getId();
 
-    // Read session from database
+    // Read Session from database
     Session sessionFromDb = sessionRepository.findSessionById(sessionId);
 
     // Assertions

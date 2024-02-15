@@ -1,17 +1,21 @@
 package ca.mcgill.ecse321.SportCenterManager.model;
 
-import java.util.*;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
+import java.util.*;
+@Entity
 public class Schedule
 {
-
+  @Id
+  @GeneratedValue
   private int id;
 
   private List<Session> sessions;
 
-  public Schedule(int aId, Session... allSessions)
+  public Schedule(Session... allSessions)
   {
-    id = aId;
     sessions = new ArrayList<Session>();
     boolean didAddSessions = setSessions(allSessions);
     if (!didAddSessions)
