@@ -1,19 +1,23 @@
 package ca.mcgill.ecse321.SportCenterManager.model;
 
+import jakarta.persistence.*;
+
+@Entity
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Account
 {
-
+  @Id
+  @GeneratedValue
   private String name;
   private String email;
   private String password;
   private int id;
 
-  public Account(String aName, String aEmail, String aPassword, int aId)
+  public Account(String aName, String aEmail, String aPassword)
   {
     name = aName;
     email = aEmail;
     password = aPassword;
-    id = aId;
   }
 
   

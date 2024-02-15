@@ -1,11 +1,16 @@
 package ca.mcgill.ecse321.SportCenterManager.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
 import java.sql.Time;
 import java.sql.Date;
-
+@Entity
 public class Session
 {
-
+  @Id
+  @GeneratedValue
   private Time startTime;
   private Time endTime;
   private Date date;
@@ -14,12 +19,14 @@ public class Session
   private InstructorAccount instructorAccount;
   private Course course;
 
-  public Session(Time aStartTime, Time aEndTime, Date aDate, int aId, InstructorAccount aInstructorAccount, Course aCourse)
+  // Default constructor for Hibernate
+  private Session(){
+  }
+  public Session(Time aStartTime, Time aEndTime, Date aDate, InstructorAccount aInstructorAccount, Course aCourse)
   {
     startTime = aStartTime;
     endTime = aEndTime;
     date = aDate;
-    id = aId;
     if (!setInstructorAccount(aInstructorAccount))
     {
       throw new RuntimeException("Unable to create Session due to aInstructorAccount. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");

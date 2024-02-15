@@ -2,8 +2,8 @@ package ca.mcgill.ecse321.SportCenterManager.model;
 
 public class CustomerAccount extends Account
 {
-  public CustomerAccount(String aName, String aEmail, String aPassword, int aId)
+  public CustomerAccount(String aName, String aEmail, String aPassword)
   {
-    super(aName, aEmail, aPassword, aId);
+    super(aName, aEmail, aPassword);
   }
 }

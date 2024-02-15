@@ -1,19 +1,24 @@
 package ca.mcgill.ecse321.SportCenterManager.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+
+@Entity
 public class Course
 {
-
+  @Id
+  @GeneratedValue
   private String name;
   private String description;
   private int costPerSession;
   private int id;
 
-  public Course(String aName, String aDescription, int aCostPerSession, int aId)
+  public Course(String aName, String aDescription, int aCostPerSession)
   {
     name = aName;
     description = aDescription;
     costPerSession = aCostPerSession;
-    id = aId;
   }
 
   public boolean setName(String aName)
