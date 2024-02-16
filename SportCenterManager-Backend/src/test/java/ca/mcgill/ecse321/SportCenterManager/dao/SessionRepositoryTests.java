@@ -4,8 +4,7 @@ import ca.mcgill.ecse321.SportCenterManager.model.Course;
 import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -27,11 +26,11 @@ public class SessionRepositoryTests {
   @AfterEach
   public void clearDatabase(){
     sessionRepository.deleteAll();
-    //instructorAccountRepository.deleteAll(); not working
+    instructorAccountRepository.deleteAll();
     courseRepository.deleteAll();
 
   }
-
+  @Test
   public void testPersistAndLoadSession(){
     // Create InstructorAccount
     String instructorName = "Mahmoud";
@@ -39,7 +38,7 @@ public class SessionRepositoryTests {
     String password = "123";
 
     InstructorAccount instructorAccount = new InstructorAccount(instructorName, email, password);
-    //instructorAccount = instructorAccountRepository.save(instructorAccount);
+    instructorAccount = instructorAccountRepository.save(instructorAccount);
 
     // Create Course
     String courseName = "Soccer";

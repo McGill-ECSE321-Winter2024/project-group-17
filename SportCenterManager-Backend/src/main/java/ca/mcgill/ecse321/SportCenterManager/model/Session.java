@@ -11,11 +11,10 @@ public class Session
 {
   @Id
   @GeneratedValue
+  private int id;
   private Time startTime;
   private Time endTime;
   private Date date;
-  private int id;
-
   private InstructorAccount instructorAccount;
   private Course course;
 

@@ -8,10 +8,11 @@ public abstract class Account
 {
   @Id
   @GeneratedValue
+  private int id;
   private String name;
   private String email;
   private String password;
-  private int id;
+
 
   public Account(String aName, String aEmail, String aPassword)
   {

@@ -9,10 +9,14 @@ public class Course
 {
   @Id
   @GeneratedValue
+  private int id;
   private String name;
   private String description;
   private int costPerSession;
-  private int id;
+
+  // Default constructor for Hibernate
+  private Course(){
+  }
 
   public Course(String aName, String aDescription, int aCostPerSession)
   {

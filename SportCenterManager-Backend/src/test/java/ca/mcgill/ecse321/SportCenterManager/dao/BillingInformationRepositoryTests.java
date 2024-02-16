@@ -19,6 +19,7 @@ public class BillingInformationRepositoryTests {
     private BillingInformationRepository billingInformationRepository;
     @Autowired
     private CustomerAccountRepository customerAccountRepository;
+
     @AfterEach
     public void clearDatabase(){
         billingInformationRepository.deleteAll();
