@@ -13,7 +13,9 @@ public abstract class Account
   private String email;
   private String password;
 
-
+  // Default constructor for Hibernate
+  protected Account(){
+  }
   public Account(String aName, String aEmail, String aPassword)
   {
     name = aName;

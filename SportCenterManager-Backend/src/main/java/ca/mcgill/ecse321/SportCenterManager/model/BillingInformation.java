@@ -15,6 +15,10 @@ public class BillingInformation
 
   private CustomerAccount customerAccount;
 
+  // Default Constructor for Hibernate
+  private BillingInformation(){
+  }
+
   public BillingInformation(String aAddress, String aPostalCode, String aCountry, String aName, String aCardNumber, int aCvc, Date aExpirationDate, CustomerAccount aCustomerAccount)
   {
     address = aAddress;

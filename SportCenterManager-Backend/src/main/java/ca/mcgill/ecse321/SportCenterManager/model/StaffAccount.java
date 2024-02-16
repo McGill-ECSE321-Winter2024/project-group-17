@@ -8,6 +8,9 @@ import jakarta.persistence.InheritanceType;
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class StaffAccount extends Account
 {
+  // Default constructor for Hibernate
+  protected StaffAccount(){
+  }
   public StaffAccount(String aName, String aEmail, String aPassword)
   {
     super(aName, aEmail, aPassword);

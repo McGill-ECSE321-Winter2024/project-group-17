@@ -14,6 +14,10 @@ public class Schedule
 
   private List<Session> sessions;
 
+  // Default constructor for Hibernate
+  private Schedule(){
+  }
+
   public Schedule(Session... allSessions)
   {
     sessions = new ArrayList<Session>();
