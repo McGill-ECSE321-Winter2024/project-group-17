@@ -1,0 +1,36 @@
+@startuml
+
+actor RegisteredClient
+actor Owner as O
+actor Instructor as I
+actor Customer as C
+actor Guest as G
+
+O -up-|> RegisteredClient
+I -up-|> RegisteredClient
+C -up-|> RegisteredClient
+
+usecase "Log In" as UC1
+usecase "Search for Class" as UC2
+usecase "Log Out" as UC3
+usecase "Register for Class" as UC4
+usecase "Supervise Session" as UC5
+usecase "Approve Class" as UC6
+usecase "Create Account" as UC7
+usecase "Create Session" as UC8
+
+G --> UC1
+G --> UC2
+G --> UC7
+
+RegisteredClient -down-> UC2
+RegisteredClient -down-> UC3
+
+I --> UC5
+I --> UC8
+
+C --> UC4
+
+O --> UC6
+
+@enduml
