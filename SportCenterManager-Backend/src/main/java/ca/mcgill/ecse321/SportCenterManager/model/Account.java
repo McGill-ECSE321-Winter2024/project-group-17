@@ -1,8 +1,12 @@
 package ca.mcgill.ecse321.SportCenterManager.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.Inheritance;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.InheritanceType;
 
-@Entity
+@MappedSuperclass
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Account
 {

@@ -36,6 +36,7 @@ public class BillingInformation
     cardNumber = aCardNumber;
     cvc = aCvc;
     expirationDate = aExpirationDate;
+    key = new Key(aCustomerAccount);
   }
 
 

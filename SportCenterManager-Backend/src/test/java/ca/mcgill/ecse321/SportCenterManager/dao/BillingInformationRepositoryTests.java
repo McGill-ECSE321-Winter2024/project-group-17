@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.SportCenterManager.dao;
 import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -19,6 +20,7 @@ public class BillingInformationRepositoryTests {
     @Autowired
     private CustomerAccountRepository customerAccountRepository;
 
+    @BeforeEach
     @AfterEach
     public void clearDatabase(){
         billingInformationRepository.deleteAll();
@@ -54,7 +56,7 @@ public class BillingInformationRepositoryTests {
         assertNotNull(billingInformationFromDb);
         assertNotNull(billingInformationFromDb.getKey().getCustomerAccount());
         assertEquals(address, billingInformationFromDb.getAddress());
-        assertEquals(postalCode, billingInformationFromDb.getAddress());
+        assertEquals(postalCode, billingInformationFromDb.getPostalCode());
         assertEquals(country, billingInformationFromDb.getCountry());
         assertEquals(billingName, billingInformationFromDb.getName());
         assertEquals(cardNumber, billingInformation.getCardNumber());

@@ -4,6 +4,7 @@ import ca.mcgill.ecse321.SportCenterManager.model.Course;
 import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -23,6 +24,7 @@ public class SessionRepositoryTests {
   @Autowired
   private InstructorAccountRepository instructorAccountRepository;
 
+  @BeforeEach
   @AfterEach
   public void clearDatabase(){
     sessionRepository.deleteAll();

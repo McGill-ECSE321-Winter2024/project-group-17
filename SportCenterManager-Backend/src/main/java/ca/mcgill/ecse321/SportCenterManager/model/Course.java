@@ -12,13 +12,13 @@ public class Course
   private int id;
   private String name;
   private String description;
-  private int costPerSession;
+  private double costPerSession;
 
   // Default constructor for Hibernate
   private Course(){
   }
 
-  public Course(String aName, String aDescription, int aCostPerSession)
+  public Course(String aName, String aDescription, double aCostPerSession)
   {
     name = aName;
     description = aDescription;
@@ -67,7 +67,7 @@ public class Course
     return description;
   }
 
-  public int getCostPerSession()
+  public double getCostPerSession()
   {
     return costPerSession;
   }
