@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.SportCenterManager.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
 
 import java.util.*;
 @Entity
@@ -12,6 +13,7 @@ public class Schedule
   @GeneratedValue
   private int id;
 
+  @ManyToMany
   private List<Session> sessions;
 
   // Default constructor for Hibernate

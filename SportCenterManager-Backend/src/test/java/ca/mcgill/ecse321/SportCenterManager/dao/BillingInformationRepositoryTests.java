@@ -3,7 +3,6 @@ package ca.mcgill.ecse321.SportCenterManager.dao;
 import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,14 +45,14 @@ public class BillingInformationRepositoryTests {
 
         BillingInformation billingInformation = new BillingInformation(address, postalCode, country, billingName, cardNumber, cvc, expirationDate, customerAccount);
         billingInformation = billingInformationRepository.save(billingInformation);
-        CustomerAccount billingAccount = billingInformation.getCustomerAccount();
+        CustomerAccount billingAccount = billingInformation.getKey().getCustomerAccount();
 
         // Read BillingInformation from database
-        BillingInformation billingInformationFromDb = billingInformationRepository.findBillingInformationByCustomerAccount(billingAccount);
+        BillingInformation billingInformationFromDb = billingInformationRepository.findBillingInformationByKeyCustomerAccount(billingAccount);
 
         // Assertions
         assertNotNull(billingInformationFromDb);
-        assertNotNull(billingInformationFromDb.getCustomerAccount());
+        assertNotNull(billingInformationFromDb.getKey().getCustomerAccount());
         assertEquals(address, billingInformationFromDb.getAddress());
         assertEquals(postalCode, billingInformationFromDb.getAddress());
         assertEquals(country, billingInformationFromDb.getCountry());

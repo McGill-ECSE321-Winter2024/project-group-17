@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.SportCenterManager.model;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 
 import java.sql.Time;
 import java.sql.Date;
@@ -15,7 +16,11 @@ public class Session
   private Time startTime;
   private Time endTime;
   private Date date;
+
+  @ManyToOne
   private InstructorAccount instructorAccount;
+
+  @ManyToOne
   private Course course;
 
   // Default constructor for Hibernate

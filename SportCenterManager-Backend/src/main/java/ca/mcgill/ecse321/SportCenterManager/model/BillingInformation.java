@@ -1,7 +1,13 @@
 package ca.mcgill.ecse321.SportCenterManager.model;
 
+import jakarta.persistence.*;
+import jakarta.persistence.Embeddable;
+import jakarta.persistence.EmbeddedId;
+import java.io.Serializable;
 import java.sql.Date;
+import java.util.Objects;
 
+@Entity
 public class BillingInformation
 {
 
@@ -13,9 +19,11 @@ public class BillingInformation
   private int cvc;
   private Date expirationDate;
 
-  private CustomerAccount customerAccount;
+  @EmbeddedId
+  private BillingInformation.Key key;
 
   // Default Constructor for Hibernate
+
   private BillingInformation(){
   }
 
@@ -28,10 +36,15 @@ public class BillingInformation
     cardNumber = aCardNumber;
     cvc = aCvc;
     expirationDate = aExpirationDate;
-    if (!setCustomerAccount(aCustomerAccount))
-    {
-      throw new RuntimeException("Unable to create BillingInformation due to aCustomerAccount. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
+  }
+
+
+  public Key getKey(){
+    return key;
+  }
+
+  public void setKey(Key key) {
+    this.key=key;
   }
 
   public boolean setAddress(String aAddress)
@@ -92,6 +105,7 @@ public class BillingInformation
 
   public String getAddress()
   {
+
     return address;
   }
 
@@ -125,19 +139,35 @@ public class BillingInformation
     return expirationDate;
   }
   /* Code from template association_GetOne */
-  public CustomerAccount getCustomerAccount()
-  {
-    return customerAccount;
-  }
-  /* Code from template association_SetUnidirectionalOne */
-  public boolean setCustomerAccount(CustomerAccount aNewCustomerAccount)
-  {
-    boolean wasSet = false;
-    if (aNewCustomerAccount != null)
-    {
-      customerAccount = aNewCustomerAccount;
-      wasSet = true;
+
+  @Embeddable
+  public static class Key implements Serializable{
+    @OneToOne
+    private CustomerAccount customerAccount;
+    public Key(){
     }
-    return wasSet;
+    public Key(CustomerAccount customerAccount) {
+      this.customerAccount = customerAccount;
+    }
+    public CustomerAccount getCustomerAccount(){
+      return customerAccount;
+    }
+
+    public void setCustomerAccount(CustomerAccount customerAccount) {
+      this.customerAccount = customerAccount;
+    }
+
+    @Override
+    public boolean equals(Object obj){
+      if (!(obj instanceof Key)) {
+        return false;
+      }
+      Key other = (Key) obj;
+      return this.getCustomerAccount().getId() == other.getCustomerAccount().getId();
+    }
+    @Override
+    public int hashCode() {
+      return Objects.hash(this.getCustomerAccount().getId());
+    }
   }
 }

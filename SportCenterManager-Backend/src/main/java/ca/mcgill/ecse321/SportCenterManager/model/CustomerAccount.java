@@ -1,5 +1,8 @@
 package ca.mcgill.ecse321.SportCenterManager.model;
 
+import jakarta.persistence.Entity;
+
+@Entity
 public class CustomerAccount extends Account
 {
   // Default constructor for Hibernate
