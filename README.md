@@ -8,9 +8,9 @@ These are just some of the features of our website, a more comprehensive overvie
 ## Meet the Team
 We are Group 17 of the Winter 2024 session of the ECSE321- Introduction to Software engineering class.
 
-- Mahmoud Amin: 
-- Thibaut Chan Teck Su: 
-- Namir Habib: 
+- Mahmoud Amin: U2 Computer Engineering
+- Thibaut Chan Teck Su: U2 Computer Engineering 
+- Namir Habib: U2 Computer Engineering
 - Jennifer Tram Su: U4 Chemical Engineering Major
 - Angela Xiaomeng Zhu: U4 Bioengineering Major, Software Engineering Minor
 - Eric Zhu: U2 Software Engineering  
