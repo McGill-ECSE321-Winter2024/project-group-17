@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.SportCenterManager.dao;
 
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ public class CustomerAccountRepositoryTests {
     @Autowired
     private CustomerAccountRepository customerAccountRepository;
 
+    @BeforeEach
     @AfterEach
     public void clearDatabase() {
         customerAccountRepository.deleteAll();

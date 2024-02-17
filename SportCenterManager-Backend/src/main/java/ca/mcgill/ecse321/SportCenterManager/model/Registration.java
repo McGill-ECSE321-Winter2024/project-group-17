@@ -40,6 +40,10 @@ public class Registration
 	  @ManyToOne
 	  private CustomerAccount customerAccount;
 	  
+	  private Key() {
+		  
+	  }
+	  
 	  public Key(Session session, CustomerAccount customerAccount) {
 		  this.session = session;
 		  this.customerAccount = customerAccount;

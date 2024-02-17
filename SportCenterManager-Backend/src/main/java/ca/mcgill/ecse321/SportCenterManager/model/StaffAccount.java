@@ -1,10 +1,10 @@
 package ca.mcgill.ecse321.SportCenterManager.model;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.MappedSuperclass;
 
-@Entity
+@MappedSuperclass
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class StaffAccount extends Account
 {

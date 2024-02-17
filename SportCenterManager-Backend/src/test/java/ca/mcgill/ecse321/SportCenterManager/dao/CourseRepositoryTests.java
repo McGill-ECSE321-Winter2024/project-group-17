@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import ca.mcgill.ecse321.SportCenterManager.model.Course;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -15,6 +16,7 @@ public class CourseRepositoryTests {
     @Autowired
     private CourseRepository courseRepository;
 
+    @BeforeEach
     @AfterEach
     public void clearDatabase() {
         courseRepository.deleteAll();
@@ -25,7 +27,7 @@ public class CourseRepositoryTests {
         //Create a course
         String name = "Tennis";
         String description = "One on one coaching";
-        int costPerSession = 30;
+        double costPerSession = 30;
 
         Course course = new Course(name, description, costPerSession);
         course = courseRepository.save(course);
