@@ -23,7 +23,7 @@ The wiki for Sprint 1 can be found [here](https://github.com/McGill-ECSE321-Wint
 
 | Name          | ID            | Team Role | Deliverable 1 Hours 
 | ------------- |:-------------:| :-----:|:-----------------|
-| Mahmoud Amin   | xxxxx | Requirements, Persistence Layer |xxxxxxxxxxx|
+| Mahmoud Amin   | 261096406 | Requirements, Persistence Layer |xxxxxxxxxxx|
 | Thibaut Chan Teck Su   | 261120277    | Domain model, Persistence Layer |xxxxxxxxxxxx|
 | Namir Habib | 261115885    | Domain model, Persistence Layer |xxxxxxxxxxxx|
 | Jennifer Tram Su | 260923530      | Requirements, Use Case Diagram |xxxxxxxxxxxx|
