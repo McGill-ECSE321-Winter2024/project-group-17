@@ -28,7 +28,7 @@ public class BillingInformationRepositoryTests {
     }
     @Test
     public void testPersistAndLoadBillingInformation(){
-        // Create CustomerAccount
+        // Create and persist CustomerAccount
         String customerName = "Thibaut";
         String email = "thibaut@gmail.com";
         String password = "456";
@@ -36,7 +36,7 @@ public class BillingInformationRepositoryTests {
         CustomerAccount customerAccount = new CustomerAccount(customerName, email, password);
         customerAccount = customerAccountRepository.save(customerAccount);
 
-        // Create BillingInformation
+        // Create and persist BillingInformation
         String address = "845 Sherbrooke St W, Montreal, Quebec";
         String postalCode = "H3A 0G4";
         String country = "Canada";

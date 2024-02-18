@@ -24,7 +24,7 @@ public class CourseRepositoryTests {
 
     @Test
     public void testPersistAndLoadCourse() {
-        //Create a course
+        //Create and persist course
         String name = "Tennis";
         String description = "One on one coaching";
         double costPerSession = 30;

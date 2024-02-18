@@ -24,7 +24,7 @@ public class CustomerAccountRepositoryTests {
 
     @Test
     public void testPersistAndLoadCustomerAccount() {
-        // Create customer account
+        // Create and persist customer account
         String name = "Thibaut";
         String email = "thibaut@gmail.com" ;
         String password = "12345";

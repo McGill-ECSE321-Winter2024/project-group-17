@@ -2,11 +2,11 @@ package ca.mcgill.ecse321.SportCenterManager.dao;
 
 import ca.mcgill.ecse321.SportCenterManager.model.*;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Date;
 import java.sql.Time;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -17,6 +17,7 @@ public class ScheduleRepositoryTests {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
+    @BeforeEach
     @AfterEach
     public void clearDatabase() {
         scheduleRepository.deleteAll();
