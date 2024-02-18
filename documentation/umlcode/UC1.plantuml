@@ -11,11 +11,11 @@ I -up-|> RegisteredClient
 C -up-|> RegisteredClient
 
 usecase "Log In" as UC1
-usecase "Search for Class" as UC2
+usecase "Search for Course" as UC2
 usecase "Log Out" as UC3
-usecase "Register for Class" as UC4
+usecase "Register for Course" as UC4
 usecase "Supervise Session" as UC5
-usecase "Approve Class" as UC6
+usecase "Approve Course" as UC6
 usecase "Create Account" as UC7
 usecase "Create Session" as UC8
 
