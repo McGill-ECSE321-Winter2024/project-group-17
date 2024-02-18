@@ -23,10 +23,13 @@ public class Session
   @ManyToOne
   private Course course;
 
+  @ManyToOne
+  private Schedule schedule;
+
   // Default constructor for Hibernate
   private Session(){
   }
-  public Session(Time aStartTime, Time aEndTime, Date aDate, InstructorAccount aInstructorAccount, Course aCourse)
+  public Session(Time aStartTime, Time aEndTime, Date aDate, InstructorAccount aInstructorAccount, Course aCourse, Schedule aSchedule)
   {
     startTime = aStartTime;
     endTime = aEndTime;
@@ -38,6 +41,10 @@ public class Session
     if (!setCourse(aCourse))
     {
       throw new RuntimeException("Unable to create Session due to aCourse. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
+    }
+    if (!setSchedule(aSchedule))
+    {
+      throw new RuntimeException("Unable to create Session due to aSchedule. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
     }
   }
 
@@ -102,6 +109,11 @@ public class Session
   {
     return course;
   }
+
+  public Schedule getSchedule()
+  {
+    return schedule;
+  }
   
   public boolean setInstructorAccount(InstructorAccount aNewInstructorAccount)
   {
@@ -120,6 +132,17 @@ public class Session
     if (aNewCourse != null)
     {
       course = aNewCourse;
+      wasSet = true;
+    }
+    return wasSet;
+  }
+
+  public boolean setSchedule(Schedule aNewSchedule)
+  {
+    boolean wasSet = false;
+    if (aNewSchedule != null)
+    {
+      schedule = aNewSchedule;
       wasSet = true;
     }
     return wasSet;

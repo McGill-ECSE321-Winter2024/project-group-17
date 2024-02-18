@@ -3,12 +3,15 @@ package ca.mcgill.ecse321.SportCenterManager.model;
 import java.sql.Time;
 
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
 
 @Entity
 public class Schedule
 {
 
- 
+  @Id
+  @GeneratedValue
   private int id;
   private Time openingHours;
   private Time closingHours;
@@ -18,9 +21,8 @@ public class Schedule
 	  
   }
   
-  public Schedule(int aId, Time aOpeningHours, Time aClosingHours)
+  public Schedule(Time aOpeningHours, Time aClosingHours)
   {
-    id = aId;
     openingHours = aOpeningHours;
     closingHours = aClosingHours;
   }

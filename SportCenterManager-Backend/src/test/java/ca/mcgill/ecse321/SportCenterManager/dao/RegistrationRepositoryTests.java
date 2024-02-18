@@ -5,17 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import java.sql.Date;
 import java.sql.Time;
 
+import ca.mcgill.ecse321.SportCenterManager.model.*;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import ca.mcgill.ecse321.SportCenterManager.model.Course;
-import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
-import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
-import ca.mcgill.ecse321.SportCenterManager.model.Registration;
-import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
 @SpringBootTest
 public class RegistrationRepositoryTests {
@@ -29,6 +24,9 @@ public class RegistrationRepositoryTests {
 	private InstructorAccountRepository instructorAccountRepo;
 	@Autowired
 	private CourseRepository courseRepo;
+
+	@Autowired
+	private ScheduleRepository scheduleRepo;
 	
 	@BeforeEach
 	@AfterEach
@@ -55,12 +53,18 @@ public class RegistrationRepositoryTests {
 		int cost = 25;
 		Course course = new Course(courseName, description, cost);
 		course = courseRepo.save(course);
+
+		// Create & Persist a Schedule
+		Time openingHours = Time.valueOf("08:00:00");
+		Time closingHours = Time.valueOf("21:00:00");
+		Schedule schedule = new Schedule(openingHours,closingHours);
+		schedule = scheduleRepo.save(schedule);
 		
 		// Create & persist a Session
 		Time startTime = Time.valueOf("08:00:00");
 		Time endTime = Time.valueOf("16:30:00");
 		Date date = Date.valueOf("2024-02-20");
-		Session session = new Session(startTime, endTime, date, instructor, course);
+		Session session = new Session(startTime, endTime, date, instructor, course, schedule);
 		session = sessionRepo.save(session);
 		
 		// Create & persist a CustomerAccount
