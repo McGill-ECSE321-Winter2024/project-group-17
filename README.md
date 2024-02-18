@@ -5,7 +5,7 @@
 https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Report:-Sprint-1
 | Name          | ID            | Team Role | Deliverable 1 Hours 
 | ------------- |:-------------:| :-----:|:-----------------|
-| Mahmoud Amin   | xxxxx | xxxxxxxxxxxxxxxxxxxx |xxxxxxxxxxx|
+| Mahmoud Amin   | 261096406 | xxxxxxxxxxxxxxxxxxxx |xxxxxxxxxxx|
 | Thibaut Chan Teck Su   | 261120277    | xxxxxxxxxxxxxxxxxxxx |xxxxxxxxxxxx|
 | Namir Habib | 261115885    | xxxxxxxxxxxxxxxxxxxx |xxxxxxxxxxxx|
 | Jennifer Tram Su | xxxxx      | xxxxxxxxxxxxxxxxxxxx |xxxxxxxxxxxx|
