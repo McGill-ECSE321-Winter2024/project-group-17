@@ -1,0 +1,31 @@
+@startuml
+
+left to right direction
+
+actor RegisteredClient
+actor Owner as O
+actor Instructor as I
+actor Customer as C
+
+O -up-|> RegisteredClient
+I -up-|> RegisteredClient
+C -up-|> RegisteredClient
+
+
+usecase "Pay for Session" as UC1
+usecase "Delete Event" as UC2
+usecase "Modify Account Information" as UC3
+usecase "Edit Session" as UC4
+usecase "Delete Account" as UC5
+
+C --> UC1
+
+I --> UC4
+
+O --> UC2
+O --> UC4
+O --> UC5
+
+RegisteredClient --> UC3
+
+@enduml
