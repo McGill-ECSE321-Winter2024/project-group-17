@@ -15,17 +15,15 @@ We are Group 17 of the Winter 2024 session of the ECSE321- Introduction to Softw
 - Angela Xiaomeng Zhu: U4 Bioengineering Major, Software Engineering Minor
 - Eric Zhu: U2 Software Engineering  
 
-## Repo Structure 
-tbd 
 
 ## Sprint 1
-The wiki for Sprint 1 can be found [here](https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Report:-Sprint-1).
+The wiki for Sprint 1 can be found [here](https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Sprint-1:-Report).
 
 | Name          | ID            | Team Role | Deliverable 1 Hours 
 | ------------- |:-------------:| :-----:|:-----------------|
-| Mahmoud Amin   | 261096406 | Requirements, Persistence Layer |xxxxxxxxxxx|
-| Thibaut Chan Teck Su   | 261120277    | Domain model, Persistence Layer |xxxxxxxxxxxx|
-| Namir Habib | 261115885    | Domain model, Persistence Layer |xxxxxxxxxxxx|
-| Jennifer Tram Su | 260923530      | Requirements, Use Case Diagram |xxxxxxxxxxxx|
-| Angela Xiaomeng Zhu | 260982612    | Requirements, Documentation |xxxxxxxxxx|
-| Eric Zhu | 261116298    | Use Case Diagram, Testing |xxxxxxxxxxxx|
+| Mahmoud Amin   | 261096406 | Requirements, Persistence Layer |10.25 |
+| Thibaut Chan Teck Su   | 261120277    | Domain model, Persistence Layer |11|
+| Namir Habib | 261115885    | Domain model, Persistence Layer |10|
+| Jennifer Tram Su | 260923530      | Requirements, Use Case Diagram |9|
+| Angela Xiaomeng Zhu | 260982612    | Requirements, Documentation |11.25|
+| Eric Zhu | 261116298    | Use Case Diagram, Testing |12.5|
