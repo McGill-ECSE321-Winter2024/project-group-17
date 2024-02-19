@@ -19,7 +19,7 @@ We are Group 17 of the Winter 2024 session of the ECSE321- Introduction to Softw
 ## Sprint 1
 The wiki for Sprint 1 can be found [here](https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Sprint-1:-Report).
 
-| Name          | ID            | Team Role | Deliverable 1 Hours 
+| Name          | ID            | Deliverable 1 Role | Deliverable 1 Hours 
 | ------------- |:-------------:| :-----:|:-----------------|
 | Mahmoud Amin   | 261096406 | Requirements, Persistence Layer |10.25 |
 | Thibaut Chan Teck Su   | 261120277    | Domain model, Persistence Layer |11|
