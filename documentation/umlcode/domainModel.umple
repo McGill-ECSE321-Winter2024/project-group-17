@@ -1,0 +1,63 @@
+class Account{
+  abstract;
+  String name;
+  String email;
+  String password;
+  Integer id;
+}
+
+class StaffAccount{
+  abstract;
+	isA Account;
+}
+
+class OwnerAccount{
+  isA StaffAccount;
+}
+
+class InstructorAccount{
+  isA StaffAccount;
+}
+
+class CustomerAccount{
+  isA Account;
+}
+
+class Schedule{
+  int id;
+  Time openingHour;
+  Time closingHour;
+}
+
+class Session{
+  * -> 1 InstructorAccount;
+  * -> 1 Course;
+  * -> 1 Schedule;
+  Time startTime;
+  Time endTime;
+  Date date;
+  Integer id;
+}
+
+class Course{
+  String name;
+  String description;
+  Double costPerSession;
+  Integer id;
+}
+
+class Registration{
+  * -> 1 Session;
+  * -> 1 CustomerAccount;
+}
+
+class BillingInformation{
+  0..1 -> 1 CustomerAccount;
+  String address;
+  String postalCode;
+  String country;
+  String name;
+  String cardNumber;
+  Integer cvc;
+  Date expirationDate;
+}
