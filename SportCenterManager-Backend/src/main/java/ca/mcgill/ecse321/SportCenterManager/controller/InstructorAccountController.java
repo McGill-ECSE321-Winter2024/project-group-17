@@ -1,5 +1,5 @@
 package ca.mcgill.ecse321.SportCenterManager.controller;
 
-public class AccountController {
+public class InstructorAccountController {
     
 }
