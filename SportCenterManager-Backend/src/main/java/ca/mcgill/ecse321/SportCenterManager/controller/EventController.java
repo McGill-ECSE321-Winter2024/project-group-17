@@ -1,9 +1,20 @@
 package ca.mcgill.ecse321.SportCenterManager.controller;
 
+import ca.mcgill.ecse321.SportCenterManager.service.EventService;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
+
 @RestController
 public class EventController {
     @Autowired 
-    private EventService eventService
+    private EventService eventService;
 
     //courses
     //TODO change void to appropriate dto 
@@ -35,7 +46,7 @@ public class EventController {
 			//return 
 		}
     @GetMapping("/courses/{course_id}/sessions/{session_id}")
-    public void findSessionById(@PathVariable int course_id int session_id){
+    public void findSessionById(@PathVariable int course_id, @PathVariable int session_id){
 			//return 
 		}
     @DeleteMapping("/courses/{course_id}/sessions")
@@ -43,7 +54,7 @@ public class EventController {
 			//return 
 		}
     @DeleteMapping("/courses/{course_id}/sessions/{session_id}")
-    public void deleteSessionById(@PathVariable int course_id int session_id){
+    public void deleteSessionById(@PathVariable int course_id, @PathVariable int session_id){
 			//return 
 		}
     @PutMapping("/courses/{course_id}/sessions/{session_id}")

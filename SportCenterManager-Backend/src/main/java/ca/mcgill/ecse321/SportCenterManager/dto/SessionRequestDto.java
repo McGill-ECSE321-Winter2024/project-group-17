@@ -1,33 +1,34 @@
 package ca.mcgill.ecse321.SportCenterManager.dto;
+import java.time.LocalTime;
+import java.time.LocalDate;
 
 public class SessionRequestDto {
-    private Time startTime;
-    private Time endTime; 
-    private Date date;
-    //no id 
-    //recurring dates? 
+    private LocalTime startTime;
+    private LocalTime endTime; 
+    private LocalDate date;
+    //recurring dates? can date just be a string?
     
-    public Time getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(Time startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
     
-    public Time getEndTime(){
+    public LocalTime getEndTime(){
         return endTime;
     }
 
-    public void setEndTime(Time endTime){
+    public void setEndTime(LocalTime endTime){
         this.endTime = endTime;
     }
 
-    public Date getDate(){
+    public LocalDate getDate(){
         return date;
     }
 
-    public void setDate(Date date){
+    public void setDate(LocalDate date){
         this.date = date;
     }
 }
