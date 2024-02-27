@@ -13,8 +13,6 @@ public class CustomerResponseDto {
         this.email = model.getEmail();
     }
 
-    // Getters
-
     public int getId() {
         return id;
     }
@@ -26,8 +24,6 @@ public class CustomerResponseDto {
     public String getEmail() {
         return email;
     }
-
-    // Setters
 
     public void setId(int id) {
         this.id = id;
