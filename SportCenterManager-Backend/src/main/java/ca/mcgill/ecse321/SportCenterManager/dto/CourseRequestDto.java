@@ -20,7 +20,7 @@ public class CourseRequestDto {
         this.description = description;
     }
 
-    public double costPerSession(){
+    public double getCostPerSession(){
         return costPerSession;
     }
 

@@ -3,20 +3,17 @@ package ca.mcgill.ecse321.SportCenterManager.service;
 import ca.mcgill.ecse321.SportCenterManager.dao.CourseRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
 import ca.mcgill.ecse321.SportCenterManager.model.Course;
+import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
+import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 
-import java.time.LocalDate;
-import java.time.LocalTime;
+
+import java.sql.Time;
+import java.sql.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.convert.threeten.Jsr310JpaConverters.LocalDateConverter;
 
 import jakarta.transaction.Transactional;
 
@@ -39,6 +36,7 @@ public class EventService {
 
     @Transactional 
     public void deleteCourseById(int course_id){
+        sessionRepo.deleteByCourse(course_id);
         courseRepo.deleteById(course_id);
 	}
     
@@ -84,10 +82,10 @@ public class EventService {
 			//return 
 		}
     
-    //@Transactional
-    //public Session createSession(LocalTime start_time, LocalTime end_time, LocalDate date){
+    @Transactional
+    public Session createSession(Time start_time, Time end_time, Date date, InstructorAccount aInstructorAccount, Course aCourse, Schedule aSchedule){
         //Time and Date in model, change? 
-        //Session sessionToCreate = new Session(start_time, end_time, date);
-	    //return sessionRepo.save(sessionToCreate); 
-	//}
+        Session sessionToCreate = new Session(start_time, end_time, date,aInstructorAccount,aCourse,aSchedule);
+	    return sessionRepo.save(sessionToCreate); 
+	}
 }
