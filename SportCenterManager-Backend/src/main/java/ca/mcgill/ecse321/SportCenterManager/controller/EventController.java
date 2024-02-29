@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import ca.mcgill.ecse321.SportCenterManager.dto.CourseRequestDto;
+import ca.mcgill.ecse321.SportCenterManager.dto.CourseResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CourseListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionRequestDto;
@@ -27,9 +28,9 @@ public class EventController {
 
     @GetMapping("/courses")
     public CourseListDto findAllCourses(){
-        List<Course> courses = new ArrayList<Course>();
+        List<CourseResponseDto> courses = new ArrayList<CourseResponseDto>();
         for (Course model : eventService.findAllCourses()){
-          courses.add(new Course(model.getName(), model.getDescription(), model.getCostPerSession()));
+          courses.add(new CourseResponseDto(model));
         }
         return new CourseListDto(courses);
 		}
@@ -49,9 +50,9 @@ public class EventController {
 		}
 
     @PostMapping("/courses")
-    public Course createCourse(@RequestBody CourseRequestDto course){
-		Course createdCourse = eventService.createCourse(course.getName(), course.getDescription(), course.getCostPerSession());//ah	
-        return createdCourse;
+    public CourseResponseDto createCourse(@RequestBody CourseRequestDto course){
+		  Course createdCourse = eventService.createCourse(course.getName(), course.getDescription(), course.getCostPerSession());	
+      return new CourseResponseDto(createdCourse);
     }
     
     //sessions
@@ -67,10 +68,10 @@ public class EventController {
     public Session findSessionById(@PathVariable int course_id, @PathVariable int session_id){
 			return eventService.findSessionById(session_id);
 		}
-    @DeleteMapping("/courses/{course_id}/sessions")
-    public void deleteAllSessionsOfCourse(@PathVariable int course_id){
-			eventService.deleteAllSessionsOfCourse(course_id);
-		}
+    // @DeleteMapping("/courses/{course_id}/sessions")
+    // public void deleteAllSessionsOfCourse(@PathVariable int course_id){
+		// 	eventService.deleteAllSessionsOfCourse(course_id);
+		// }
     @DeleteMapping("/courses/{course_id}/sessions/{session_id}")
     public void deleteSessionById(@PathVariable int course_id, @PathVariable int session_id){
 			eventService.deleteSessionById(session_id);

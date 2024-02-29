@@ -36,7 +36,7 @@ public class EventService {
 
     @Transactional 
     public void deleteCourseById(int course_id){
-        sessionRepo.deleteByCourse(course_id);
+        //sessionRepo.deleteByCourse(course_id);
         courseRepo.deleteById(course_id);
 	}
     
@@ -65,11 +65,11 @@ public class EventService {
 			return sessionRepo.findSessionById(session_id);
 		}
     
-    @Transactional
-    public void deleteAllSessionsOfCourse(int course_id){
+   // @Transactional
+   // public void deleteAllSessionsOfCourse(int course_id){
 			//need to find all sessions that have foreign key course_id
-            sessionRepo.deleteByCourse(course_id); //added a method in repository...
-		}
+     //       sessionRepo.deleteByCourse(course_id); //added a method in repository...
+		//}
 
     @Transactional
     public void deleteSessionById(int session_id){
