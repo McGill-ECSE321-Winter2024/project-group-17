@@ -47,7 +47,6 @@ public class EventService {
 	}
 
     @Transactional
-    //is this not dto
     public Course createCourse(String name, String description, Double costPerSession ){
         Course courseToCreate = new Course(name, description, costPerSession);
 	    return courseRepo.save(courseToCreate); 

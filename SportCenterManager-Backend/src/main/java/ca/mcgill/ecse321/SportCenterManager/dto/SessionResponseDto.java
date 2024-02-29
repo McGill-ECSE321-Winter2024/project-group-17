@@ -1,20 +1,30 @@
 package ca.mcgill.ecse321.SportCenterManager.dto;
+
+import java.sql.Date;
 import java.sql.Time;
 
 import ca.mcgill.ecse321.SportCenterManager.model.Course;
 import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
+import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
-import java.sql.Date;
-
-public class SessionRequestDto {
+public class SessionResponseDto {
     private Time startTime;
     private Time endTime; 
     private Date date;
     private Course course;
-    //private InstructorAccount instructor;
-    //private Schedule schedule;
+    private InstructorAccount instructor;
+    private Schedule schedule;
     //recurring dates? can date just be a string?
+
+    public SessionResponseDto(Session model){
+        this.startTime = model.getStartTime();
+        this.endTime=model.getEndTime();
+        this.date=model.getDate();
+        this.course=model.getCourse();
+        this.instructor=model.getInstructorAccount();
+        this.schedule=model.getSchedule();
+    }
     
     public Time getStartTime() {
         return startTime;
@@ -48,19 +58,20 @@ public class SessionRequestDto {
         this.course = course;
     }
 
-    // public InstructorAccount getInstructor() {
-    //     return instructor;
-    // }
+    public InstructorAccount getInstructor() {
+        return instructor;
+    }
 
-    // public void setInstructor(InstructorAccount instructor) {
-    //     this.instructor = instructor;
-    // }
+    public void setInstructor(InstructorAccount instructor) {
+        this.instructor = instructor;
+    }
 
-    // public Schedule getSchedule() {
-    //     return schedule;
-    // }
+    public Schedule getSchedule() {
+        return schedule;
+    }
 
-    // public void setSchedule(Schedule schedule) {
-    //     this.schedule = schedule;
-    // }
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
+    }
+    
 }

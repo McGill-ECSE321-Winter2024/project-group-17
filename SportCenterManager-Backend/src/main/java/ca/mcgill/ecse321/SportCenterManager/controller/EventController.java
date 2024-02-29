@@ -1,16 +1,22 @@
 package ca.mcgill.ecse321.SportCenterManager.controller;
 
+import java.sql.Date;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
 import ca.mcgill.ecse321.SportCenterManager.dto.CourseRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CourseResponseDto;
+import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dto.CourseListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionRequestDto;
+import ca.mcgill.ecse321.SportCenterManager.dto.SessionResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.service.EventService;
-import ca.mcgill.ecse321.SportCenterManager.model.Course; //is this legal
-import ca.mcgill.ecse321.SportCenterManager.model.Session; //is this legal
+import ca.mcgill.ecse321.SportCenterManager.model.Course;
+import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
+import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
+import ca.mcgill.ecse321.SportCenterManager.model.Session; 
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -58,9 +64,9 @@ public class EventController {
     //sessions
     @GetMapping("/courses/{course_id}/sessions")
     public SessionListDto findAllSessionsOfCourse(@PathVariable int course_id){
-        List<Session> sessions = new ArrayList<Session>();
+        List<SessionResponseDto> sessions = new ArrayList<SessionResponseDto>();
         for (Session model : eventService.findAllSessionsOfCourse(course_id)){
-          sessions.add(new Session(model.getStartTime(), model.getEndTime(), model.getDate(),model.getInstructorAccount(),model.getCourse(),model.getSchedule()));
+          sessions.add(new SessionResponseDto(model));
         }
         return new SessionListDto(sessions);
 		}
@@ -82,10 +88,14 @@ public class EventController {
 		}
   
     @PostMapping("/courses/{course_id}/sessions")
-    public Session createSession(@RequestBody SessionRequestDto session, @PathVariable int course_id){
+    public SessionResponseDto createSession(@RequestBody SessionRequestDto session, @PathVariable int course_id){
 			Course course = eventService.findCourseById(course_id);
-      Session createdSession = eventService.createSession(session.getStartTime(), session.getEndTime(), session.getDate(), session.getInstructor(),course,session.getSchedule());	
-      return createdSession;
+      //Session createdSession = eventService.createSession(session.getStartTime(), session.getEndTime(), session.getDate(), session.getInstructor(),course,session.getSchedule());	
+      InstructorAccount i = new InstructorAccount("test", "test", "test");//need to save this to db
+      Schedule s = new Schedule(new Time(0), new Time(0)); //time in miliseconds since january 1 1970
+      Session createdSession = eventService.createSession(session.getStartTime(), session.getEndTime(), session.getDate(), i,course,s);	
+
+      return new SessionResponseDto(createdSession);
 		}
     
 }
