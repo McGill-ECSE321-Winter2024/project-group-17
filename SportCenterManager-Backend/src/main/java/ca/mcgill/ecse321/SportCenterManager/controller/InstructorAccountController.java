@@ -42,7 +42,7 @@ public class InstructorAccountController {
     }
     
     @PostMapping("/instructorAccounts")
-    public InstructorResponseDto craeteInstructor(@RequestBody InstructorRequestDto instructor) {
+    public InstructorResponseDto createInstructor(@RequestBody InstructorRequestDto instructor) {
         InstructorAccount instructorToCreate = instructorAccountService.createInstructor(instructor.getName(), instructor.getEmail(), instructor.getPassword());
         return new InstructorResponseDto(instructorToCreate);
     }
