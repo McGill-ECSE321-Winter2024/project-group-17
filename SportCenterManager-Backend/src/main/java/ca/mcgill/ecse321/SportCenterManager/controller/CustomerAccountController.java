@@ -18,16 +18,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/customerAccounts")
 public class CustomerAccountController {
     @Autowired
     private CustomerAccountService customerAccountService;
-
-    /*
-     * PUT /customerAccounts/{customerAccount_id}
-     */
 
     @GetMapping("/{customerAccount_id}")
     public CustomerResponseDto findCustomerById(@PathVariable int customerAccount_id) {
@@ -42,6 +40,12 @@ public class CustomerAccountController {
             customers.add(new CustomerResponseDto(customer));
         }
         return new CustomerListDto(customers);
+    }
+
+    @PutMapping("/{customerAccount_id}")
+    public CustomerResponseDto modifyCustomerAccount(@PathVariable int customerAccount_id, @RequestBody CustomerRequestDto customer) {
+        CustomerAccount modifiedCustomer = customerAccountService.modifyCustomerAccount(customerAccount_id, customer.getName(), customer.getEmail(), customer.getPassword());
+        return new CustomerResponseDto(modifiedCustomer);
     }
 
     @PostMapping()

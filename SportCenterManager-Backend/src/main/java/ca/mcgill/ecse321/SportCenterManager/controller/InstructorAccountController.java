@@ -17,16 +17,14 @@ import ca.mcgill.ecse321.SportCenterManager.service.InstructorAccountService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/instructorAccounts")
 public class InstructorAccountController {
     @Autowired
     private InstructorAccountService instructorAccountService;
-
-    /*
-     * PUT /instructorAccounts/{instructorAccount_id}
-     */
 
     @GetMapping()
     public InstructorListDto findAllInstructors() {
@@ -41,6 +39,12 @@ public class InstructorAccountController {
     public InstructorResponseDto findInstructorById(@PathVariable int instructorAccount_id) {
         InstructorAccount instructor = instructorAccountService.findInstructorById(instructorAccount_id);
         return new InstructorResponseDto(instructor);
+    }
+
+    @PutMapping("/{instructorAccount_id}")
+    public InstructorResponseDto modifyInstructorAccount(@PathVariable int instructorAccount_id, @RequestBody InstructorRequestDto instructor) {
+        InstructorAccount modifiedInstructor = instructorAccountService.modifyInstructorAccount(instructorAccount_id, instructor.getName(), instructor.getEmail(), instructor.getPassword());
+        return new InstructorResponseDto(modifiedInstructor);
     }
     
     @PostMapping()

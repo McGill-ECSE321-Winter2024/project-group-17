@@ -22,4 +22,13 @@ public class OwnerAccountService {
         OwnerAccount owner = new OwnerAccount(name, email, password);
         return ownerRepo.save(owner);
     }
+
+    @Transactional
+    public OwnerAccount modifyOwnerAccount(int id, String name, String email, String password) {
+        OwnerAccount owner = ownerRepo.findOwnerAccountById(id);
+        owner.setName(name);
+        owner.setEmail(email);
+        owner.setPassword(password);
+        return ownerRepo.save(owner);
+    }
 }

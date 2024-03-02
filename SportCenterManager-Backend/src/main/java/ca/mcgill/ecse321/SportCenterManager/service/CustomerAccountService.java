@@ -12,10 +12,6 @@ public class CustomerAccountService {
     @Autowired
     private CustomerAccountRepository customerRepo;
 
-    /*
-     * Modify Account
-     */
-
      @Transactional
      public Iterable<CustomerAccount> findAllCustomers() {
         return customerRepo.findAll();
@@ -24,6 +20,15 @@ public class CustomerAccountService {
      @Transactional
      public CustomerAccount findCustomerById(int id) {
         return customerRepo.findCustomerAccountById(id);
+     }
+
+     @Transactional
+     public CustomerAccount modifyCustomerAccount(int id, String name, String email, String password) {
+        CustomerAccount customerToModify = customerRepo.findCustomerAccountById(id);
+        customerToModify.setName(name);
+        customerToModify.setEmail(email);
+        customerToModify.setPassword(password);
+        return customerRepo.save(customerToModify);
      }
 
      @Transactional

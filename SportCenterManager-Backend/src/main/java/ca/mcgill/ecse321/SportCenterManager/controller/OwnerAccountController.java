@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+
 
 @RestController
 @RequestMapping("/ownerAccount")
@@ -20,19 +22,21 @@ public class OwnerAccountController {
     @Autowired
     private OwnerAccountService ownerAccountService;
 
-    /*
-     * PUT /ownerAccounts/{ownerAccount_id}
-     */
-
     @GetMapping("/{ownerAccount_id}")
     public OwnerResponseDto findOwnerById(@PathVariable int ownerAccount_id) {
         OwnerAccount owner = ownerAccountService.findOwnerById(ownerAccount_id);
         return new OwnerResponseDto(owner);
     }
 
+    @PutMapping("/{ownerAccount_id}")
+    public OwnerResponseDto modifyOwnerAccount(@PathVariable int ownerAccount_id, @RequestBody OwnerRequestDto owner) {
+        OwnerAccount modifiedOwner = ownerAccountService.modifyOwnerAccount(ownerAccount_id, owner.getName(), owner.getEmail(), owner.getPassword());
+        return new OwnerResponseDto(modifiedOwner);
+    }
+
     @PostMapping()
     public OwnerResponseDto createOwner(@RequestBody OwnerRequestDto owner) {
         OwnerAccount ownerToCreate = ownerAccountService.createOwner(owner.getName(), owner.getEmail(), owner.getPassword());
         return new OwnerResponseDto(ownerToCreate);
-    }  
+    }
 }

@@ -12,10 +12,6 @@ public class InstructorAccountService {
     @Autowired
     private InstructorAccountRepository instructorRepo;
 
-    /*
-     * Modify account
-     */
-    
     @Transactional
     public Iterable<InstructorAccount> findAllInstructors() {
         return instructorRepo.findAll();
@@ -24,6 +20,15 @@ public class InstructorAccountService {
     @Transactional
     public InstructorAccount findInstructorById(int id) {
         return instructorRepo.findInstructorAccountById(id);
+    }
+
+    @Transactional
+    public InstructorAccount modifyInstructorAccount(int id, String name, String email, String password) {
+        InstructorAccount instructorToModify = instructorRepo.findInstructorAccountById(id);
+        instructorToModify.setName(name);
+        instructorToModify.setEmail(email);
+        instructorToModify.setPassword(password);
+        return instructorRepo.save(instructorToModify);
     }
 
     @Transactional
