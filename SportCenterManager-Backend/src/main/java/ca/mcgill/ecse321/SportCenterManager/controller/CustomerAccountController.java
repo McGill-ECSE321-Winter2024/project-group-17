@@ -17,8 +17,10 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
+@RequestMapping("/customerAccounts")
 public class CustomerAccountController {
     @Autowired
     private CustomerAccountService customerAccountService;
@@ -27,13 +29,13 @@ public class CustomerAccountController {
      * PUT /customerAccounts/{customerAccount_id}
      */
 
-    @GetMapping("/customerAccounts/{customerAccount_id}")
+    @GetMapping("/{customerAccount_id}")
     public CustomerResponseDto findCustomerById(@PathVariable int customerAccount_id) {
         CustomerAccount customer = customerAccountService.findCustomerById(customerAccount_id);
         return new CustomerResponseDto(customer);
     }
 
-    @GetMapping("/customerAccounts")
+    @GetMapping()
     public CustomerListDto findAllCustomers() {
         List<CustomerResponseDto> customers = new ArrayList<CustomerResponseDto>();
         for (CustomerAccount customer : customerAccountService.findAllCustomers()) {
@@ -42,13 +44,13 @@ public class CustomerAccountController {
         return new CustomerListDto(customers);
     }
 
-    @PostMapping("/customerAccounts")
+    @PostMapping()
     public CustomerResponseDto createCustomer(@RequestBody CustomerRequestDto customer) {
         CustomerAccount customerToCreate = customerAccountService.createCustomer(customer.getName(), customer.getEmail(), customer.getPassword());
         return new CustomerResponseDto(customerToCreate);
     }   
 
-    @DeleteMapping("/customerAccounts/{customerAccount_id}")
+    @DeleteMapping("/{customerAccount_id}")
     public void deleteCustomer(@PathVariable int customerAccount_id) {
         customerAccountService.deleteCustomer(customerAccount_id);
     }

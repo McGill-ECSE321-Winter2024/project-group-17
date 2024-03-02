@@ -16,8 +16,10 @@ import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import ca.mcgill.ecse321.SportCenterManager.service.InstructorAccountService;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 
 @RestController
+@RequestMapping("/instructorAccounts")
 public class InstructorAccountController {
     @Autowired
     private InstructorAccountService instructorAccountService;
@@ -26,7 +28,7 @@ public class InstructorAccountController {
      * PUT /instructorAccounts/{instructorAccount_id}
      */
 
-    @GetMapping("/instructorAccounts")
+    @GetMapping()
     public InstructorListDto findAllInstructors() {
         List<InstructorResponseDto> instructors = new ArrayList<InstructorResponseDto>();
         for (InstructorAccount instructor : instructorAccountService.findAllInstructors()) {
@@ -35,19 +37,19 @@ public class InstructorAccountController {
         return new InstructorListDto(instructors);
     }
 
-    @GetMapping("/instructorAccounts/{instructorAccount_id}")
+    @GetMapping("/{instructorAccount_id}")
     public InstructorResponseDto findInstructorById(@PathVariable int instructorAccount_id) {
         InstructorAccount instructor = instructorAccountService.findInstructorById(instructorAccount_id);
         return new InstructorResponseDto(instructor);
     }
     
-    @PostMapping("/instructorAccounts")
+    @PostMapping()
     public InstructorResponseDto createInstructor(@RequestBody InstructorRequestDto instructor) {
         InstructorAccount instructorToCreate = instructorAccountService.createInstructor(instructor.getName(), instructor.getEmail(), instructor.getPassword());
         return new InstructorResponseDto(instructorToCreate);
     }
 
-    @DeleteMapping("/instructorAccounts/{instructorAccount_id}")
+    @DeleteMapping("/{instructorAccount_id}")
     public void deleteInstructor(@PathVariable int instructorAccount_id) {
         instructorAccountService.deleteInstructor(instructorAccount_id);
     }
