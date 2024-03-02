@@ -19,11 +19,7 @@ public class BillingInformationService {
     private CustomerAccountRepository customerRepo;
 
     /*
-     * Only one BillingInformation per Customer
-     * Create
-     * Read
-     * Update
-     * Delete?
+     * Only one BillingInformation per Customer for now
      */
 
     @Transactional
@@ -32,9 +28,23 @@ public class BillingInformationService {
         return billingRepo.save(billingToCreate);
     }
 
-    // @Transactional
-    // public BillingInformation getBillingInformation(int customerId) {
-    //     CustomerAccount customer = customerRepo.findCustomerAccountById(customerId);
-    //     return billingRepo.findBillingInformationByKeyCustomerAccount(customer);
-    // }
+    @Transactional
+    public BillingInformation getBillingInformation(int customerId) {
+        CustomerAccount customer = customerRepo.findCustomerAccountById(customerId);
+        return billingRepo.findBillingInformationByKeyCustomerAccount(customer);
+    }
+
+    @Transactional
+    public BillingInformation updateBillingInformation(int customerId, String address, String postalCode, String country, String name, String cardNumber, int cvc, Date expirationDate) {
+        CustomerAccount customer = customerRepo.findCustomerAccountById(customerId);
+        BillingInformation billingToModify = billingRepo.findBillingInformationByKeyCustomerAccount(customer);
+        billingToModify.setAddress(address);
+        billingToModify.setPostalCode(postalCode);
+        billingToModify.setCountry(country);
+        billingToModify.setName(name);
+        billingToModify.setCardNumber(cardNumber);
+        billingToModify.setCvc(cvc);
+        billingToModify.setExpirationDate(expirationDate);
+        return billingRepo.save(billingToModify);
+    }
 }
