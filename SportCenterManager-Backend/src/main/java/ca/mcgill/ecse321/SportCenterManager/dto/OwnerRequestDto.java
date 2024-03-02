@@ -1,6 +1,6 @@
 package ca.mcgill.ecse321.SportCenterManager.dto;
 
-public class InstructorRequestDto {
+public class OwnerRequestDto {
     private String name;
     private String email;
     private String password;
