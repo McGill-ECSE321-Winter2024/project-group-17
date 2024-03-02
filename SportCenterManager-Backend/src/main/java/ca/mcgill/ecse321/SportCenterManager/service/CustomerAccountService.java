@@ -11,6 +11,8 @@ import jakarta.transaction.Transactional;
 public class CustomerAccountService {
     @Autowired
     private CustomerAccountRepository customerRepo;
+    @Autowired
+    private BillingInformationService billingService;
 
      @Transactional
      public Iterable<CustomerAccount> findAllCustomers() {
@@ -34,7 +36,9 @@ public class CustomerAccountService {
      @Transactional
      public CustomerAccount createCustomer(String name, String email, String password) {
         CustomerAccount customerToCreate = new CustomerAccount(name, email, password);
-        return customerRepo.save(customerToCreate);
+        CustomerAccount createdCustomer = customerRepo.save(customerToCreate);
+        billingService.createBillingInformation("address", "postalCode", "country", "name", "cardNumber", 123, null, createdCustomer);
+        return createdCustomer;
      }
 
      @Transactional
