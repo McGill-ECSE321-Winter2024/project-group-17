@@ -42,8 +42,8 @@ public class InstructorAccountController {
     }
 
     @PutMapping("/{instructorAccount_id}")
-    public InstructorResponseDto modifyInstructorAccount(@PathVariable int instructorAccount_id, @RequestBody InstructorRequestDto instructor) {
-        InstructorAccount modifiedInstructor = instructorAccountService.modifyInstructorAccount(instructorAccount_id, instructor.getName(), instructor.getEmail(), instructor.getPassword());
+    public InstructorResponseDto updateInstructorAccount(@PathVariable int instructorAccount_id, @RequestBody InstructorRequestDto instructor) {
+        InstructorAccount modifiedInstructor = instructorAccountService.updateInstructorAccount(instructorAccount_id, instructor.getName(), instructor.getEmail(), instructor.getPassword());
         return new InstructorResponseDto(modifiedInstructor);
     }
     

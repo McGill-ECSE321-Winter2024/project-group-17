@@ -24,7 +24,7 @@ public class OwnerAccountService {
     }
 
     @Transactional
-    public OwnerAccount modifyOwnerAccount(int id, String name, String email, String password) {
+    public OwnerAccount updateOwnerAccount(int id, String name, String email, String password) {
         OwnerAccount owner = ownerRepo.findOwnerAccountById(id);
         owner.setName(name);
         owner.setEmail(email);

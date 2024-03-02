@@ -29,8 +29,8 @@ public class OwnerAccountController {
     }
 
     @PutMapping("/{ownerAccount_id}")
-    public OwnerResponseDto modifyOwnerAccount(@PathVariable int ownerAccount_id, @RequestBody OwnerRequestDto owner) {
-        OwnerAccount modifiedOwner = ownerAccountService.modifyOwnerAccount(ownerAccount_id, owner.getName(), owner.getEmail(), owner.getPassword());
+    public OwnerResponseDto updateOwnerAccount(@PathVariable int ownerAccount_id, @RequestBody OwnerRequestDto owner) {
+        OwnerAccount modifiedOwner = ownerAccountService.updateOwnerAccount(ownerAccount_id, owner.getName(), owner.getEmail(), owner.getPassword());
         return new OwnerResponseDto(modifiedOwner);
     }
 

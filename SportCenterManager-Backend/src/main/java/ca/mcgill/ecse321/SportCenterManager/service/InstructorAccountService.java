@@ -23,7 +23,7 @@ public class InstructorAccountService {
     }
 
     @Transactional
-    public InstructorAccount modifyInstructorAccount(int id, String name, String email, String password) {
+    public InstructorAccount updateInstructorAccount(int id, String name, String email, String password) {
         InstructorAccount instructorToModify = instructorRepo.findInstructorAccountById(id);
         instructorToModify.setName(name);
         instructorToModify.setEmail(email);

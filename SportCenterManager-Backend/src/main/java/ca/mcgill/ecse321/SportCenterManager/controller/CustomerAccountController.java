@@ -43,8 +43,8 @@ public class CustomerAccountController {
     }
 
     @PutMapping("/{customerAccount_id}")
-    public CustomerResponseDto modifyCustomerAccount(@PathVariable int customerAccount_id, @RequestBody CustomerRequestDto customer) {
-        CustomerAccount modifiedCustomer = customerAccountService.modifyCustomerAccount(customerAccount_id, customer.getName(), customer.getEmail(), customer.getPassword());
+    public CustomerResponseDto updateCustomerAccount(@PathVariable int customerAccount_id, @RequestBody CustomerRequestDto customer) {
+        CustomerAccount modifiedCustomer = customerAccountService.updateCustomerAccount(customerAccount_id, customer.getName(), customer.getEmail(), customer.getPassword());
         return new CustomerResponseDto(modifiedCustomer);
     }
 

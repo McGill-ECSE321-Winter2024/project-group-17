@@ -23,7 +23,7 @@ public class CustomerAccountService {
      }
 
      @Transactional
-     public CustomerAccount modifyCustomerAccount(int id, String name, String email, String password) {
+     public CustomerAccount updateCustomerAccount(int id, String name, String email, String password) {
         CustomerAccount customerToModify = customerRepo.findCustomerAccountById(id);
         customerToModify.setName(name);
         customerToModify.setEmail(email);
