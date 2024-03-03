@@ -64,11 +64,11 @@ public class EventService {
 			return sessionRepo.findSessionById(session_id);
 		}
     
-   // @Transactional
-   // public void deleteAllSessionsOfCourse(int course_id){
+   @Transactional
+   public void deleteAllSessionsOfCourse(int course_id){
 			//need to find all sessions that have foreign key course_id
-     //       sessionRepo.deleteByCourse(course_id); //added a method in repository...
-		//}
+            sessionRepo.deleteByCourse(course_id); //added a method in repository...but it does not work... 
+		}
 
     @Transactional
     public void deleteSessionById(int session_id){
@@ -76,6 +76,7 @@ public class EventService {
             sessionRepo.deleteById(session_id);
 		}
 
+    //TODO
     @Transactional
     public void modifySessionById(){
 			//return 
@@ -83,7 +84,6 @@ public class EventService {
     
     @Transactional
     public Session createSession(Time start_time, Time end_time, Date date, InstructorAccount aInstructorAccount, Course aCourse, Schedule aSchedule){
-        //Time and Date in model, change? 
         Session sessionToCreate = new Session(start_time, end_time, date,aInstructorAccount,aCourse,aSchedule);
 	    return sessionRepo.save(sessionToCreate); 
 	}
