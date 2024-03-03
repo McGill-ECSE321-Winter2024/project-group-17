@@ -13,6 +13,7 @@ public class Course
   private String name;
   private String description;
   private double costPerSession;
+  private boolean isApproved;
 
   // Default constructor for Hibernate
   private Course(){
@@ -23,6 +24,7 @@ public class Course
     name = aName;
     description = aDescription;
     costPerSession = aCostPerSession;
+    isApproved = false;
   }
 
   public boolean setName(String aName)
@@ -57,6 +59,14 @@ public class Course
     return wasSet;
   }
 
+  public boolean setIsApproved(boolean aIsApproved)
+  {
+    boolean wasSet = false;
+    isApproved = aIsApproved;
+    wasSet = true;
+    return wasSet;
+  }
+
   public String getName()
   {
     return name;
@@ -75,5 +85,10 @@ public class Course
   public int getId()
   {
     return id;
+  }
+
+  public boolean getIsApproved()
+  {
+    return isApproved;
   }
 }
