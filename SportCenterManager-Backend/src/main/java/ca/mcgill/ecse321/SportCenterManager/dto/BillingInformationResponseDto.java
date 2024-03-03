@@ -2,7 +2,9 @@ package ca.mcgill.ecse321.SportCenterManager.dto;
 
 import java.sql.Date;
 
-public class BillingInformationRequestDto {
+import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
+
+public class BillingInformationResponseDto {
     private String address;
     private String postalCode;
     private String country;
@@ -10,6 +12,16 @@ public class BillingInformationRequestDto {
     private String cardNumber;
     private int cvc;
     private Date expirationDate;
+
+    public BillingInformationResponseDto(BillingInformation model) {
+        this.address = model.getAddress();
+        this.postalCode = model.getPostalCode();
+        this.country = model.getCountry();
+        this.name = model.getName();
+        this.cardNumber = model.getCardNumber();
+        this.cvc = model.getCvc();
+        this.expirationDate = model.getExpirationDate();
+    }
 
     public String getAddress() {
         return address;
