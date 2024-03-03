@@ -1,21 +1,17 @@
 package ca.mcgill.ecse321.SportCenterManager.controller;
 
-import java.sql.Date;
-import java.sql.Time;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import ca.mcgill.ecse321.SportCenterManager.dto.CourseRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CourseResponseDto;
-import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dto.CourseListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.service.EventService;
 import ca.mcgill.ecse321.SportCenterManager.model.Course;
-import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
-import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 import ca.mcgill.ecse321.SportCenterManager.model.Session; 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -50,6 +46,7 @@ public class EventController {
     public void deleteCourseById(@PathVariable int course_id){
         eventService.deleteCourseById(course_id);
 		}
+    //TODO
     @PutMapping("/courses/{course_id}")
     public void modifyCourseById(@PathVariable int course_id){
 			//return 
@@ -74,27 +71,29 @@ public class EventController {
     public Session findSessionById(@PathVariable int course_id, @PathVariable int session_id){
 			return eventService.findSessionById(session_id);
 		}
-    // @DeleteMapping("/courses/{course_id}/sessions")
-    // public void deleteAllSessionsOfCourse(@PathVariable int course_id){
-		// 	eventService.deleteAllSessionsOfCourse(course_id);
-		// }
+
+    //TODO: DOES NOT WORK -- need to access sessions which have foreign key course_id... does not work yet, see event service 
+     @DeleteMapping("/courses/{course_id}/sessions")
+      public void deleteAllSessionsOfCourse(@PathVariable int course_id){
+		 	eventService.deleteAllSessionsOfCourse(course_id);
+		 }
     @DeleteMapping("/courses/{course_id}/sessions/{session_id}")
     public void deleteSessionById(@PathVariable int course_id, @PathVariable int session_id){
 			eventService.deleteSessionById(session_id);
 		}
+
+    //TODO
     @PutMapping("/courses/{course_id}/sessions/{session_id}")
     public void modifySessionById(){
 			//return 
 		}
   
+    //TODO
     @PostMapping("/courses/{course_id}/sessions")
     public SessionResponseDto createSession(@RequestBody SessionRequestDto session, @PathVariable int course_id){
 			Course course = eventService.findCourseById(course_id);
-      //Session createdSession = eventService.createSession(session.getStartTime(), session.getEndTime(), session.getDate(), session.getInstructor(),course,session.getSchedule());	
-      InstructorAccount i = new InstructorAccount("test", "test", "test");//need to save this to db
-      Schedule s = new Schedule(new Time(0), new Time(0)); //time in miliseconds since january 1 1970
-      Session createdSession = eventService.createSession(session.getStartTime(), session.getEndTime(), session.getDate(), i,course,s);	
-
+      //Did not figure out how to link an instructor and schedule when creating session without passing Instructor and Schedule objects in the request body...
+      Session createdSession = eventService.createSession(session.getStartTime(), session.getEndTime(), session.getDate(), session.getInstructor(),course,session.getSchedule());	
       return new SessionResponseDto(createdSession);
 		}
     

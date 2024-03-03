@@ -12,9 +12,8 @@ public class SessionRequestDto {
     private Time endTime; 
     private Date date;
     private Course course;
-    //private InstructorAccount instructor;
-    //private Schedule schedule;
-    //recurring dates? can date just be a string?
+    private InstructorAccount instructor;
+    private Schedule schedule;
     
     public Time getStartTime() {
         return startTime;
@@ -48,19 +47,19 @@ public class SessionRequestDto {
         this.course = course;
     }
 
-    // public InstructorAccount getInstructor() {
-    //     return instructor;
-    // }
+    public InstructorAccount getInstructor() {
+         return instructor;
+    }
 
-    // public void setInstructor(InstructorAccount instructor) {
-    //     this.instructor = instructor;
-    // }
+    public void setInstructor(InstructorAccount instructor) {
+         this.instructor = instructor;
+    }
 
-    // public Schedule getSchedule() {
-    //     return schedule;
-    // }
+    public Schedule getSchedule() {
+         return schedule;
+    }
 
-    // public void setSchedule(Schedule schedule) {
-    //     this.schedule = schedule;
-    // }
+    public void setSchedule(Schedule schedule) {
+         this.schedule = schedule;
+    }
 }
