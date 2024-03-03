@@ -9,17 +9,15 @@ import ca.mcgill.ecse321.SportCenterManager.service.CustomerAccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PostMapping;
 
 @RestController
-@RequestMapping("/login")
 public class LogInAndOutController {
     @Autowired
     private CustomerAccountService customerService;
 
-    @PostMapping()
+    @PostMapping("/login")
     public ResponseEntity<CustomerResponseDto> login(@RequestBody LoginDto client) {
         CustomerAccount customer = customerService.login(client.getEmail(), client.getPassword());
         return ResponseEntity.ok(new CustomerResponseDto(customer));
