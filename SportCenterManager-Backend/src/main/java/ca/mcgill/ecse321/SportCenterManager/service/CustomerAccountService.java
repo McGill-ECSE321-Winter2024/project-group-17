@@ -41,7 +41,7 @@ public class CustomerAccountService {
       CustomerAccount customerToCreate = new CustomerAccount(name, email, password);
       CustomerAccount createdCustomer = customerRepo.save(customerToCreate);
       billingService.createBillingInformation("address", "postalCode", "country", "name", "cardNumber", 123, null,
-            createdCustomer);
+            createdCustomer.getId());
       return createdCustomer;
    }
 

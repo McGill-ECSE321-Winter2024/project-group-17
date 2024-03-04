@@ -19,17 +19,20 @@ public class BillingInformationService {
     private CustomerAccountRepository customerRepo;
 
     @Transactional
-    public BillingInformation createBillingInformation(String address, String postalCode, String country, String name, String cardNumber, int cvc, Date expirationDate, CustomerAccount customer) {
+    public BillingInformation createBillingInformation(String address, String postalCode, String country, String name, String cardNumber, int cvc, Date expirationDate, int customer_id) {
+        if (!customerRepo.existsById(customer_id)) {
+            throw new IllegalArgumentException("There is no customer with ID " + customer_id + " in the system.");
+        }
         BillingInformation billingToCreate = new BillingInformation(address, postalCode, country, name, cardNumber, cvc, expirationDate, customer);
         return billingRepo.save(billingToCreate);
     }
 
     @Transactional
     public BillingInformation getBillingInformation(int customerId) {
-        CustomerAccount customer = customerRepo.findCustomerAccountById(customerId);
-        if (customer == null) {
+        if (!customerRepo.existsById(customerId)) {
             throw new IllegalArgumentException("There is no customer with ID " + customerId + " in the system.");
         }
+        CustomerAccount customer = customerRepo.findCustomerAccountById(customerId);
         return billingRepo.findBillingInformationByKeyCustomerAccount(customer);
     }
 
