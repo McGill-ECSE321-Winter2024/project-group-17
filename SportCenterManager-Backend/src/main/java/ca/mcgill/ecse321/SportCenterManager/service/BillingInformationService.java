@@ -18,10 +18,6 @@ public class BillingInformationService {
     @Autowired
     private CustomerAccountRepository customerRepo;
 
-    /*
-     * Only one BillingInformation per Customer for now
-     */
-
     @Transactional
     public BillingInformation createBillingInformation(String address, String postalCode, String country, String name, String cardNumber, int cvc, Date expirationDate, CustomerAccount customer) {
         BillingInformation billingToCreate = new BillingInformation(address, postalCode, country, name, cardNumber, cvc, expirationDate, customer);
@@ -31,6 +27,9 @@ public class BillingInformationService {
     @Transactional
     public BillingInformation getBillingInformation(int customerId) {
         CustomerAccount customer = customerRepo.findCustomerAccountById(customerId);
+        if (customer == null) {
+            throw new IllegalArgumentException("There is no customer with ID " + customerId + " in the system.");
+        }
         return billingRepo.findBillingInformationByKeyCustomerAccount(customer);
     }
 
