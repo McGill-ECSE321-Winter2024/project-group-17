@@ -1,7 +1,9 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
+import java.lang.annotation.Repeatable;
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -13,6 +15,9 @@ import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -187,8 +192,9 @@ public class BillingInformationServiceTests {
         assertEquals("There is no billing information for customer with ID " + customer_id + " in the system.", e.getMessage());
     }
 
-    @Test
-    public void updateBillingInformationWithNullParameters() {
+    @ParameterizedTest
+    @MethodSource("nullAndEmptyParameters")
+    public void updateBillingInformationWithNullAndEmptyParameters(String var, String updated_address, String updated_postalCode, String updated_country, String updated_name, String updated_cardNumber, int updated_cvc, Date updated_expirationDate) {
         // Setup
         String name = "testName";
         String email = "testEmail";
@@ -208,23 +214,32 @@ public class BillingInformationServiceTests {
         when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
 
         // Act & Assert
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, null, "testPostalCode", "testCountry", "testName", "testCardNumber", 123, Date.valueOf(LocalDate.now())));
-        assertEquals("Address cannot be empty.", e.getMessage());
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, updated_address, updated_postalCode, updated_country, updated_name, updated_cardNumber, updated_cvc, updated_expirationDate));
+        assertEquals(String.format("%s cannot be empty.", var), e.getMessage());
+    }
 
-        e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", null, "testCountry", "testName", "testCardNumber", 123, Date.valueOf(LocalDate.now())));
-        assertEquals("Postal code cannot be empty.", e.getMessage());
+    private static Stream<Arguments> nullAndEmptyParameters() {
+        String address = "testAddress";
+        String postalCode = "testPostalCode";
+        String country = "testCountry";
+        String name = "testName";
+        String cardNumber = "testCardNumber";
+        int cvc = 123;
+        Date expirationDate = Date.valueOf(LocalDate.now());
 
-        e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", null, "testName", "testCardNumber", 123, Date.valueOf(LocalDate.now())));
-        assertEquals("Country cannot be empty.", e.getMessage());
-
-        e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", null, "testCardNumber", 123, Date.valueOf(LocalDate.now())));
-        assertEquals("Name cannot be empty.", e.getMessage());
-
-        e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", null, 123, Date.valueOf(LocalDate.now())));
-        assertEquals("Card number cannot be empty.", e.getMessage());
-
-        e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", 123, null));
-        assertEquals("Expiration date cannot be empty.", e.getMessage());
+        return Stream.of(
+            Arguments.of("Address", null, postalCode, country, name, cardNumber, cvc, expirationDate),
+            Arguments.of("Postal code", address, null, country, name, cardNumber, cvc, expirationDate),
+            Arguments.of("Country", address, postalCode, null, name, cardNumber, cvc, expirationDate),
+            Arguments.of("Name", address, postalCode, country, null, cardNumber, cvc, expirationDate),
+            Arguments.of("Card number", address, postalCode, country, name, null, cvc, expirationDate),
+            Arguments.of("Expiration date", address, postalCode, country, name, cardNumber, cvc, null),
+            Arguments.of("Address", "", postalCode, country, name, cardNumber, cvc, expirationDate),
+            Arguments.of("Postal code", address, "", country, name, cardNumber, cvc, expirationDate),
+            Arguments.of("Country", address, postalCode, "", name, cardNumber, cvc, expirationDate),
+            Arguments.of("Name", address, postalCode, country, "", cardNumber, cvc, expirationDate),
+            Arguments.of("Card number", address, postalCode, country, name, "", cvc, expirationDate)
+        );
     }
 
     @ParameterizedTest
@@ -251,6 +266,30 @@ public class BillingInformationServiceTests {
         // Act & Assert
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", invalid_cvc, Date.valueOf(LocalDate.now())));
         assertEquals("CVC must be a 3-digit number.", e.getMessage());
+    }
 
+    @Test
+    public void testUpdateBillingInformationForInvalidExpirationDate() {
+        // Setup
+        String name = "testName";
+        String email = "testEmail";
+        String password = "testPassword";
+        int customer_id = 9;
+        CustomerAccount customer = new CustomerAccount(name, email, password);
+        when(customerRepo.existsById(customer_id)).thenReturn(true);
+        when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
+        when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(true);
+
+        String address = "testAddress";
+        String postalCode = "testPostalCode";
+        String country = "testCountry";
+        String cardNumber = "testCardNumber";
+        int cvc = 123;
+        BillingInformation billingInformation = new BillingInformation(address, postalCode, country, name, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer);
+        when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
+
+        // Act & Assert
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", 123, Date.valueOf(LocalDate.now().minusDays(1))));
+        assertEquals("Expiration date cannot be in the past.", e.getMessage());
     }
 }

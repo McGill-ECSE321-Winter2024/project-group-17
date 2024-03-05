@@ -61,7 +61,6 @@ public class BillingInformationService {
         if (cardNumber == null || cardNumber.trim().length() == 0) {
             throw new IllegalArgumentException("Card number cannot be empty.");
         }
-
         if (cvc < 100 || cvc > 999) {
             throw new IllegalArgumentException("CVC must be a 3-digit number.");
         }
