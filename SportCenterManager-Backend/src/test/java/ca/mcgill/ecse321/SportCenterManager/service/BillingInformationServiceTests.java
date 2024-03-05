@@ -1,6 +1,5 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
-import java.lang.annotation.Repeatable;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.stream.Stream;
@@ -16,7 +15,6 @@ import static org.mockito.Mockito.when;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.InjectMocks;
@@ -112,19 +110,6 @@ public class BillingInformationServiceTests {
         IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.getBillingInformation(customer_id));
         assertEquals("There is no customer with ID " + customer_id + " in the system.", e.getMessage());
     }
-
-    /*
-     * Update BillingInformation
-     * Failure case:
-     *  Invalid parameters
-     *      - Invalid address
-     *      - Invalid postal code
-     *      - Invalid country
-     *      - Invalid name
-     *      - Invalid card number
-     *      - Invalid CVC
-     *      - Invalid expiration date
-     */
 
     @Test
     public void testUpdateBillingInformationForValidCustomer() {
