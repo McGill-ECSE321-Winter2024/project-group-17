@@ -227,5 +227,30 @@ public class BillingInformationServiceTests {
         assertEquals("Expiration date cannot be empty.", e.getMessage());
     }
 
+    @ParameterizedTest
+    @ValueSource(ints = {99, 1000})
+    public void testUpdateBillingInformationForInvalidCvc(int invalid_cvc) {
+        // Setup
+        String name = "testName";
+        String email = "testEmail";
+        String password = "testPassword";
+        int customer_id = 9;
+        CustomerAccount customer = new CustomerAccount(name, email, password);
+        when(customerRepo.existsById(customer_id)).thenReturn(true);
+        when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
+        when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(true);
 
+        String address = "testAddress";
+        String postalCode = "testPostalCode";
+        String country = "testCountry";
+        String cardNumber = "testCardNumber";
+        int cvc = 123;
+        BillingInformation billingInformation = new BillingInformation(address, postalCode, country, name, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer);
+        when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
+
+        // Act & Assert
+        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", invalid_cvc, Date.valueOf(LocalDate.now())));
+        assertEquals("CVC must be a 3-digit number.", e.getMessage());
+
+    }
 }
