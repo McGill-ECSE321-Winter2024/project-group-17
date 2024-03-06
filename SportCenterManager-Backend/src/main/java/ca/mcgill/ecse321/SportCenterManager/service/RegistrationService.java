@@ -64,7 +64,7 @@ public class RegistrationService {
 
 	
 	@Transactional
-	public List<Registration> getCustomerRegistrations(int customerId){
+	public List<Registration> findCustomerRegistrations(int customerId){
 		// Retrieve customer account by ID and all registration in DB
 		CustomerAccount customer = customerAccountRepository.findCustomerAccountById(customerId);
 		List<Registration> allRegistrations = getAllRegistrations();
@@ -80,7 +80,7 @@ public class RegistrationService {
 	}
 	
 	@Transactional
-	public List<Registration> getSessionRegistrations(int sessionId){
+	public List<Registration> findSessionRegistrations(int sessionId){
 		// Retrieve session by ID and all registration in DB
 		Session session = sessionRepository.findSessionById(sessionId);
 		
@@ -93,6 +93,16 @@ public class RegistrationService {
 			}
 		}
 		return sessionRegistrations;
+	}
+	
+	public boolean cancelRegistration(int customerId, int sessionId) {
+		// Search for registration
+		CustomerAccount customer = customerAccountRepository.findCustomerAccountById(customerId);
+		Session session = sessionRepository.findSessionById(sessionId);
+		Registration registration = registrationRepository.findRegistrationByKey(new Registration.Key(session, customer));
+		// Delete registration for DB and return whether it has been successfully deleted
+		registrationRepository.delete(registration);
+		return registrationRepository.findRegistrationByKey(new Registration.Key(session, customer)) == null;
 	}
 	
 	private <T> List<T> toList(Iterable<T> iterable){
@@ -111,7 +121,7 @@ public class RegistrationService {
 	
 	private boolean hasConflict(Registration registration) {
 		// Retrieve all registrations of the customer
-		List<Registration> registrations = getCustomerRegistrations(registration.getKey().getCustomerAccount().getId());
+		List<Registration> registrations = findCustomerRegistrations(registration.getKey().getCustomerAccount().getId());
 		Session newRegSession = registration.getKey().getSession();
 		
 		// Check for conflict, i.e. if there are any existing registrations where the sessions overlap with the new one
@@ -120,7 +130,9 @@ public class RegistrationService {
 			if (newRegSession.getStartTime().before(existingRegSession.getEndTime()) &&
 				newRegSession.getStartTime().after(existingRegSession.getStartTime()) || 
 				newRegSession.getEndTime().before(existingRegSession.getEndTime()) &&
-				newRegSession.getEndTime().after(existingRegSession.getStartTime())) {
+				newRegSession.getEndTime().after(existingRegSession.getStartTime()) ||
+				newRegSession.getStartTime().equals(existingRegSession.getStartTime()) &&
+				newRegSession.getEndTime().equals(existingRegSession.getEndTime())) {
 				return true;
 			}
 		}
