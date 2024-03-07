@@ -122,12 +122,13 @@ public class EventService {
     private boolean hasConflict(InstructorAccount instructor, Session newSession) {
     	List<Session> sessions = findInstructorSessions(instructor.getId());
 		for (Session session: sessions) {
-			if (newSession.getStartTime().before(session.getEndTime()) &&
+			if (newSession.getDate().equals(session.getDate()) && (
+				newSession.getStartTime().before(session.getEndTime()) &&
 				newSession.getStartTime().after(session.getStartTime()) || 
 				newSession.getEndTime().before(session.getEndTime()) &&
 				newSession.getEndTime().after(session.getStartTime()) ||
 				newSession.getStartTime().equals(session.getStartTime()) &&
-				newSession.getEndTime().equals(session.getEndTime())) {
+				newSession.getEndTime().equals(session.getEndTime()))) {
 				return true;
 			}
 		}
