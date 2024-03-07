@@ -21,6 +21,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.RegistrationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import ca.mcgill.ecse321.SportCenterManager.model.Registration;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
@@ -126,7 +127,7 @@ public class RegistrationServiceTests {
 		try {
 			Registration registration = service.register(customerId, sessionId);
 			lenient().when(registrationRepo.save(any(Registration.class))).thenReturn(registration);
-		} catch (IllegalArgumentException e) {
+		} catch (ServiceException e) {
 			msg = e.getMessage();
 		}
 		
@@ -154,7 +155,7 @@ public class RegistrationServiceTests {
 		try {
 			Registration registration = service.register(customerId, sessionId);
 			lenient().when(registrationRepo.save(any(Registration.class))).thenReturn(registration);
-		} catch (IllegalArgumentException e) {
+		} catch (ServiceException e) {
 			msg = e.getMessage();
 		}
 		

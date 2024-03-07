@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.RegistrationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import ca.mcgill.ecse321.SportCenterManager.model.Registration;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
@@ -37,13 +39,13 @@ public class RegistrationService {
 		// Check if registration already exists
 		Registration existingRegistration = registrationRepository.findRegistrationByKey(key);
 		if (existingRegistration != null) {
-			throw new IllegalArgumentException("Failed to Register: You are already registered to this session!");
+			throw new ServiceException(HttpStatus.FORBIDDEN, "Failed to Register: You are already registered to this session!");
 		}
 		
 		// Set fields and check if there are registration conflicts
 		registration.setKey(key);
 		if (hasConflict(registration)) {
-			throw new IllegalArgumentException("Failed to Register: Session overlaps with an existing registration!");
+			throw new ServiceException(HttpStatus.FORBIDDEN, "Failed to Register: Session overlaps with an existing registration!");
 		}
 		
 		// Save and return registration
