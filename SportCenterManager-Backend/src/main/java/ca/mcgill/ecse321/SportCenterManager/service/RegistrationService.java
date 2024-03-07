@@ -80,19 +80,19 @@ public class RegistrationService {
 	}
 	
 	@Transactional
-	public List<Registration> findSessionRegistrations(int sessionId){
+	public List<CustomerAccount> findSessionRegistrants(int sessionId){
 		// Retrieve session by ID and all registration in DB
 		Session session = sessionRepository.findSessionById(sessionId);
 		
 		// Instantiate new arrayList and populate with registrations involving the session
 		List<Registration> allRegistrations = getAllRegistrations();
-		List<Registration> sessionRegistrations = new ArrayList<Registration>();
+		List<CustomerAccount> sessionRegistrants = new ArrayList<CustomerAccount>();
 		for (Registration registration: allRegistrations) {
 			if (registration.getKey().getSession().getId() == session.getId()) {
-				sessionRegistrations.add(registration);
+				sessionRegistrants.add(registration.getKey().getCustomerAccount());
 			}
 		}
-		return sessionRegistrations;
+		return sessionRegistrants;
 	}
 	
 	public boolean cancelRegistration(int customerId, int sessionId) {
@@ -127,12 +127,13 @@ public class RegistrationService {
 		// Check for conflict, i.e. if there are any existing registrations where the sessions overlap with the new one
 		for (Registration reg: registrations) {
 			Session existingRegSession = reg.getKey().getSession();
-			if (newRegSession.getStartTime().before(existingRegSession.getEndTime()) &&
+			if (newRegSession.getDate().equals(existingRegSession.getDate()) &&(
+				newRegSession.getStartTime().before(existingRegSession.getEndTime()) &&
 				newRegSession.getStartTime().after(existingRegSession.getStartTime()) || 
 				newRegSession.getEndTime().before(existingRegSession.getEndTime()) &&
 				newRegSession.getEndTime().after(existingRegSession.getStartTime()) ||
 				newRegSession.getStartTime().equals(existingRegSession.getStartTime()) &&
-				newRegSession.getEndTime().equals(existingRegSession.getEndTime())) {
+				newRegSession.getEndTime().equals(existingRegSession.getEndTime()))) {
 				return true;
 			}
 		}
