@@ -195,7 +195,7 @@ public class RegistrationServiceTests {
 		Registration registrationThree = new Registration(new Registration.Key(sessionThree, customer));
 		registrations.add(registrationThree);
 		
-		CustomerAccount otherCustomer = new CustomerAccount("otherCustomer", "validPass-20", "validEmail2@gmail.com");
+		CustomerAccount otherCustomer = new CustomerAccount("otherCustomer", "validEmail2@gmail.com", "valid-pass20");
 		otherCustomer.setId(10);
 		
 		Session sessionFour = new Session();

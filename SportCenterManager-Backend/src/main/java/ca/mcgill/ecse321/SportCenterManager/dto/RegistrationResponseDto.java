@@ -6,6 +6,11 @@ public class RegistrationResponseDto {
     private CustomerResponseDto customer;
     private SessionResponseDto session;
     
+    @SuppressWarnings("unused")
+    public RegistrationResponseDto() {
+    	
+    }
+    
     public RegistrationResponseDto(Registration registration) {
     	this.customer = new CustomerResponseDto(registration.getKey().getCustomerAccount());
     	this.session = new SessionResponseDto(registration.getKey().getSession());

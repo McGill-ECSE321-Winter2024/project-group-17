@@ -17,7 +17,7 @@ public class Schedule
   private Time closingHours;
 
   // Default Constructor
-  private Schedule() {
+  public Schedule() {
 	  
   }
   

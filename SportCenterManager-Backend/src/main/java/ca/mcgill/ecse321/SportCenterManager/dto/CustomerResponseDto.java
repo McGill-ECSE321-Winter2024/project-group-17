@@ -7,6 +7,10 @@ public class CustomerResponseDto {
     private String name;
     private String email;
 
+    public CustomerResponseDto() {
+    	
+    }
+    
     public CustomerResponseDto(CustomerAccount model) {
         this.id = model.getId();
         this.name = model.getName();
