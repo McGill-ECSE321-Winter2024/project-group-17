@@ -6,7 +6,7 @@ import jakarta.persistence.Entity;
 public class CustomerAccount extends Account
 {
   // Default constructor for Hibernate
-  private CustomerAccount(){
+  public CustomerAccount(){
   }
   public CustomerAccount(String aName, String aEmail, String aPassword)
   {
