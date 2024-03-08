@@ -104,7 +104,10 @@ public class RegistrationService {
 		Registration registration = registrationRepository.findRegistrationByKey(new Registration.Key(session, customer));
 		// Delete registration for DB and return whether it has been successfully deleted
 		registrationRepository.delete(registration);
-		return registrationRepository.findRegistrationByKey(new Registration.Key(session, customer)) == null;
+		if (registrationRepository.findRegistrationByKey(new Registration.Key(session, customer)) != null) {
+			throw new ServiceException(HttpStatus.INTERNAL_SERVER_ERROR, "An error has occurred while canceling the registration.");
+		}
+		return true;
 	}
 	
 	private <T> List<T> toList(Iterable<T> iterable){

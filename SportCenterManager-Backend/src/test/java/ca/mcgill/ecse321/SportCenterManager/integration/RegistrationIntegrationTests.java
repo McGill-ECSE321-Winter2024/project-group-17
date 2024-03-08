@@ -26,6 +26,8 @@ import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.RegistrationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.ScheduleRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
+import ca.mcgill.ecse321.SportCenterManager.dto.CustomerListDto;
+import ca.mcgill.ecse321.SportCenterManager.dto.CustomerResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.ErrorDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.RegistrationListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.RegistrationResponseDto;
@@ -54,6 +56,7 @@ public class RegistrationIntegrationTests {
 	
 	private int customerOneId;
 	private int customerTwoId;
+	private int customerThreeId;
 	private int sessionOneId;
 	private int sessionTwoId;
 	private int sessionThreeId;
@@ -81,10 +84,12 @@ public class RegistrationIntegrationTests {
 	
 	private void populateDatabase() {
 		// Prefills the database with information that would've been in there at the point of registration
-		CustomerAccount customer = new CustomerAccount("Tibo", "tibo123@gmail.com", "password#123");
-		this.customerOneId = customerRepo.save(customer).getId();
-		CustomerAccount otherCustomer = new CustomerAccount("Mahmoud", "MahmoudA2@gmail.com", "smolPassword2@");
-		this.customerTwoId = customerRepo.save(otherCustomer).getId();
+		CustomerAccount customerOne = new CustomerAccount("Tibo", "tibo123@gmail.com", "password#123");
+		this.customerOneId = customerRepo.save(customerOne).getId();
+		CustomerAccount customerTwo = new CustomerAccount("Mahmoud", "MahmoudA2@gmail.com", "smolPassword2@");
+		this.customerTwoId = customerRepo.save(customerTwo).getId();
+		CustomerAccount customerThree = new CustomerAccount("Eric", "ez@gmail.com", "pass1#");
+		this.customerThreeId = customerRepo.save(customerThree).getId();
 		
 		InstructorAccount instructorOne = new InstructorAccount("Haoyuan", "5g@gmail.com", "bigPassword4@");
 		instructorRepo.save(instructorOne);
@@ -149,11 +154,12 @@ public class RegistrationIntegrationTests {
 	
 	@Test
 	@Order(4)
-	public void findAllRegistrationsByCustomer() {
+	public void testFindAllRegistrationsByCustomer() {
 		registerCustomerValid(customerOneId, sessionOneId);
 		registerCustomerValid(customerOneId, sessionTwoId);
 		registerCustomerValid(customerOneId, sessionThreeId);
 		registerCustomerValid(customerTwoId, sessionOneId);
+		
 		ResponseEntity<RegistrationListDto> response = client.getForEntity("/registrations/customers/" + Integer.toString(customerOneId), 
 				RegistrationListDto.class);
 		RegistrationListDto responseBody = response.getBody();
@@ -166,6 +172,56 @@ public class RegistrationIntegrationTests {
 		assertTrue(containsRegistration(sessionOneId, registrationDtos));
 		assertTrue(containsRegistration(sessionTwoId, registrationDtos));
 		assertTrue(containsRegistration(sessionThreeId, registrationDtos));
+	}
+	
+	@Test
+	@Order(5)
+	public void testFindAllSessionRegistrants() {
+		registerCustomerValid(customerOneId, sessionOneId);
+		registerCustomerValid(customerThreeId, sessionOneId);
+		registerCustomerValid(customerTwoId, sessionTwoId);
+		
+		ResponseEntity<CustomerListDto> response = client.getForEntity("/registrations/" + Integer.toString(sessionOneId) + "/customers", 
+				CustomerListDto.class);
+		CustomerListDto responseBody = response.getBody();
+		List<CustomerResponseDto> customerDtos = responseBody.getCustomers();
+		
+		assertNotNull(response);
+		assertNotNull(responseBody);
+		assertEquals(HttpStatus.OK, response.getStatusCode());
+		assertEquals(2, customerDtos.size());
+		assertTrue(containsCustomer(customerOneId, customerDtos));
+		assertTrue(containsCustomer(customerThreeId, customerDtos));
+		
+	}
+	
+	@Test
+	@Order(6)
+	public void testCancelRegistration() {
+		registerCustomerValid(customerOneId, sessionOneId);
+		registerCustomerValid(customerTwoId, sessionOneId);
+		
+		ResponseEntity<CustomerListDto> responseBeforeDelete = client.getForEntity("/registrations/" + Integer.toString(sessionOneId) + "/customers", 
+				CustomerListDto.class);
+		CustomerListDto preDeleteBody = responseBeforeDelete.getBody();
+		List<CustomerResponseDto> initialCustomerDtos = preDeleteBody.getCustomers();
+		
+		client.delete("/registrations/" + Integer.toString(customerOneId) + "/" + Integer.toString(sessionOneId));
+		
+		ResponseEntity<CustomerListDto> responseAfterDelete = client.getForEntity("/registrations/" + Integer.toString(sessionOneId) + "/customers", 
+				CustomerListDto.class);
+		CustomerListDto postDeleteBody = responseAfterDelete.getBody();
+		List<CustomerResponseDto> finalCustomerDtos = postDeleteBody.getCustomers();
+		
+		assertNotNull(responseBeforeDelete);
+		assertNotNull(responseAfterDelete);
+		assertNotNull(preDeleteBody);
+		assertNotNull(postDeleteBody);
+		assertEquals(HttpStatus.OK, responseBeforeDelete.getStatusCode());
+		assertEquals(HttpStatus.OK, responseAfterDelete.getStatusCode());
+		assertEquals(2, initialCustomerDtos.size());
+		assertEquals(1, finalCustomerDtos.size());
+		assertTrue(containsCustomer(customerTwoId, finalCustomerDtos));
 	}
 	
 	private void registerCustomerValid(int customerId, int sessionId) {
@@ -181,6 +237,15 @@ public class RegistrationIntegrationTests {
 	private boolean containsRegistration(int sessionId, List<RegistrationResponseDto> registrationDtos) {
 		for (RegistrationResponseDto registration: registrationDtos) {
 			if (registration.getSession().getId() == sessionId) {
+				return true;
+			}
+		}
+		return false;
+	}
+	
+	private boolean containsCustomer(int customerId, List<CustomerResponseDto> customerDtos) {
+		for (CustomerResponseDto customer : customerDtos) {
+			if (customer.getId() == customerId) {
 				return true;
 			}
 		}
