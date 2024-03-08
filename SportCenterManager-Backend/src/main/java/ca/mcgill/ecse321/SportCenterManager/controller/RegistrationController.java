@@ -50,7 +50,7 @@ public class RegistrationController {
     }
     
     @DeleteMapping("/registrations/{customerId}/{sessionId}")
-    public void deleteRegistration(@PathVariable int customerId, @PathVariable int sessionId) {
+    public void cancelRegistration(@PathVariable int customerId, @PathVariable int sessionId) {
     	service.cancelRegistration(customerId, sessionId);
     }
 }

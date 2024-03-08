@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.SportCenterManager.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
@@ -63,16 +64,19 @@ public class RegistrationServiceTests {
 	@Test
 	public void testFindCustomerRegistrationsEmpty() {
 		// setup
-		CustomerAccount customer = createCustomer();
-		int customerId = 20;
-		lenient().when(customerRepo.findCustomerAccountById(customerId)).thenReturn(customer);
-		lenient().when(registrationRepo.findAll()).thenReturn((Iterable<Registration>) new ArrayList<Registration>());
+		CustomerAccount existingCustomer = createCustomer();
+		CustomerAccount newCustomer = new CustomerAccount("customerTwo", "validEmail2@gmail.com", "pas0-2");
+		int newCustomerId = 21;
+		newCustomer.setId(21);
+		Iterable<Registration> existingRegistrations = getExistingRegistrations(existingCustomer);
+		lenient().when(customerRepo.findCustomerAccountById(newCustomerId)).thenReturn(newCustomer);
+		lenient().when(registrationRepo.findAll()).thenReturn(existingRegistrations);
 		
 		// execution
-		List<Registration> registrations = service.findCustomerRegistrations(customerId);	
+		List<Registration> newCustomerRegistrations = service.findCustomerRegistrations(newCustomerId);	
 		
 		// assertions
-		assertEquals(new ArrayList<Registration>(), registrations);
+		assertEquals(new ArrayList<Registration>(), newCustomerRegistrations);
 		verify(registrationRepo, times(1)).findAll();
 	}
 	
@@ -80,7 +84,7 @@ public class RegistrationServiceTests {
 	public void testRegisterValidSession() {
 		// setup
 		CustomerAccount customer = createCustomer();
-		int customerId = 20;
+		int customerId = customer.getId();
 		lenient().when(customerRepo.findCustomerAccountById(customerId)).thenReturn(customer);
 		
 		Session session = new Session();
@@ -111,7 +115,7 @@ public class RegistrationServiceTests {
 	@Test
 	public void testRegisterConflictingSession() {
 		CustomerAccount customer = createCustomer();
-		int customerId = 20;
+		int customerId = customer.getId();
 		lenient().when(customerRepo.findCustomerAccountById(customerId)).thenReturn(customer);
 		
 		Session session = new Session();
@@ -138,7 +142,7 @@ public class RegistrationServiceTests {
 	@Test
 	public void testRegisterDuplicate() {
 		CustomerAccount customer = createCustomer();
-		int customerId = 20;
+		int customerId = customer.getId();
 		lenient().when(customerRepo.findCustomerAccountById(customerId)).thenReturn(customer);
 		
 		Session session = new Session();
@@ -161,6 +165,105 @@ public class RegistrationServiceTests {
 		
 		assertEquals("Failed to Register: You are already registered to this session!", msg);
 		verify(registrationRepo, times(0)).save(any(Registration.class));
+	}
+	
+	@Test
+	public void testSessionRegistrantsNonEmpty() {
+		// setup
+		List<Registration> registrations = new ArrayList<Registration>();
+		Session sessionOne = new Session();
+		int sessionOneId = 4;
+		sessionOne.setId(sessionOneId);
+		Session sessionTwo = new Session();
+		int sessionTwoId = 5;
+		sessionTwo.setId(sessionTwoId);
+		CustomerAccount firstCustomer = createCustomer();
+		CustomerAccount secondCustomer = new CustomerAccount("customerTwo", "validEmail2@gmail.com", "pas0-2");
+		CustomerAccount thirdCustomer = new CustomerAccount("customerThree", "validEmail2@gmail.com", "pas0-3");
+		CustomerAccount fourthCustomer = new CustomerAccount("customerFour", "validEmail3@gmail.com", "pas0-4");
+		
+		registrations.add(new Registration(new Registration.Key(sessionOne, firstCustomer)));
+		registrations.add(new Registration(new Registration.Key(sessionOne, secondCustomer)));
+		registrations.add(new Registration(new Registration.Key(sessionOne, thirdCustomer)));
+		registrations.add(new Registration(new Registration.Key(sessionTwo, fourthCustomer)));
+		
+		lenient().when(registrationRepo.findAll()).thenReturn((Iterable<Registration>) registrations);
+		lenient().when(sessionRepo.findSessionById(sessionOneId)).thenReturn(sessionOne);
+		
+		// execution
+		List<CustomerAccount> registrants = service.findSessionRegistrants(sessionOneId);
+		
+		// assertions
+		List<CustomerAccount> expectedRegistrants = new ArrayList<CustomerAccount>();
+		expectedRegistrants.add(firstCustomer);
+		expectedRegistrants.add(secondCustomer);
+		expectedRegistrants.add(thirdCustomer);
+		
+		assertEquals(3, registrants.size());
+		assertEquals(expectedRegistrants, registrants);
+		verify(sessionRepo, times(1)).findSessionById(sessionOneId);
+		verify(registrationRepo, times(1)).findAll();
+		
+	}
+	
+	@Test
+	public void testSessionRegistrantsEmpty() {
+		// setup
+		List<Registration> registrations = new ArrayList<Registration>();
+		Session sessionOne = new Session();
+		int sessionOneId = 4;
+		sessionOne.setId(sessionOneId);
+		Session sessionTwo = new Session();
+		int sessionTwoId = 5;
+		sessionTwo.setId(sessionTwoId);
+		CustomerAccount firstCustomer = createCustomer();
+		CustomerAccount secondCustomer = new CustomerAccount("customerTwo", "validEmail2@gmail.com", "pas0-2");
+		CustomerAccount thirdCustomer = new CustomerAccount("customerThree", "validEmail2@gmail.com", "pas0-3");
+		
+		registrations.add(new Registration(new Registration.Key(sessionOne, firstCustomer)));
+		registrations.add(new Registration(new Registration.Key(sessionOne, secondCustomer)));
+		registrations.add(new Registration(new Registration.Key(sessionOne, thirdCustomer)));
+		
+		lenient().when(registrationRepo.findAll()).thenReturn((Iterable<Registration>) registrations);
+		lenient().when(sessionRepo.findSessionById(sessionTwoId)).thenReturn(sessionTwo);
+		
+		// execution
+		List<CustomerAccount> registrants = service.findSessionRegistrants(sessionTwoId);
+		
+		// assertions
+		assertEquals(0, registrants.size());
+		assertEquals(new ArrayList<CustomerAccount>(), registrants);
+		verify(sessionRepo, times(1)).findSessionById(sessionTwoId);
+		verify(registrationRepo, times(1)).findAll();
+		
+	}
+	
+	@Test
+	public void testCancelRegistration() {
+		// setup
+		CustomerAccount customer = createCustomer();
+		int customerId = customer.getId();
+		Session session = new Session();
+		int sessionId = 5;
+		session.setId(sessionId);
+		Registration.Key registrationKey = new Registration.Key(session, customer);
+		Registration registration = new Registration(registrationKey);
+		
+		lenient().when(customerRepo.findCustomerAccountById(customerId)).thenReturn(customer);
+		lenient().when(sessionRepo.findSessionById(sessionId)).thenReturn(session);
+		lenient().when(registrationRepo.findRegistrationByKey(registrationKey)).thenReturn(registration).thenReturn(null);
+		lenient().doNothing().when(registrationRepo).delete(registration);
+		
+		// execution
+		boolean result = service.cancelRegistration(customerId, sessionId);
+		
+		// assertion
+		assertNotNull(result);
+		assertTrue(result);
+		verify(customerRepo, times(1)).findCustomerAccountById(customerId);
+		verify(sessionRepo, times(1)).findSessionById(sessionId);
+		verify(registrationRepo, times(2)).findRegistrationByKey(registrationKey);
+		verify(registrationRepo, times(1)).delete(registration);
 	}
 	
 	private CustomerAccount createCustomer() {
