@@ -30,6 +30,9 @@ public class RegistrationService {
 		// Retrieve customer and session by ID
 		CustomerAccount customer = customerService.findCustomerById(customerId);
 		Session session = eventService.findSessionById(sessionId);
+		if (customer == null || session == null) {
+			return null;
+		}
 		
 		// Find registration by customer/session key
 		Registration registration = registrationRepository.findRegistrationByKey(new Registration.Key(session, customer));
@@ -37,7 +40,7 @@ public class RegistrationService {
 	}
 	
 	@Transactional
-	private List<Registration> getAllRegistrations() {
+	public List<Registration> findAllRegistrations() {
 		Iterable<Registration> registrations = registrationRepository.findAll();
 		return toList(registrations);
 	}
@@ -86,7 +89,7 @@ public class RegistrationService {
 	public List<Registration> findCustomerRegistrations(int customerId){
 		// Retrieve customer account by ID and all registration in DB
 		CustomerAccount customer = customerService.findCustomerById(customerId);
-		List<Registration> allRegistrations = getAllRegistrations();
+		List<Registration> allRegistrations = findAllRegistrations();
 		
 		// Instantiate new arrayList and populate with registrations belonging to customer
 		List<Registration> customerRegistrations = new ArrayList<Registration>();
@@ -104,7 +107,7 @@ public class RegistrationService {
 		Session session = eventService.findSessionById(sessionId);
 		
 		// Instantiate new arrayList and populate with registrations involving the session
-		List<Registration> allRegistrations = getAllRegistrations();
+		List<Registration> allRegistrations = findAllRegistrations();
 		List<CustomerAccount> sessionRegistrants = new ArrayList<CustomerAccount>();
 		for (Registration registration: allRegistrations) {
 			if (registration.getKey().getSession().getId() == session.getId()) {
@@ -124,7 +127,7 @@ public class RegistrationService {
 		return resultList;
 	}
 	
-	private boolean hasConflict(Registration registration) {
+	protected boolean hasConflict(Registration registration) {
 		// Retrieve all registrations of the customer
 		List<Registration> registrations = findCustomerRegistrations(registration.getKey().getCustomerAccount().getId());
 		Session newRegSession = registration.getKey().getSession();
