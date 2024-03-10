@@ -8,9 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.RegistrationRepository;
-import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
 import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import ca.mcgill.ecse321.SportCenterManager.model.Registration;
@@ -20,24 +18,55 @@ import ca.mcgill.ecse321.SportCenterManager.model.Session;
 public class RegistrationService {
     
 	@Autowired
-	SessionRepository sessionRepository;
-	@Autowired
-	CustomerAccountRepository customerAccountRepository;
-	@Autowired
 	RegistrationRepository registrationRepository;
+	@Autowired
+	EventService eventService = new EventService();
+	@Autowired
+	CustomerAccountService customerService = new CustomerAccountService();
+
+	/*------------ CRUD WRAPPERS -----------*/
+	@Transactional
+	public Registration findRegistration(int customerId, int sessionId) {
+		// Retrieve customer and session by ID
+		CustomerAccount customer = customerService.findCustomerById(customerId);
+		Session session = eventService.findSessionById(sessionId);
+		
+		// Find registration by customer/session key
+		Registration registration = registrationRepository.findRegistrationByKey(new Registration.Key(session, customer));
+		return registration;
+	}
 	
+	@Transactional
+	private List<Registration> getAllRegistrations() {
+		Iterable<Registration> registrations = registrationRepository.findAll();
+		return toList(registrations);
+	}
+	
+	@Transactional
+	public boolean cancelRegistration(int customerId, int sessionId) {
+		// Search for registration
+		Registration registration = findRegistration(customerId, sessionId);
+		// Delete registration for DB and return whether it has been successfully deleted
+		registrationRepository.delete(registration);
+		if (findRegistration(customerId, sessionId) != null) {
+			throw new ServiceException(HttpStatus.INTERNAL_SERVER_ERROR, "An error has occurred while canceling the registration.");
+		}
+		return true;
+	}
+	
+	/*------------ FEATURE METHODS -----------*/
 	@Transactional
 	public Registration register(int customerId, int sessionId) {
 		// Retrieve customer and session by ID
-		CustomerAccount customer = customerAccountRepository.findCustomerAccountById(customerId);
-		Session session = sessionRepository.findSessionById(sessionId);
+		CustomerAccount customer = customerService.findCustomerById(customerId);
+		Session session = eventService.findSessionById(sessionId);
 		
 		// Create new Registration
 		Registration registration = new Registration();
 		Registration.Key key = new Registration.Key(session, customer);
 		
 		// Check if registration already exists
-		Registration existingRegistration = registrationRepository.findRegistrationByKey(key);
+		Registration existingRegistration = findRegistration(customerId, sessionId);
 		if (existingRegistration != null) {
 			throw new ServiceException(HttpStatus.FORBIDDEN, "Failed to Register: You are already registered to this session!");
 		}
@@ -54,21 +83,9 @@ public class RegistrationService {
 	}
 	
 	@Transactional
-	public Registration findRegistration(int customerId, int sessionId) {
-		// Retrieve customer and session by ID
-		CustomerAccount customer = customerAccountRepository.findCustomerAccountById(customerId);
-		Session session = sessionRepository.findSessionById(sessionId);
-		
-		// Find registration by customer/session key
-		Registration registration = registrationRepository.findRegistrationByKey(new Registration.Key(session, customer));
-		return registration;
-	}
-
-	
-	@Transactional
 	public List<Registration> findCustomerRegistrations(int customerId){
 		// Retrieve customer account by ID and all registration in DB
-		CustomerAccount customer = customerAccountRepository.findCustomerAccountById(customerId);
+		CustomerAccount customer = customerService.findCustomerById(customerId);
 		List<Registration> allRegistrations = getAllRegistrations();
 		
 		// Instantiate new arrayList and populate with registrations belonging to customer
@@ -84,7 +101,7 @@ public class RegistrationService {
 	@Transactional
 	public List<CustomerAccount> findSessionRegistrants(int sessionId){
 		// Retrieve session by ID and all registration in DB
-		Session session = sessionRepository.findSessionById(sessionId);
+		Session session = eventService.findSessionById(sessionId);
 		
 		// Instantiate new arrayList and populate with registrations involving the session
 		List<Registration> allRegistrations = getAllRegistrations();
@@ -97,31 +114,14 @@ public class RegistrationService {
 		return sessionRegistrants;
 	}
 	
-	public boolean cancelRegistration(int customerId, int sessionId) {
-		// Search for registration
-		CustomerAccount customer = customerAccountRepository.findCustomerAccountById(customerId);
-		Session session = sessionRepository.findSessionById(sessionId);
-		Registration registration = registrationRepository.findRegistrationByKey(new Registration.Key(session, customer));
-		// Delete registration for DB and return whether it has been successfully deleted
-		registrationRepository.delete(registration);
-		if (registrationRepository.findRegistrationByKey(new Registration.Key(session, customer)) != null) {
-			throw new ServiceException(HttpStatus.INTERNAL_SERVER_ERROR, "An error has occurred while canceling the registration.");
-		}
-		return true;
-	}
 	
+	/*------------ HELPER METHODS -----------*/	
 	private <T> List<T> toList(Iterable<T> iterable){
 		List<T> resultList = new ArrayList<T>();
 		for (T t: iterable) {
 			resultList.add(t);
 		}
 		return resultList;
-	}
-	
-	@Transactional
-	private List<Registration> getAllRegistrations() {
-		Iterable<Registration> registrations = registrationRepository.findAll();
-		return toList(registrations);
 	}
 	
 	private boolean hasConflict(Registration registration) {
