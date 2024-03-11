@@ -31,13 +31,21 @@ public class EventService {
 
     @Transactional 
     public Course findCourseById(int course_id ){
-        return courseRepo.findCourseById(course_id);
+        Course course = courseRepo.findCourseById(course_id);
+        if (course == null){
+          throw new IllegalArgumentException("There is no course with ID" + course_id + ".");
+        }
+        return course;
     }
 
     @Transactional 
-    public void deleteCourseById(int course_id){
+    public boolean deleteCourseById(int course_id){
         //sessionRepo.deleteByCourse(course_id);
+        if (courseRepo.findCourseById(course_id) == null){
+          throw new IllegalArgumentException("There is no course with ID" + course_id + ".");
+        }
         courseRepo.deleteById(course_id);
+        return true;
 	}
     
         //TODO 
