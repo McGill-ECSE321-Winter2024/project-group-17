@@ -61,6 +61,8 @@ public class RegistrationIntegrationTests {
 	private int sessionTwoId;
 	private int sessionThreeId;
 	private int sessionFourId;
+	private int courseOneId;
+	private int courseTwoId;
 	
 	@BeforeEach
 	public void setupDatabase() {
@@ -98,10 +100,12 @@ public class RegistrationIntegrationTests {
 		
 		Course courseOne = new Course();
 		courseOne.setName("course1");
-		courseRepo.save(courseOne);
+		courseOneId = courseRepo.save(courseOne).getId();
+		
+		
 		Course courseTwo = new Course();
 		courseTwo.setName("course2");
-		courseRepo.save(courseTwo);
+		courseTwoId = courseRepo.save(courseTwo).getId();
 		
 		Schedule schedule = new Schedule();
 		scheduleRepo.save(schedule);
@@ -123,7 +127,7 @@ public class RegistrationIntegrationTests {
 	@Test
 	@Order(1)
 	public void testRegisterValid() {
-		registerCustomerValid(customerOneId, sessionOneId);
+		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
 	}
 	
 
@@ -131,8 +135,9 @@ public class RegistrationIntegrationTests {
 	@Test
 	@Order(2)
 	public void testRegisterWithDuplicate() {
-		registerCustomerValid(customerOneId, sessionOneId);
-		ResponseEntity<ErrorDto> response = client.exchange("/registrations/" + Integer.toString(customerOneId) + "/" + Integer.toString(sessionOneId), 
+		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
+		ResponseEntity<ErrorDto> response = client.exchange("/courses/" + Integer.toString(courseOneId) + "/"
+		+ Integer.toString(sessionOneId) + "/registrations/" + Integer.toString(customerOneId) , 
 				HttpMethod.PUT, null, ErrorDto.class);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
@@ -143,8 +148,9 @@ public class RegistrationIntegrationTests {
 	@Test
 	@Order(3)
 	public void testRegisterWithConflict() {
-		registerCustomerValid(customerOneId, sessionOneId);
-		ResponseEntity<ErrorDto> response = client.exchange("/registrations/" + Integer.toString(customerOneId) + "/" + Integer.toString(sessionFourId), 
+		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
+		ResponseEntity<ErrorDto> response = client.exchange("/courses/" + Integer.toString(courseTwoId) + "/"
+				+ Integer.toString(sessionFourId) + "/registrations/" + Integer.toString(customerOneId), 
 				HttpMethod.PUT, null, ErrorDto.class);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
@@ -155,12 +161,12 @@ public class RegistrationIntegrationTests {
 	@Test
 	@Order(4)
 	public void testFindAllRegistrationsByCustomer() {
-		registerCustomerValid(customerOneId, sessionOneId);
-		registerCustomerValid(customerOneId, sessionTwoId);
-		registerCustomerValid(customerOneId, sessionThreeId);
-		registerCustomerValid(customerTwoId, sessionOneId);
+		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
+		registerCustomerValid(customerOneId, sessionTwoId, courseOneId);
+		registerCustomerValid(customerOneId, sessionThreeId, courseOneId);
+		registerCustomerValid(customerTwoId, sessionOneId, courseOneId);
 		
-		ResponseEntity<RegistrationListDto> response = client.getForEntity("/registrations/customers/" + Integer.toString(customerOneId), 
+		ResponseEntity<RegistrationListDto> response = client.getForEntity("/customerAccounts/" + Integer.toString(customerOneId) + "/registrations", 
 				RegistrationListDto.class);
 		RegistrationListDto responseBody = response.getBody();
 		List<RegistrationResponseDto> registrationDtos = responseBody.getRegistrations();
@@ -177,12 +183,12 @@ public class RegistrationIntegrationTests {
 	@Test
 	@Order(5)
 	public void testFindAllSessionRegistrants() {
-		registerCustomerValid(customerOneId, sessionOneId);
-		registerCustomerValid(customerThreeId, sessionOneId);
-		registerCustomerValid(customerTwoId, sessionTwoId);
+		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
+		registerCustomerValid(customerThreeId, sessionOneId, courseOneId);
+		registerCustomerValid(customerTwoId, sessionTwoId, courseOneId);
 		
-		ResponseEntity<CustomerListDto> response = client.getForEntity("/registrations/" + Integer.toString(sessionOneId) + "/customers", 
-				CustomerListDto.class);
+		ResponseEntity<CustomerListDto> response = client.getForEntity("/courses/" + Integer.toString(courseOneId) + "/"
+				+ Integer.toString(sessionOneId) + "/registrations/customers", CustomerListDto.class);
 		CustomerListDto responseBody = response.getBody();
 		List<CustomerResponseDto> customerDtos = responseBody.getCustomers();
 		
@@ -198,18 +204,19 @@ public class RegistrationIntegrationTests {
 	@Test
 	@Order(6)
 	public void testCancelRegistration() {
-		registerCustomerValid(customerOneId, sessionOneId);
-		registerCustomerValid(customerTwoId, sessionOneId);
+		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
+		registerCustomerValid(customerTwoId, sessionOneId, courseOneId);
 		
-		ResponseEntity<CustomerListDto> responseBeforeDelete = client.getForEntity("/registrations/" + Integer.toString(sessionOneId) + "/customers", 
-				CustomerListDto.class);
+		ResponseEntity<CustomerListDto> responseBeforeDelete = client.getForEntity("/courses/" + Integer.toString(courseOneId) + "/"
+				+ Integer.toString(sessionOneId) + "/registrations/customers", CustomerListDto.class);
 		CustomerListDto preDeleteBody = responseBeforeDelete.getBody();
 		List<CustomerResponseDto> initialCustomerDtos = preDeleteBody.getCustomers();
 		
-		client.delete("/registrations/" + Integer.toString(customerOneId) + "/" + Integer.toString(sessionOneId));
+		client.delete("/courses/" + Integer.toString(courseOneId) + "/"
+				+ Integer.toString(sessionOneId) + "/registrations/" + Integer.toString(customerOneId));
 		
-		ResponseEntity<CustomerListDto> responseAfterDelete = client.getForEntity("/registrations/" + Integer.toString(sessionOneId) + "/customers", 
-				CustomerListDto.class);
+		ResponseEntity<CustomerListDto> responseAfterDelete = client.getForEntity("/courses/" + Integer.toString(courseOneId) + "/"
+				+ Integer.toString(sessionOneId) + "/registrations/customers", CustomerListDto.class);
 		CustomerListDto postDeleteBody = responseAfterDelete.getBody();
 		List<CustomerResponseDto> finalCustomerDtos = postDeleteBody.getCustomers();
 		
@@ -224,8 +231,9 @@ public class RegistrationIntegrationTests {
 		assertTrue(containsCustomer(customerTwoId, finalCustomerDtos));
 	}
 	
-	private void registerCustomerValid(int customerId, int sessionId) {
-		ResponseEntity<RegistrationResponseDto> response = client.exchange("/registrations/" + Integer.toString(customerId) + "/" + Integer.toString(sessionId), 
+	private void registerCustomerValid(int customerId, int sessionId, int courseId) {
+		ResponseEntity<RegistrationResponseDto> response = client.exchange("/courses/" + Integer.toString(courseId) + "/"
+				+ Integer.toString(sessionId) + "/registrations/" + Integer.toString(customerId), 
 				HttpMethod.PUT, null, RegistrationResponseDto.class);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
