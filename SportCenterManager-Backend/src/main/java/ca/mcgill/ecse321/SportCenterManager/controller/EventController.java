@@ -15,12 +15,14 @@ import ca.mcgill.ecse321.SportCenterManager.model.Course;
 import ca.mcgill.ecse321.SportCenterManager.model.Session; 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -96,5 +98,12 @@ public class EventController {
       Session createdSession = eventService.createSession(session.getStartTime(), session.getEndTime(), session.getDate(), session.getInstructor(),course,session.getSchedule());	
       return new SessionResponseDto(createdSession);
 		}
+    
+    @PutMapping("/courses/{course_id}/sessions/{session_id}/{instructor_id}")
+    @ResponseStatus(HttpStatus.ACCEPTED)
+    public SessionResponseDto superviseSession(@PathVariable(name = "session_id") int sessionId, @PathVariable(name = "instructor_id") int instructorId) {
+    	Session session = eventService.superviseSession(instructorId, sessionId);
+    	return new SessionResponseDto(session);
+    }
     
 }

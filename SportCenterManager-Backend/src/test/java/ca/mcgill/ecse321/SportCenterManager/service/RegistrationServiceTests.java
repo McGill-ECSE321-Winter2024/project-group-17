@@ -21,6 +21,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.RegistrationRepository;
 import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
@@ -29,6 +30,7 @@ import ca.mcgill.ecse321.SportCenterManager.model.Registration;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
 @ExtendWith(MockitoExtension.class)
+@SpringBootTest
 public class RegistrationServiceTests {
 	@Mock
 	private CustomerAccountService customerService;

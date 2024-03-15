@@ -3,6 +3,7 @@ package ca.mcgill.ecse321.SportCenterManager.service;
 import ca.mcgill.ecse321.SportCenterManager.dao.CourseRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.Course;
 import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.sql.Date;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import jakarta.transaction.Transactional;
 
@@ -27,7 +29,7 @@ public class EventService {
     @Autowired
     private SessionRepository sessionRepo;
     @Autowired
-    private InstructorAccountRepository instructorRepo;
+    private InstructorAccountService instructorService;
     
     @Transactional 
     public Iterable<Course> findAllCourses(){
@@ -94,17 +96,18 @@ public class EventService {
 	}
     
     @Transactional
-    public void superviseSession(int instructorId, int sessionId) {
-    	InstructorAccount instructor = instructorRepo.findInstructorAccountById(instructorId);
-    	Session session = sessionRepo.findSessionById(sessionId);
+    public Session superviseSession(int instructorId, int sessionId) {
+    	InstructorAccount instructor = instructorService.findInstructorById(instructorId);
+    	Session session = findSessionById(sessionId);
     	if (session.getInstructorAccount() != null) {
-    		throw new IllegalArgumentException("An instructor is already supervising this session!");
+    		throw new ServiceException(HttpStatus.BAD_REQUEST, "An instructor is already supervising this session!");
     	}
     	if (hasConflict(instructor, session)) {
-    		throw new IllegalArgumentException("Session overlaps with another that is already supervised by the instructor!");
+    		throw new ServiceException(HttpStatus.FORBIDDEN, "Session overlaps with another that is already supervised by the instructor!");
     	}
     	session.setInstructorAccount(instructor);
     	sessionRepo.save(session);
+    	return session;
     }
     
     @Transactional
