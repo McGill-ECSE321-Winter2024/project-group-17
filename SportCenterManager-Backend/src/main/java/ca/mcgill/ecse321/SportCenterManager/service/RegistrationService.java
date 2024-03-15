@@ -71,13 +71,13 @@ public class RegistrationService {
 		// Check if registration already exists
 		Registration existingRegistration = findRegistration(customerId, sessionId);
 		if (existingRegistration != null) {
-			throw new ServiceException(HttpStatus.FORBIDDEN, "Failed to Register: You are already registered to this session!");
+			throw new ServiceException(HttpStatus.BAD_REQUEST, "Failed to Register: You are already registered to this session!");
 		}
 		
 		// Set fields and check if there are registration conflicts
 		registration.setKey(key);
 		if (hasConflict(registration)) {
-			throw new ServiceException(HttpStatus.FORBIDDEN, "Failed to Register: Session overlaps with an existing registration!");
+			throw new ServiceException(HttpStatus.BAD_REQUEST, "Failed to Register: Session overlaps with an existing registration!");
 		}
 		
 		// Save and return registration

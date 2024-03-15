@@ -141,7 +141,7 @@ public class RegistrationIntegrationTests {
 				HttpMethod.PUT, null, ErrorDto.class);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
-		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 		assertEquals("Failed to Register: You are already registered to this session!", response.getBody().getMessage());
 	}
 	
@@ -154,7 +154,7 @@ public class RegistrationIntegrationTests {
 				HttpMethod.PUT, null, ErrorDto.class);
 		assertNotNull(response);
 		assertNotNull(response.getBody());
-		assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
 		assertEquals("Failed to Register: Session overlaps with an existing registration!", response.getBody().getMessage());
 	}
 	
