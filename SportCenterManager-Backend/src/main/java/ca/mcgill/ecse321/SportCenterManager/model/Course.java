@@ -43,7 +43,7 @@ public class Course
     return wasSet;
   }
 
-  public boolean setCostPerSession(int aCostPerSession)
+  public boolean setCostPerSession(double aCostPerSession)
   {
     boolean wasSet = false;
     costPerSession = aCostPerSession;
