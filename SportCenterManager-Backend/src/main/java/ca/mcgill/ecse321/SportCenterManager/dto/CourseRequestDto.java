@@ -4,7 +4,12 @@ public class CourseRequestDto {
     private String name;
     private String description; 
     private double costPerSession;
-    //no id 
+
+    public CourseRequestDto(String name, String description, double costPerSession){
+        this.name = name;
+        this.description = description;
+        this.costPerSession = costPerSession;
+    }
     public String getName() {
         return name;
     }

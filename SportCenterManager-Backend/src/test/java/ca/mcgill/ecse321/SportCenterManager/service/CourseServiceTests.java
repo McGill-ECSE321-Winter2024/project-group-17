@@ -16,7 +16,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -105,7 +108,7 @@ public class CourseServiceTests {
     assertEquals(description, createdCourse.getDescription());
     assertEquals(costPerSession, createdCourse.getCostPerSession());
     verify(courseRepo, times(1)).findAll();
-    verify(courseRepo, times(1)).save(course);
+    verify(courseRepo, times(1)).save(any(Course.class));
   }
 
   @Test

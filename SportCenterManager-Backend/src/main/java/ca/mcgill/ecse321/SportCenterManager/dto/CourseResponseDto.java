@@ -15,7 +15,7 @@ public class CourseResponseDto {
         this.costPerSession=model.getCostPerSession();
     }
     
-    public int getid(){
+    public int getId(){
         return id;
     }
 
