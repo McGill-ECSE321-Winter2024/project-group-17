@@ -35,7 +35,7 @@ public class EventService {
     public Course findCourseById(int course_id ){
         Course course = courseRepo.findCourseById(course_id);
         if (course == null){
-          throw new IllegalArgumentException("There is no course with ID" + course_id + ".");
+          throw new IllegalArgumentException("There is no course with ID " + course_id + ".");
         }
         return course;
     }
@@ -43,7 +43,7 @@ public class EventService {
     @Transactional 
     public boolean deleteCourseById(int course_id){
         if (courseRepo.findCourseById(course_id) == null){
-          throw new IllegalArgumentException("There is no course with ID" + course_id + ".");
+          throw new IllegalArgumentException("There is no course with ID " + course_id + ".");
         }
         deleteAllSessionsOfCourse(course_id);
         courseRepo.deleteById(course_id);
@@ -74,7 +74,7 @@ public class EventService {
 
         for (Course course : courses){
             if (course.getName().equals(name)){
-                throw new IllegalArgumentException("Failed to create course: Course with name " + name + "already exists.");
+                throw new IllegalArgumentException("Failed to create course: Course with name " + name + " already exists.");
             }
         }
 
@@ -84,6 +84,16 @@ public class EventService {
 
         Course courseToCreate = new Course(name, description, costPerSession);
         return courseRepo.save(courseToCreate);
+    }
+
+    @Transactional
+    public Course approveCourseById(int course_id){
+        Course courseToApprove = courseRepo.findCourseById(course_id);
+        if (courseToApprove == null){
+            throw new IllegalArgumentException("There is no course with ID " + course_id + ".");
+        }
+        courseToApprove.setIsApproved(true);
+        return courseRepo.save(courseToApprove);
     }
 
     //sessions

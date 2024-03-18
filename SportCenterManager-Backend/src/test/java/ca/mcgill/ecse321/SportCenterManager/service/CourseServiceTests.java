@@ -68,7 +68,7 @@ public class CourseServiceTests {
     }
     catch (IllegalArgumentException e){
       // assertions
-      assertEquals("There is no course with ID" + id + ".", e.getMessage());
+      assertEquals("There is no course with ID " + id + ".", e.getMessage());
       verify(courseRepo, times(1)).findCourseById(id);
     }
   }
@@ -128,7 +128,7 @@ public class CourseServiceTests {
     }
     catch (IllegalArgumentException e){
       // assertions
-      assertEquals("Failed to create course: Course with name " + name + "already exists.", e.getMessage());
+      assertEquals("Failed to create course: Course with name " + name + " already exists.", e.getMessage());
       verify(courseRepo, times(1)).findAll();
       verify(courseRepo, times(0)).save(course);
     }
@@ -272,27 +272,58 @@ public class CourseServiceTests {
     }
     catch (IllegalArgumentException e){
       // assertions
-      assertEquals("There is no course with ID" + id + ".", e.getMessage());
+      assertEquals("There is no course with ID " + id + ".", e.getMessage());
       verify(courseRepo, times(1)).findCourseById(id);
     }
   }
 
   @Test
-  public void testDeleteAllSessionsOfCourse(){
+  public void testApproveCourseByValidId(){
     // setup
     int id = 15;
-    List<Session> sessions = service.findAllSessionsOfCourse(id);
-    List<Registration> registrations = registrationService.findAllRegistrations();
-    lenient().when(sessionRepo.findAll()).thenReturn(sessions);
-    lenient().when(registrationRepo.findAll()).thenReturn(registrations);
+    String name = "valid name";
+    String description = "valid description";
+    double costPerSession = 10;
+    Course course = new Course(name, description, costPerSession);
+    lenient().when(courseRepo.findCourseById(id)).thenReturn(course);
+    course.setIsApproved(true);
+    lenient().when(courseRepo.save(any(Course.class))).thenReturn(course);
 
     // execution
-    boolean result = service.deleteAllSessionsOfCourse(id);
+    Course approvedCourse = service.approveCourseById(id);
 
     // assertions
-    assertTrue(result);
-    verify(sessionRepo, times(1)).findAll();
-    verify(registrationRepo, times(1)).findAll();
+    assertNotNull(approvedCourse);
+    assertEquals(name, approvedCourse.getName());
+    assertEquals(description, approvedCourse.getDescription());
+    assertEquals(costPerSession, approvedCourse.getCostPerSession());
+    assertTrue(approvedCourse.getIsApproved());
+    verify(courseRepo, times(1)).findCourseById(id);
+    verify(courseRepo, times(1)).save(course);
+  }
+
+  @Test
+  public void testApproveCourseByInvalidId(){
+    // setup
+    int id = 15;
+    String name = "valid name";
+    String description = "valid description";
+    double costPerSession = 10;
+    Course course = new Course(name, description, costPerSession);
+    course.setIsApproved(true);
+    lenient().when(courseRepo.findCourseById(id)).thenReturn(null);
+
+    try {
+      // execution
+      service.approveCourseById(id);
+      fail("No exception was thrown.");
+    }
+    catch (IllegalArgumentException e){
+      // assertions
+      assertEquals("There is no course with ID " + id + ".", e.getMessage());
+      verify(courseRepo, times(1)).findCourseById(id);
+      verify(courseRepo, times(0)).save(course);
+    }
   }
 
   /*------------ SETUP HELPER METHODS  -----------*/

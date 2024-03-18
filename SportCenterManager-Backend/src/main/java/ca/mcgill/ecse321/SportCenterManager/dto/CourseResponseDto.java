@@ -6,20 +6,25 @@ public class CourseResponseDto {
     private String name;
     private String description; 
     private double costPerSession;
+    private boolean isApproved;
     private int id;
+
+    private CourseResponseDto(){
+    }
 
     public CourseResponseDto(Course model){
         this.id = model.getId();
         this.name = model.getName();
         this.description = model.getDescription();
-        this.costPerSession=model.getCostPerSession();
+        this.costPerSession = model.getCostPerSession();
+        this.isApproved = model.getIsApproved();
     }
     
     public int getId(){
         return id;
     }
 
-    public void setid(int id){
+    public void setId(int id){
         this.id = id;
     }
     public String getName() {
@@ -43,6 +48,14 @@ public class CourseResponseDto {
 
     public void setCostPerSession(double costPerSession){
         this.costPerSession = costPerSession;
+    }
+
+    public boolean getIsApproved(){
+        return isApproved;
+    }
+
+    public void setIsApproved(boolean isApproved){
+        this.isApproved = isApproved;
     }
     
 }
