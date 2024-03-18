@@ -3,11 +3,11 @@ package ca.mcgill.ecse321.SportCenterManager.integration;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -16,11 +16,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.dto.CustomerResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.ErrorDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.LoginDto;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@TestInstance(Lifecycle.PER_CLASS)
 
 public class LoginLogoutIntegrationTests {
     @Autowired
@@ -28,6 +30,7 @@ public class LoginLogoutIntegrationTests {
     @Autowired
     private TestRestTemplate client;
 
+    private int customerOneId;
     private String customerOneName = "bob";
     private String customerTwoName="jane";
     private String customerOneEmail = "bob@gmail.ca";
@@ -49,8 +52,10 @@ public class LoginLogoutIntegrationTests {
 
     private void populateDatabase(){
         CustomerAccount customerOne = new CustomerAccount(customerOneName,customerOneEmail,customerOnePass);
-
+        
+        this.customerOneId = customerRepo.save(customerOne).getId();
         CustomerAccount customerTwo = new CustomerAccount(customerTwoName, customerTwoEmail, customerTwoPass);
+        customerRepo.save(customerTwo);
     }
 
     private void clearDatabase(){
@@ -61,14 +66,17 @@ public class LoginLogoutIntegrationTests {
     public void testLoginValid(){
         LoginDto request = new LoginDto(customerOneEmail,customerOnePass);
 
-        ResponseEntity<LoginDto> response = client.postForEntity("/login", request, LoginDto.class);
+        ResponseEntity<CustomerResponseDto> response = client.postForEntity("/login", request, CustomerResponseDto.class);
 
         assertNotNull(response);
         assertEquals(HttpStatus.OK,response.getStatusCode());
-        LoginDto logged_in_account = response.getBody();
+        CustomerResponseDto logged_in_account = response.getBody();
         assertNotNull(logged_in_account);
         assertEquals(customerOneEmail,logged_in_account.getEmail());
-        assertEquals(customerOnePass,logged_in_account.getPassword());
+        assertEquals(customerOneId,logged_in_account.getId());
+        assertEquals(customerOneName,logged_in_account.getName());
+
+        
     }
     
     @Test
@@ -118,7 +126,7 @@ public class LoginLogoutIntegrationTests {
 
         String logged_out_account = response.getBody();
         assertNotNull(logged_out_account);
-        assertEquals("logged out",logged_out_account);
+        assertEquals("Logged out",logged_out_account);
     }
 
     //no invalid logout => if not logged in, frontend won't display logout button

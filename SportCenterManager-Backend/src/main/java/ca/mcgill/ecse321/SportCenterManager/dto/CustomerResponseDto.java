@@ -6,6 +6,7 @@ public class CustomerResponseDto {
     private int id;
     private String name;
     private String email;
+    public CustomerResponseDto(){}
 
     public CustomerResponseDto(CustomerAccount model) {
         this.id = model.getId();
