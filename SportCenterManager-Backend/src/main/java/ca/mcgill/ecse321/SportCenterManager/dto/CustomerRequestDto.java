@@ -5,6 +5,15 @@ public class CustomerRequestDto {
     private String email;
     private String password;
 
+    public CustomerRequestDto(){
+    }
+
+    public CustomerRequestDto(String name, String email, String password) {
+        this.name = name;
+        this.email = email;
+        this.password = password;
+    }
+
     public String getName() {
         return name;
     }
