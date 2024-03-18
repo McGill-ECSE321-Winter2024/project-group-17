@@ -52,6 +52,7 @@ public class EventController {
     public void modifyCourseById(@RequestBody CourseRequestDto course, @PathVariable int course_id){
         eventService.modifyCourseById(course_id, course.getDescription(), course.getCostPerSession());
 		}
+    @PutMapping("/courses/{course_id}/approve")
     public void approveCourseById(@PathVariable int course_id){
         eventService.approveCourseById(course_id);
     }

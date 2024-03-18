@@ -222,13 +222,13 @@ public class CourseIntegrationTests {
     @Order(10)
     public void testApproveCourseByValidId(){
         // setup
-        CourseRequestDto request = new CourseRequestDto(VALID_NAME, VALID_DESCRIPTION, VALID_COST_PER_SESSION);
+        CourseRequestDto request = new CourseRequestDto(VALID_NAME, MODIFIED_DESCRIPTION, MODIFIED_COST_PER_SESSION);
         request.setIsApproved(true);
-        String url = "/courses/" + this.validId;
+        String url = "/courses/" + this.validId + "/approve";
 
         // execution
         client.put(url, request);
-        ResponseEntity<CourseResponseDto> responseAfterApproval = client.getForEntity(url, CourseResponseDto.class);
+        ResponseEntity<CourseResponseDto> responseAfterApproval = client.getForEntity("/courses/" + this.validId, CourseResponseDto.class);
 
         // assertions
         assertNotNull(responseAfterApproval);
@@ -236,8 +236,8 @@ public class CourseIntegrationTests {
         CourseResponseDto course = responseAfterApproval.getBody();
         assertNotNull(course);
         assertEquals(VALID_NAME, course.getName());
-        assertEquals(VALID_DESCRIPTION, course.getDescription());
-        assertEquals(VALID_COST_PER_SESSION, course.getCostPerSession());
+        assertEquals(MODIFIED_DESCRIPTION, course.getDescription());
+        assertEquals(MODIFIED_COST_PER_SESSION, course.getCostPerSession());
         assertTrue(course.getIsApproved());
         assertEquals(this.validId, course.getId());
     }

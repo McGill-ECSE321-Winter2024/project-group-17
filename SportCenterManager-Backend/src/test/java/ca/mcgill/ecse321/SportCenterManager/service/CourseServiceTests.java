@@ -243,7 +243,7 @@ public class CourseServiceTests {
     int id = 15;
     Course course = new Course("valid name", "valid description", 10);
     List<Session> sessions = service.findAllSessionsOfCourse(id);
-    List<Registration> registrations = registrationService.findAllRegistrations();
+    Iterable<Registration> registrations = registrationRepo.findAll();
     lenient().when(sessionRepo.findAll()).thenReturn(sessions);
     lenient().when(registrationRepo.findAll()).thenReturn(registrations);
     lenient().when(courseRepo.findCourseById(id)).thenReturn(course);
