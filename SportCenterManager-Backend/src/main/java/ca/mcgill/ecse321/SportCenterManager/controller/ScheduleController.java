@@ -1,9 +1,8 @@
 package ca.mcgill.ecse321.SportCenterManager.controller;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.Time;
 
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,10 +14,14 @@ import ca.mcgill.ecse321.SportCenterManager.service.ScheduleService;
 
 @RestController
 public class ScheduleController {
+    @Autowired
+    ScheduleService service;
 
     @PutMapping("/schedule/{schedule_id}")
     public Schedule updateSchedule(@PathVariable int schedule_id, @RequestBody ScheduleRequestDto schedule){
-        Schedule modifiedschedule = ScheduleService.updateSchedule(schedule_id, schedule.getOpeningHour(), schedule.getClosingHour());
+        Time opening = schedule.getOpeningHour();
+        Time closing = schedule.getClosingHour();
+        Schedule modifiedschedule = service.updateSchedule(schedule_id,opening,closing);
         return modifiedschedule;
     }
 
