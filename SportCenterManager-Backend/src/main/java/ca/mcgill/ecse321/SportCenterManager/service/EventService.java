@@ -7,8 +7,8 @@ import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-
 
 import java.sql.Time;
 import java.sql.Date;
@@ -31,6 +31,9 @@ public class EventService {
 
     @Transactional 
     public Course findCourseById(int course_id ){
+        if(!courseRepo.existsById(course_id)){
+            throw new IllegalArgumentException("Course does not exist.");
+        }
         return courseRepo.findCourseById(course_id);
     }
 
@@ -51,40 +54,68 @@ public class EventService {
         Course courseToCreate = new Course(name, description, costPerSession);
 	    return courseRepo.save(courseToCreate); 
     }
-
-    //sessions
-
     @Transactional
     public Iterable<Session> findAllSessionsOfCourse(int course_id){
-			return sessionRepo.findAll();
-		}
-    
+			return sessionRepo.findSessionsByCourseId(course_id);
+    }
     @Transactional
     public Session findSessionById(int session_id){
-			return sessionRepo.findSessionById(session_id);
-		}
-    
-//    @Transactional
-//    public void deleteAllSessionsOfCourse(int course_id){
-// 			//need to find all sessions that have foreign key course_id
-//             sessionRepo.deleteByCourse(course_id); //added a method in repository...but it does not work... 
-// 		}
-
+        if(sessionRepo.findSessionById(session_id) == null){
+            throw new IllegalArgumentException("Session with inputted id is not found.");
+        }
+        return sessionRepo.findSessionById(session_id);
+    }
     @Transactional
-    public void deleteSessionById(int session_id){
-			//return 
-            sessionRepo.deleteById(session_id);
-		}
+    public boolean deleteSessionById(int session_id){
 
+        if(sessionRepo.findById(session_id)==null) {
+            return false; // Session with the given ID does not exist
+        }
+        sessionRepo.deleteById(session_id);
+        return true;
+    }
     //TODO
     @Transactional
-    public void modifySessionById(){
-			//return 
-		}
+    public Session modifySessionById(int session_id,Time startTime,Time endTime,Date date,Course course,InstructorAccount instructor,Schedule schedule){
+
+
+        if(endTime.before(startTime)){
+            throw new IllegalArgumentException("End time must be be after the start time.");
+        }
+
+        long currentTimeMillis = System.currentTimeMillis();
+        Date currentDate = new Date(currentTimeMillis);
+        if(date.before(currentDate)){
+            throw new IllegalArgumentException("Cannot create a session on date that has passed.");
+        }
+
+        if(sessionRepo.findSessionById(session_id) == null){
+            throw new IllegalArgumentException("Session with inputted id is not found.");
+        }
+
+        Session session = sessionRepo.findSessionById(session_id);
+        session.setStartTime(startTime);
+        session.setEndTime(endTime);
+        session.setDate(date);
+        session.setCourse(course);
+        session.setInstructorAccount(instructor);
+        session.setSchedule(schedule);
+        return sessionRepo.save(session);
+    }
     
     @Transactional
-    public Session createSession(Time start_time, Time end_time, Date date, InstructorAccount aInstructorAccount, Course aCourse, Schedule aSchedule){
+    public Session createSession(Time start_time, Time end_time, Date date, InstructorAccount aInstructorAccount,@NonNull Course aCourse, Schedule aSchedule){
+        if(end_time.before(start_time)){
+            throw new IllegalArgumentException("End time must be be after the start time.");
+        }
+
+        long currentTimeMillis = System.currentTimeMillis();
+        Date currentDate = new Date(currentTimeMillis);
+        if(date.before(currentDate)){
+            throw new IllegalArgumentException("Cannot create a session on date that has passed.");
+        }
+
         Session sessionToCreate = new Session(start_time, end_time, date,aInstructorAccount,aCourse,aSchedule);
-	    return sessionRepo.save(sessionToCreate); 
+        return sessionRepo.save(sessionToCreate);
 	}
 }

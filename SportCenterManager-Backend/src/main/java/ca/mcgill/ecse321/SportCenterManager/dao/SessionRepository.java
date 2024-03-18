@@ -4,5 +4,6 @@ import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
 public interface SessionRepository extends CrudRepository<Session, Integer> {
   public Session findSessionById(int id);
- // public void deleteByCourse(int course_id);
+  public Iterable<Session> findSessionsByCourseId(int course_id);
+
 }

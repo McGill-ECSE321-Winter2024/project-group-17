@@ -14,7 +14,17 @@ public class SessionRequestDto {
     private Course course;
     private InstructorAccount instructor;
     private Schedule schedule;
-    
+
+    public SessionRequestDto(Time startTime,Time endTime,Date date,InstructorAccount instructor, Course courseSchedule, Schedule schedule){
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.date = date;
+        this.course = course;
+        this.instructor = instructor;
+        this.schedule = schedule;
+    }
+
+
     public Time getStartTime() {
         return startTime;
     }
