@@ -17,17 +17,21 @@ public class ScheduleService {
     @Transactional
     //assuming always valid id from frontend config 
     //assuming an hour (minutes, seconds = 0) due to fronted dropdown config
-    public Schedule updateSchedule(int id, Time startTime, Time endTime){
+    public Schedule updateSchedule(Time startTime, Time endTime){
         if (startTime == null || endTime == null) {
             throw new IllegalArgumentException("Cannot have an empty time");
          }
         else if(endTime.before(startTime)){
             throw new IllegalArgumentException("Cannot have closing hour occur before opening hour");
         }else{
-        Schedule schedule = scheduleRepo.findScheduleById(id);
-        schedule.setOpeningHours(startTime);
-        schedule.setClosingHours(endTime);
-        return scheduleRepo.save(schedule);
+            if(scheduleRepo.count() == 0L){
+                Schedule schedule = new Schedule(startTime, endTime);
+                return scheduleRepo.save(schedule);
+            }else{
+                scheduleRepo.deleteAll();
+                Schedule schedule = new Schedule(startTime, endTime);
+                return scheduleRepo.save(schedule);
+            }
         }
     }
 }
