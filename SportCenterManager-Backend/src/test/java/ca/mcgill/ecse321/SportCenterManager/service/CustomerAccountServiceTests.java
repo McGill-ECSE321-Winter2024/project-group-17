@@ -90,7 +90,7 @@ public class CustomerAccountServiceTests {
 
         lenient().when(customerRepo.findAll()).thenReturn((Iterable<CustomerAccount>) listCustomerAccounts);
 
-        // execution
+        // act
         List<CustomerAccount> foundCustomerAccounts = (List<CustomerAccount>) service.findAllCustomers();
 
         // assertions
