@@ -14,11 +14,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import ca.mcgill.ecse321.SportCenterManager.dao.CourseRepository;
-import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
-import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
-import ca.mcgill.ecse321.SportCenterManager.dao.RegistrationRepository;
-import ca.mcgill.ecse321.SportCenterManager.dao.ScheduleRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
 import ca.mcgill.ecse321.SportCenterManager.model.Course;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
@@ -35,8 +30,6 @@ public class SessionIntegrationTests {
     private TestRestTemplate client;
     @Autowired
     private SessionRepository sessionRepo;
-
-
     private final Time validStartTime = Time.valueOf("10:00:00");
     private final Time validEndTime = Time.valueOf("12:00:00");
     private final Time invalidEndTime = Time.valueOf("09:00:00");
