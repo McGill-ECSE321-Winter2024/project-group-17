@@ -15,7 +15,14 @@ public class ScheduleService {
     private ScheduleRepository scheduleRepo;
 
     @Transactional
+    //assuming always valid id from frontend config 
     public Schedule updateSchedule(int id, Time startTime, Time endTime){
+        if (startTime == null || endTime == null) {
+            throw new IllegalArgumentException("Cannot have an empty time");
+         }
+        else if(endTime.after(startTime)){
+            throw new IllegalArgumentException("Cannot have closing hour occur before opening hour");
+        }
         Schedule schedule = scheduleRepo.findScheduleById(id);
         schedule.setOpeningHours(startTime);
         schedule.setClosingHours(endTime);
