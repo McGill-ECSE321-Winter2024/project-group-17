@@ -3,7 +3,7 @@ package ca.mcgill.ecse321.SportCenterManager.controller;
 import java.sql.Time;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,7 +16,7 @@ public class ScheduleController {
     @Autowired
     ScheduleService service;
 
-    @PutMapping("/schedule")
+    @PostMapping("/schedule")
     public Schedule updateSchedule(@RequestBody ScheduleRequestDto schedule){
         Time opening = schedule.getOpeningHour();
         Time closing = schedule.getClosingHour();

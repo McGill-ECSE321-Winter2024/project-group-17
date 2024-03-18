@@ -15,8 +15,7 @@ public class ScheduleService {
     private ScheduleRepository scheduleRepo;
 
     @Transactional
-    //assuming always valid id from frontend config 
-    //assuming an hour (minutes, seconds = 0) due to fronted dropdown config
+    //assuming valid time format due to fronted dropdown config
     public Schedule updateSchedule(Time startTime, Time endTime){
         if (startTime == null || endTime == null) {
             throw new IllegalArgumentException("Cannot have an empty time");
