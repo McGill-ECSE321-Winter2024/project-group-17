@@ -11,8 +11,6 @@ import jakarta.transaction.Transactional;
 public class CustomerAccountService {
     @Autowired
     private CustomerAccountRepository customerRepo;
-    @Autowired
-    private BillingInformationService billingService;
 
     @Transactional
     public Iterable<CustomerAccount> findAllCustomers() {
