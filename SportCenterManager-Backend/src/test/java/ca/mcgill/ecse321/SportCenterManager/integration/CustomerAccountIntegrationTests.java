@@ -6,7 +6,6 @@ import ca.mcgill.ecse321.SportCenterManager.dto.CourseResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerResponseDto;
-import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
