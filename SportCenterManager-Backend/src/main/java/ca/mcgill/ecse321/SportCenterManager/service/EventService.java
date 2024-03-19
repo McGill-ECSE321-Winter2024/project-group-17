@@ -1,19 +1,31 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.CourseRepository;
-import ca.mcgill.ecse321.SportCenterManager.dao.RegistrationRepository;
+import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
-import ca.mcgill.ecse321.SportCenterManager.model.*;
+import ca.mcgill.ecse321.SportCenterManager.dao.RegistrationRepository;
+
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
+
+import ca.mcgill.ecse321.SportCenterManager.model.Course;
+import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
+import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
+import ca.mcgill.ecse321.SportCenterManager.model.Session;
+import ca.mcgill.ecse321.SportCenterManager.model.Registration;
+
 
 import org.springframework.stereotype.Service;
 
 
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 
 import jakarta.transaction.Transactional;
 
@@ -23,6 +35,8 @@ public class EventService {
     private CourseRepository courseRepo;
     @Autowired
     private SessionRepository sessionRepo;
+    @Autowired
+    private InstructorAccountService instructorService;
     @Autowired
     private RegistrationRepository registrationRepo;
 
@@ -155,4 +169,56 @@ public class EventService {
         Session sessionToCreate = new Session(start_time, end_time, date,aInstructorAccount,aCourse,aSchedule);
 	    return sessionRepo.save(sessionToCreate); 
 	}
+    
+    @Transactional
+    public Session superviseSession(int instructorId, int sessionId) {
+    	InstructorAccount instructor = instructorService.findInstructorById(instructorId);
+    	Session session = findSessionById(sessionId);
+    	if (session.getInstructorAccount() != null) {
+    		throw new ServiceException(HttpStatus.BAD_REQUEST, "An instructor is already supervising this session!");
+    	}
+    	if (hasConflict(instructor, session)) {
+    		throw new ServiceException(HttpStatus.FORBIDDEN, "Session overlaps with another that is already supervised by the instructor!");
+    	}
+    	session.setInstructorAccount(instructor);
+    	sessionRepo.save(session);
+    	return session;
+    }
+    
+    @Transactional
+    public List<Session> findInstructorSessions(int instructorId){
+    	List<Session> allSessions = toList(sessionRepo.findAll());
+    	List<Session> instructorSessions = new ArrayList<Session>();
+    	for (Session session : allSessions) {
+    		if (session.getInstructorAccount() != null && session.getInstructorAccount().getId() == instructorId) {
+    			instructorSessions.add(session);
+    		}
+    	}
+    	return instructorSessions;
+    }
+
+    private boolean hasConflict(InstructorAccount instructor, Session newSession) {
+    	List<Session> sessions = findInstructorSessions(instructor.getId());
+		for (Session session: sessions) {
+			if (newSession.getDate().equals(session.getDate()) && (
+				newSession.getStartTime().before(session.getEndTime()) &&
+				newSession.getStartTime().after(session.getStartTime()) || 
+				newSession.getEndTime().before(session.getEndTime()) &&
+				newSession.getEndTime().after(session.getStartTime()) ||
+				newSession.getStartTime().equals(session.getStartTime()) &&
+				newSession.getEndTime().equals(session.getEndTime()))) {
+				return true;
+			}
+		}
+		return false;
+    }
+    
+    private <T> List<T> toList(Iterable<T> iterable){
+		List<T> resultList = new ArrayList<T>();
+		for (T t: iterable) {
+			resultList.add(t);
+		}
+		return resultList;
+	}
+	
 }

@@ -16,7 +16,7 @@ public class Course
   private boolean isApproved;
 
   // Default constructor for Hibernate
-  private Course(){
+  public Course(){
   }
 
   public Course(String aName, String aDescription, double aCostPerSession)

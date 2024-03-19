@@ -13,6 +13,10 @@ public class CustomerResponseDto {
     public CustomerResponseDto() {
     }
 
+    public CustomerResponseDto() {
+    	
+    }
+    
     public CustomerResponseDto(CustomerAccount model) {
         this.id = model.getId();
         this.name = model.getName();
