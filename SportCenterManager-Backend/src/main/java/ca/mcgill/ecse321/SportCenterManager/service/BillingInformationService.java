@@ -80,4 +80,17 @@ public class BillingInformationService {
         billingToModify.setExpirationDate(expirationDate);
         return billingRepo.save(billingToModify);
     }
+
+        @Transactional
+        public void deleteBillingInformation(int customerId) {
+            if (!customerRepo.existsById(customerId)) {
+                throw new IllegalArgumentException("There is no customer with ID " + customerId + " in the system.");
+            }
+            CustomerAccount customer = customerRepo.findCustomerAccountById(customerId);
+            if (!billingRepo.existsByKeyCustomerAccount(customer)) {
+                throw new IllegalArgumentException("There is no billing information for customer with ID " + customerId + " in the system.");
+            }
+            BillingInformation billingToDelete = billingRepo.findBillingInformationByKeyCustomerAccount(customer);
+            billingRepo.delete(billingToDelete);
+    }
 }
