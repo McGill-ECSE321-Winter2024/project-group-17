@@ -6,16 +6,15 @@ import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 
 import java.sql.Date;
-import java.time.LocalDate;
 
 public class SessionRequestDto {
     private Time startTime;
     private Time endTime; 
-    private LocalDate date;
+    private Date date;
     private Course course;
     private InstructorAccount instructor;
     private Schedule schedule;
-    public SessionRequestDto(Time startTime, Time endTime, LocalDate date, InstructorAccount instructor, Course courseSchedule, Schedule schedule){
+    public SessionRequestDto(Time startTime, Time endTime, Date date, InstructorAccount instructor, Course courseSchedule, Schedule schedule){
         this.startTime = startTime;
         this.endTime = endTime;
         this.date = date;
@@ -41,12 +40,12 @@ public class SessionRequestDto {
         this.endTime = endTime;
     }
 
-    public LocalDate getDate(){
+    public Date getDate(){
         return date;
     }
 
     public void setDate(Date date){
-        this.date = date.toLocalDate();
+        this.date = date;
     }
 
     public Course getCourse() {

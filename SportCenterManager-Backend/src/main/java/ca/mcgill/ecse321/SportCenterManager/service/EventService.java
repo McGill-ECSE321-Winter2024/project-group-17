@@ -21,7 +21,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
 import java.util.Optional;
-import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -161,16 +160,16 @@ public class EventService {
         sessionRepo.deleteById(session_id);
         return true;
     }
-    //TODO
+    
     @Transactional
-    public Session modifySessionById(int session_id, Time startTime, Time endTime, LocalDate date, Course course, InstructorAccount instructor, Schedule schedule){
+    public Session modifySessionById(int session_id, Time startTime, Time endTime, Date date, Course course, InstructorAccount instructor, Schedule schedule){
         if(endTime.before(startTime)){
             throw new IllegalArgumentException("End time must be be after the start time.");
         }
 
         long currentTimeMillis = System.currentTimeMillis();
         Date currentDate = new Date(currentTimeMillis);
-        if(date.isBefore(currentDate.toLocalDate())){
+        if(date.before(currentDate)){
             throw new IllegalArgumentException("Cannot create a session on date that has passed.");
         }
 
@@ -189,13 +188,13 @@ public class EventService {
     }
     
     @Transactional
-    public Session createSession(Time start_time, Time end_time, LocalDate date, InstructorAccount aInstructorAccount,@NonNull Course aCourse, Schedule aSchedule){
+    public Session createSession(Time start_time, Time end_time, Date date, InstructorAccount aInstructorAccount,@NonNull Course aCourse, Schedule aSchedule){
         if(end_time.before(start_time)){
             throw new IllegalArgumentException("End time must be be after the start time.");
         }
         long currentTimeMillis = System.currentTimeMillis();
         Date currentDate = new Date(currentTimeMillis);
-        if(date.isBefore(currentDate.toLocalDate())){
+        if(date.before(currentDate)){
             throw new IllegalArgumentException("Cannot create a session on date that has passed.");
         }
         Session sessionToCreate = new Session(start_time, end_time, date,aInstructorAccount,aCourse,aSchedule);

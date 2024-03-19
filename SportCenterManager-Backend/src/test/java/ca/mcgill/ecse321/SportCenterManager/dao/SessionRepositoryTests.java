@@ -65,7 +65,7 @@ public class SessionRepositoryTests {
     Time endTime = Time.valueOf("10:00:00");
     Date date = Date.valueOf("2024-02-13");
 
-    Session session = new Session(startTime, endTime, date.toLocalDate(), instructorAccount, course, schedule);
+    Session session = new Session(startTime, endTime, date, instructorAccount, course, schedule);
     session = sessionRepository.save(session);
     int sessionId = session.getId();
 

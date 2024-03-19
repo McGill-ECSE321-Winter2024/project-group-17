@@ -3,9 +3,7 @@ package ca.mcgill.ecse321.SportCenterManager.dto;
 import java.util.List;
 
 public class InstructorListDto {
-    private InstructorListDto(){
 
-    }
     private List<InstructorResponseDto> instructors;
 
     public InstructorListDto() {

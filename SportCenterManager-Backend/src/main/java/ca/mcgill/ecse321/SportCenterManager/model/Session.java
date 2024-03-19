@@ -6,7 +6,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 import java.sql.Time;
-import java.time.LocalDate;
+import java.sql.Date;
 
 @Entity
 public class Session
@@ -16,7 +16,7 @@ public class Session
   private int id;
   private Time startTime;
   private Time endTime;
-  private LocalDate date;
+  private Date date;
 
   @ManyToOne
   private InstructorAccount instructorAccount;
@@ -30,7 +30,7 @@ public class Session
   // Default constructor for Hibernate
   public Session(){
   }
-  public Session(Time aStartTime, Time aEndTime, LocalDate aDate, InstructorAccount aInstructorAccount, Course aCourse, Schedule aSchedule)
+  public Session(Time aStartTime, Time aEndTime, Date aDate, InstructorAccount aInstructorAccount, Course aCourse, Schedule aSchedule)
   {
     startTime = aStartTime;
     endTime = aEndTime;
@@ -65,7 +65,7 @@ public class Session
     return wasSet;
   }
 
-  public boolean setDate(LocalDate aDate)
+  public boolean setDate(Date aDate)
   {
     boolean wasSet = false;
     date = aDate;
@@ -91,7 +91,7 @@ public class Session
     return endTime;
   }
 
-  public LocalDate getDate()
+  public Date getDate()
   {
     return date;
   }

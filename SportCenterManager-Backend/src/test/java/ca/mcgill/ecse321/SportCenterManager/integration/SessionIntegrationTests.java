@@ -1,6 +1,6 @@
 package ca.mcgill.ecse321.SportCenterManager.integration;
 import java.sql.Time;
-import java.time.LocalDate;
+import java.sql.Date;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.CourseRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
@@ -43,9 +43,9 @@ public class SessionIntegrationTests {
     private  Time ModifiedStartTime = Time.valueOf("12:00:00");
     private  Time validEndTime = Time.valueOf("12:00:00");
     private  Time ModifiedEndTime = Time.valueOf("14:00:00");
-    private  LocalDate validDate = LocalDate.of(2024, 04, 13);
-    private  LocalDate inValidDate = LocalDate.of(2024, 03, 13);
-    private  LocalDate ModifiedDate = LocalDate.of(2024, 05, 13);
+    private  Date validDate = Date.valueOf("2024-04-13");
+    private  Date inValidDate = Date.valueOf("2024-03-13");
+    private  Date ModifiedDate = Date.valueOf("2024-05-13");
     private final Time VALID_START_TIME = new Time(1);
     private final Time VALID_END_TIME = new Time(3600000);
     private int validCourseId;
@@ -78,9 +78,9 @@ public class SessionIntegrationTests {
         assertEquals("yoga", createdCourse.getName());
         assertEquals("Beginner class", createdCourse.getDescription());
         assertEquals(44, createdCourse.getCostPerSession());
-        assertNotNull(createdCourse.getid());
-        assertTrue(createdCourse.getid() > 0, "Response should have a positive ID.");
-        this.validCourseId = createdCourse.getid();
+        assertNotNull(createdCourse.getId());
+        assertTrue(createdCourse.getId() > 0, "Response should have a positive ID.");
+        this.validCourseId = createdCourse.getId();
         this.validCourse = courseRepo.findCourseById(validCourseId);
     }
 

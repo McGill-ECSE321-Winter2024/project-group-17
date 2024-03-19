@@ -8,7 +8,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import java.sql.Date;
 import java.sql.Time;
-import java.time.LocalDate;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -77,12 +76,12 @@ public class SessionServiceTests {
         Time startTime = Time.valueOf("10:00:00");
         Time endTime = Time.valueOf("12:00:00");
         Date date = Date.valueOf("2024-03-15");
-        Session session = new Session(startTime, endTime, date.toLocalDate(), instructor, course, schedule);
+        Session session = new Session(startTime, endTime, date, instructor, course, schedule);
         int id = session.getId();
 
         Time newStartTime = Time.valueOf("11:00:00");
         Time newEndTime = Time.valueOf("13:00:00");
-        LocalDate newDate = Date.valueOf("2024-04-16").toLocalDate();
+        Date newDate = Date.valueOf("2024-04-16");
         Course newCourse = new Course("Zumba", "Intermediate class", 50 );
         InstructorAccount newInstructor = new InstructorAccount("Jannett", "jannett@gmail.com", "abcd");
         Schedule newSchedule = new Schedule(Time.valueOf("9:00:00"), Time.valueOf("16:00:00"));
@@ -110,12 +109,12 @@ public class SessionServiceTests {
         Time startTime = Time.valueOf("10:00:00");
         Time endTime = Time.valueOf("12:00:00");
         Date date = Date.valueOf("2024-03-15");
-        Session session = new Session(startTime, endTime, date.toLocalDate(), instructor, course, schedule);
+        Session session = new Session(startTime, endTime, date, instructor, course, schedule);
         int id = session.getId();
 
         Time newStartTime = Time.valueOf("13:00:00");
         Time newEndTime = Time.valueOf("11:00:00");
-        LocalDate newDate = Date.valueOf("2024-04-16").toLocalDate();
+        Date newDate = Date.valueOf("2024-04-16");
         Course newCourse = new Course("Zumba", "Intermediate class", 50 );
         InstructorAccount newInstructor = new InstructorAccount("Jannett", "jannett@gmail.com", "abcd");
         Schedule newSchedule = new Schedule(Time.valueOf("9:00:00"), Time.valueOf("16:00:00"));
@@ -140,12 +139,12 @@ public class SessionServiceTests {
         Time startTime = Time.valueOf("10:00:00");
         Time endTime = Time.valueOf("12:00:00");
         Date date = Date.valueOf("2024-03-15");
-        Session session = new Session(startTime, endTime, date.toLocalDate(), instructor, course, schedule);
+        Session session = new Session(startTime, endTime, date, instructor, course, schedule);
         int id = session.getId();
 
         Time newStartTime = Time.valueOf("10:00:00");
         Time newEndTime = Time.valueOf("11:00:00");
-        LocalDate newDate = Date.valueOf("2024-03-15").toLocalDate();
+        Date newDate = Date.valueOf("2024-03-15");
         Course newCourse = new Course("Zumba", "Intermediate class", 50 );
         InstructorAccount newInstructor = new InstructorAccount("Jannett", "jannett@gmail.com", "abcd");
         Schedule newSchedule = new Schedule(Time.valueOf("9:00:00"), Time.valueOf("16:00:00"));
@@ -171,12 +170,12 @@ public class SessionServiceTests {
         Time startTime = Time.valueOf("10:00:00");
         Time endTime = Time.valueOf("12:00:00");
         Date date = Date.valueOf("2024-03-15");
-        Session session = new Session(startTime, endTime, date.toLocalDate(), instructor, course, schedule);
+        Session session = new Session(startTime, endTime, date, instructor, course, schedule);
         int id = session.getId();
 
         Time newStartTime = Time.valueOf("10:00:00");
         Time newEndTime = Time.valueOf("11:00:00");
-        LocalDate newDate = Date.valueOf("2024-04-15").toLocalDate();
+        Date newDate = Date.valueOf("2024-04-15");
         Course newCourse = new Course("Zumba", "Intermediate class", 50 );
         InstructorAccount newInstructor = new InstructorAccount("Jannett", "jannett@gmail.com", "abcd");
         Schedule newSchedule = new Schedule(Time.valueOf("9:00:00"), Time.valueOf("16:00:00"));
@@ -202,18 +201,18 @@ public class SessionServiceTests {
         Time startTime = Time.valueOf("10:00:00");
         Time endTime = Time.valueOf("12:00:00");
         Date date = Date.valueOf("2024-04-15");
-        Session session = new Session(startTime, endTime, date.toLocalDate(),instructor,course, schedule);
+        Session session = new Session(startTime, endTime, date, instructor, course, schedule);
 
         when(sessionRepo.save(any(Session.class))).thenReturn(session);
 
         //Act
-        Session createdSession = service.createSession(startTime,endTime, date.toLocalDate(),instructor,course,schedule);
+        Session createdSession = service.createSession(startTime,endTime, date,instructor,course,schedule);
 
         //Assert
         assertNotNull(createdSession);
         assertEquals(startTime, createdSession.getStartTime());
         assertEquals(endTime, createdSession.getEndTime());
-        assertEquals(date.toLocalDate(), createdSession.getDate());
+        assertEquals(date, createdSession.getDate());
         assertEquals(instructor, createdSession.getInstructorAccount());
         assertEquals(course, createdSession.getCourse());
         assertEquals(schedule, createdSession.getSchedule());
@@ -230,12 +229,12 @@ public class SessionServiceTests {
         Time startTime = Time.valueOf("13:00:00");
         Time endTime = Time.valueOf("12:00:00");
         Date date = Date.valueOf("2024-03-15");
-        Session session = new Session(startTime,endTime, date.toLocalDate(),instructor,course, schedule);
+        Session session = new Session(startTime,endTime, date, instructor, course, schedule);
 
         lenient().when(sessionRepo.save(any(Session.class))).thenReturn(null);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                service.createSession(startTime, endTime, date.toLocalDate(), instructor, course, schedule)
+                service.createSession(startTime, endTime, date, instructor, course, schedule)
         );
 
         assertEquals("End time must be be after the start time.", exception.getMessage());
@@ -251,12 +250,12 @@ public class SessionServiceTests {
         Time startTime = Time.valueOf("10:00:00");
         Time endTime = Time.valueOf("12:00:00");
         Date date = Date.valueOf("2024-03-15");
-        Session session = new Session(startTime,endTime, date.toLocalDate(),instructor,course, schedule);
+        Session session = new Session(startTime,endTime, date,instructor,course, schedule);
 
         lenient().when(sessionRepo.save(any(Session.class))).thenReturn(null);
 
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
-                service.createSession(startTime, endTime, date.toLocalDate(), instructor, course, schedule)
+                service.createSession(startTime, endTime, date, instructor, course, schedule)
         );
         assertEquals("Cannot create a session on date that has passed.", exception.getMessage());
         verify(sessionRepo, never()).save(any(Session.class));
@@ -269,7 +268,7 @@ public class SessionServiceTests {
         Time startTime = Time.valueOf("10:00:00");
         Time endTime = Time.valueOf("12:00:00");
         Date date = Date.valueOf("2024-03-15");
-        Session session = new Session(startTime, endTime, date.toLocalDate(), instructor, course, schedule);
+        Session session = new Session(startTime, endTime, date, instructor, course, schedule);
         int id = session.getId();
 
         lenient().when(sessionRepo.save(any(Session.class))).thenAnswer((InvocationOnMock i) -> i.getArgument(0));
@@ -288,7 +287,7 @@ public class SessionServiceTests {
         Time startTime = Time.valueOf("10:00:00");
         Time endTime = Time.valueOf("12:00:00");
         Date date = Date.valueOf("2024-03-15");
-        Session session = new Session(startTime, endTime, date.toLocalDate(), instructor, course, schedule);
+        Session session = new Session(startTime, endTime, date, instructor, course, schedule);
         int id = session.getId()+1;
 
         lenient().when(sessionRepo.save(any(Session.class))).thenReturn(null);

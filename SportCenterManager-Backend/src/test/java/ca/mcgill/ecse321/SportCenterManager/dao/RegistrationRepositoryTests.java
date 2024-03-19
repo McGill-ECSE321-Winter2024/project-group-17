@@ -64,7 +64,7 @@ public class RegistrationRepositoryTests {
 		Time startTime = Time.valueOf("08:00:00");
 		Time endTime = Time.valueOf("16:30:00");
 		Date date = Date.valueOf("2024-02-20");
-		Session session = new Session(startTime, endTime, date.toLocalDate(), instructor, course, schedule);
+		Session session = new Session(startTime, endTime, date, instructor, course, schedule);
 		session = sessionRepo.save(session);
 		
 		// Create & persist a CustomerAccount
