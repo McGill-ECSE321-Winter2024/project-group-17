@@ -37,7 +37,7 @@ public class BillingInformationServiceTests {
 
     private String NAME = "testName";
     private String EMAIL = "testEmail@email.com";
-    private String PASSWORD = "testPassword?";
+    private String PASSWORD = "testPassword!";
     private CustomerAccount customer = new CustomerAccount(NAME, EMAIL, PASSWORD);
     private int customer_id = 9;
 

@@ -39,8 +39,8 @@ public class BillingInformationIntegrationTests {
     private TestRestTemplate client;
 
     private String NAME = "testName";
-    private String EMAIL = "testEmail@gmail.com";
-    private String PASSWORD = "testPassword";
+    private String EMAIL = "testEmail@email.com";
+    private String PASSWORD = "testPassword!";
     private int validId;
 
     private String DEFAULT_ADDRESS = "address";
