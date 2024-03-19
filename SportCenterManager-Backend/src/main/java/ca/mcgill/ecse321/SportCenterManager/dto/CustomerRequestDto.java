@@ -4,6 +4,9 @@ public class CustomerRequestDto {
     private String name;
     private String email;
     private String password;
+  
+    public CustomerRequestDto(){
+    }
 
     public CustomerRequestDto(String name, String email, String password) {
         this.name = name;

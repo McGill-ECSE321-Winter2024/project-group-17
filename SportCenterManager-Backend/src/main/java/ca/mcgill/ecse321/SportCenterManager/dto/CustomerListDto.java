@@ -4,6 +4,9 @@ import java.util.List;
 
 public class CustomerListDto {
     private List<CustomerResponseDto> customers;
+    public CustomerListDto() {
+
+    }
 
     public CustomerListDto(List<CustomerResponseDto> customers) {
         this.customers = customers;
