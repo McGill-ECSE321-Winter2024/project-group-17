@@ -71,7 +71,10 @@ public class CustomerAccountService {
         }
         else {
             CustomerAccount customerToCreate = new CustomerAccount(name, email, password);
-            return customerRepo.save(customerToCreate);
+            CustomerAccount createdCustomer = customerRepo.save(customerToCreate);
+            billingService.createBillingInformation("address", "postalCode", "country", "name", "cardNumber", 123, null,
+            createdCustomer.getId());
+            return createdCustomer;
         }
    }
    @Transactional
@@ -87,6 +90,7 @@ public class CustomerAccountService {
     public boolean deleteCustomer(int id) {
         CustomerAccount customerAccount = findCustomerById(id);
         if (customerAccount != null) {
+            billingService.deleteBillingInformation(id);
             customerRepo.delete(customerAccount);
             return true;
         }
@@ -147,7 +151,7 @@ public class CustomerAccountService {
         else {
             // Check if password is at least 8 character long
             if (password.length() < 8) {
-                error = "Password must be at least four characters long";
+                error = "Password must be at least eight characters long";
                 return error;
             }
 

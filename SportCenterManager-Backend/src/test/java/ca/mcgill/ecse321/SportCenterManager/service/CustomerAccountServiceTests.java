@@ -1,6 +1,8 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
+import ca.mcgill.ecse321.SportCenterManager.dao.BillingInformationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -9,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +24,10 @@ import static org.mockito.Mockito.*;
 public class CustomerAccountServiceTests {
     @Mock
     private CustomerAccountRepository customerRepo;
+    @Mock
+    private BillingInformationRepository billingRepo;
+    @Mock
+    private BillingInformationService billingService;
 
     @InjectMocks
     private CustomerAccountService service;
@@ -110,7 +117,9 @@ public class CustomerAccountServiceTests {
         int id = 30;
         customerAccount.setId(id);
         lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(customerAccount);
-
+        // don't need billing information class, not focus of test
+        when(billingService.createBillingInformation("address", "postalCode", "country", "name", "cardNumber", 123, null, id)).thenReturn(null);
+        
         // act
         CustomerAccount createdCustomerAccount = service.createCustomer(name, email, password);
 
@@ -227,7 +236,7 @@ public class CustomerAccountServiceTests {
         }
 
         // assertions
-        assertEquals("Password must be at least four characters long", error);
+        assertEquals("Password must be at least eight characters long", error);
         verify(customerRepo, times(0)).save(any(CustomerAccount.class));
     }
 
@@ -524,7 +533,7 @@ public class CustomerAccountServiceTests {
         }
 
         // assertions
-        assertEquals("Password must be at least four characters long", error);
+        assertEquals("Password must be at least eight characters long", error);
         verify(customerRepo, times(0)).save(any(CustomerAccount.class));
         verify(customerRepo, times(1)).findCustomerAccountById(id);
     }
