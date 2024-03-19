@@ -90,6 +90,7 @@ public class CustomerAccountService {
     public boolean deleteCustomer(int id) {
         CustomerAccount customerAccount = findCustomerById(id);
         if (customerAccount != null) {
+            billingService.deleteBillingInformation(id);
             customerRepo.delete(customerAccount);
             return true;
         }

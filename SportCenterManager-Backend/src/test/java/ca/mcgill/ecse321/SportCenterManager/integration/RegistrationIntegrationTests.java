@@ -20,6 +20,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import ca.mcgill.ecse321.SportCenterManager.dao.BillingInformationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.CourseRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
@@ -53,6 +54,8 @@ public class RegistrationIntegrationTests {
 	private InstructorAccountRepository instructorRepo;
 	@Autowired
 	private ScheduleRepository scheduleRepo;
+	@Autowired
+	private BillingInformationRepository billingRepo;
 	
 	private int customerOneId;
 	private int customerTwoId;
@@ -77,6 +80,7 @@ public class RegistrationIntegrationTests {
 	
 	private void clearDatabase() {
 		registrationRepo.deleteAll();
+		billingRepo.deleteAll();
 		customerRepo.deleteAll();
 		sessionRepo.deleteAll();
 		instructorRepo.deleteAll();

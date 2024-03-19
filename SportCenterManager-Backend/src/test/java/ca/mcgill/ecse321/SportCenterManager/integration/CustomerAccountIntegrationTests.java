@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.SportCenterManager.integration;
 
+import ca.mcgill.ecse321.SportCenterManager.dao.BillingInformationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dto.CourseResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerListDto;
@@ -28,6 +29,8 @@ public class CustomerAccountIntegrationTests {
 
     @Autowired
     private CustomerAccountRepository customerRepo;
+    @Autowired
+    private BillingInformationRepository billingRepo;
 
     private String name = "Namir";
     private String email = "Namir@gmail.com";
@@ -47,6 +50,7 @@ public class CustomerAccountIntegrationTests {
     @BeforeAll
     @AfterAll
     public void clearDatabase() {
+        billingRepo.deleteAll();
         customerRepo.deleteAll();
     }
 
