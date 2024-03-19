@@ -5,6 +5,12 @@ public class InstructorRequestDto {
     private String email;
     private String password;
 
+    public InstructorRequestDto(String name, String email, String password){
+        this.name=name;
+        this.email=email;
+        this.password=password;
+    }
+
     public String getName() {
         return name;
     }

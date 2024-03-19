@@ -6,11 +6,16 @@ public class InstructorResponseDto {
     private int id;
     private String name;
     private String email;
+    private String password;
 
+    private InstructorResponseDto() {
+        // Default constructor
+    }
     public InstructorResponseDto(InstructorAccount model) {
         this.id = model.getId();
         this.name = model.getName();
         this.email = model.getEmail();
+        this.password=model.getPassword();
     }
 
     public int getId() {

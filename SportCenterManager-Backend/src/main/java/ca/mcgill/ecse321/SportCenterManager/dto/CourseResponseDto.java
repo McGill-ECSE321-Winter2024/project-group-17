@@ -8,6 +8,9 @@ public class CourseResponseDto {
     private double costPerSession;
     private int id;
 
+    private CourseResponseDto() {
+
+    }
     public CourseResponseDto(Course model){
         this.id = model.getId();
         this.name = model.getName();

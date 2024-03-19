@@ -6,16 +6,18 @@ import ca.mcgill.ecse321.SportCenterManager.model.Course;
 import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
+import java.util.Optional;
+import org.springframework.stereotype.Service; // Assuming your service is annotated with @Service
+import org.springframework.transaction.annotation.Transactional; // Assuming you are using Spring's @Transactional
+
 
 import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 
 import java.sql.Time;
 import java.sql.Date;
-
+import java.time.LocalDate;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import jakarta.transaction.Transactional;
 
 @Service
 public class EventService {
@@ -65,6 +67,7 @@ public class EventService {
         }
         return sessionRepo.findSessionById(session_id);
     }
+
     @Transactional
     public boolean deleteSessionById(int session_id){
 
@@ -76,7 +79,7 @@ public class EventService {
     }
     //TODO
     @Transactional
-    public Session modifySessionById(int session_id,Time startTime,Time endTime,Date date,Course course,InstructorAccount instructor,Schedule schedule){
+    public Session modifySessionById(int session_id, Time startTime, Time endTime, LocalDate date, Course course, InstructorAccount instructor, Schedule schedule){
 
 
         if(endTime.before(startTime)){
@@ -85,7 +88,7 @@ public class EventService {
 
         long currentTimeMillis = System.currentTimeMillis();
         Date currentDate = new Date(currentTimeMillis);
-        if(date.before(currentDate)){
+        if(date.isBefore(currentDate.toLocalDate())){
             throw new IllegalArgumentException("Cannot create a session on date that has passed.");
         }
 
@@ -104,17 +107,15 @@ public class EventService {
     }
     
     @Transactional
-    public Session createSession(Time start_time, Time end_time, Date date, InstructorAccount aInstructorAccount,@NonNull Course aCourse, Schedule aSchedule){
+    public Session createSession(Time start_time, Time end_time, LocalDate date, InstructorAccount aInstructorAccount,@NonNull Course aCourse, Schedule aSchedule){
         if(end_time.before(start_time)){
             throw new IllegalArgumentException("End time must be be after the start time.");
         }
-
         long currentTimeMillis = System.currentTimeMillis();
         Date currentDate = new Date(currentTimeMillis);
-        if(date.before(currentDate)){
+        if(date.isBefore(currentDate.toLocalDate())){
             throw new IllegalArgumentException("Cannot create a session on date that has passed.");
         }
-
         Session sessionToCreate = new Session(start_time, end_time, date,aInstructorAccount,aCourse,aSchedule);
         return sessionRepo.save(sessionToCreate);
 	}

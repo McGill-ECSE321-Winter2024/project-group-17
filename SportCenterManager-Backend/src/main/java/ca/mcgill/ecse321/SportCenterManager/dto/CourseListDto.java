@@ -5,6 +5,9 @@ import java.util.List;
 public class CourseListDto {
 
     private List<CourseResponseDto> courses;
+    private CourseListDto(){
+
+    }
     
     public CourseListDto(List<CourseResponseDto> courses){
         this.courses = courses;

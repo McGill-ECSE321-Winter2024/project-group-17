@@ -2,6 +2,7 @@ package ca.mcgill.ecse321.SportCenterManager.dto;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
 
 import ca.mcgill.ecse321.SportCenterManager.model.Course;
 import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
@@ -11,7 +12,7 @@ import ca.mcgill.ecse321.SportCenterManager.model.Session;
 public class SessionResponseDto {
     private Time startTime;
     private Time endTime; 
-    private Date date;
+    private LocalDate date;
     private Course course;
     private InstructorAccount instructor;
     private Schedule schedule;
@@ -24,7 +25,7 @@ public class SessionResponseDto {
     public SessionResponseDto(Session model){
         this.startTime = model.getStartTime();
         this.endTime=model.getEndTime();
-        this.date=model.getDate();
+        this.date= model.getDate();
         this.course=model.getCourse();
         this.instructor=model.getInstructorAccount();
         this.schedule=model.getSchedule();
@@ -50,11 +51,11 @@ public class SessionResponseDto {
         this.endTime = endTime;
     }
 
-    public Date getDate(){
+    public LocalDate getDate(){
         return date;
     }
 
-    public void setDate(Date date){
+    public void setDate(LocalDate date){
         this.date = date;
     }
 
