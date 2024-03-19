@@ -72,7 +72,7 @@ public class EventService {
     public boolean deleteSessionById(int session_id){
 
         if(sessionRepo.findById(session_id)==null) {
-            return false; // Session with the given ID does not exist
+            throw new IllegalArgumentException("Session with inputted id is not found"); // Session with the given ID does not exist
         }
         sessionRepo.deleteById(session_id);
         return true;
@@ -80,8 +80,6 @@ public class EventService {
     //TODO
     @Transactional
     public Session modifySessionById(int session_id, Time startTime, Time endTime, LocalDate date, Course course, InstructorAccount instructor, Schedule schedule){
-
-
         if(endTime.before(startTime)){
             throw new IllegalArgumentException("End time must be be after the start time.");
         }

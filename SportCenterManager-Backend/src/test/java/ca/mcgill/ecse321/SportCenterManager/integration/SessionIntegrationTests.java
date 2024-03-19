@@ -168,7 +168,7 @@ public class SessionIntegrationTests {
         assertEquals(validStartTime, session.getStartTime());
         assertEquals(validEndTime, session.getEndTime());
         assertEquals(validDate, session.getDate());
-        //assertEquals(validInstructorId, session.getInstructor().getId());
+        //assertEquals(validInstructor, session.getInstructor());
         assertEquals(validCourseId, session.getCourse().getId());
         assertEquals(validScheduleId, session.getSchedule().getId());
         assertEquals(this.validSessionId, session.getId());
@@ -178,7 +178,7 @@ public class SessionIntegrationTests {
     @Order(6)
     public void testGetSpecificInvalidSession(){
         //Setup
-        int invalidSessionId = this.validSessionId + 1;
+        int invalidSessionId = this.validSessionId + 5;
         String url = "/courses/"+validCourseId+"/sessions/"+invalidSessionId;
 
         //Execution
@@ -244,7 +244,7 @@ public class SessionIntegrationTests {
         assertEquals(ModifiedStartTime, session.getStartTime());
         assertEquals(ModifiedEndTime, session.getEndTime());
         assertEquals(ModifiedDate, session.getDate());
-        //assertEquals(validInstructor, session.getInstructor());
+        //assertEquals(validInstructor.getId(), session.getInstructor());
         assertEquals(validCourse.getId(), session.getCourse().getId());
         assertEquals(validSchedule.getId(), session.getSchedule().getId());
         assertEquals(this.validSessionId, session.getId());
@@ -255,7 +255,7 @@ public class SessionIntegrationTests {
     public void testModifyCourseByInvalidId(){
         //setup
         SessionRequestDto request = new SessionRequestDto(ModifiedStartTime, ModifiedEndTime, ModifiedDate, validInstructor, validCourse, validSchedule);
-        int invalidSessionId = this.validSessionId + 1;
+        int invalidSessionId = this.validSessionId + 5;
         String url = "/courses/" + validCourseId + "/sessions/" + invalidSessionId;
 
         ResponseEntity<IllegalArgumentException> response = client.exchange(url, HttpMethod.PUT, new HttpEntity<>(request), IllegalArgumentException.class);
@@ -297,13 +297,16 @@ public class SessionIntegrationTests {
     @Test
     @Order(13)
     public void testDeleteSessionByInvalidId(){
-        int invalidSessionId = validSessionId + 1932;
+        int invalidSessionId = validSessionId + 1000000000;
         String url = "/courses/" + validCourseId + "/sessions/" + invalidSessionId;
 
-        ResponseEntity<Void> response = client.exchange(url, HttpMethod.DELETE, null, Void.class);
+        ResponseEntity<IllegalArgumentException> response = client.exchange(url, HttpMethod.DELETE, null, IllegalArgumentException.class);
 
+        // assertions
         assertNotNull(response);
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        IllegalArgumentException error = response.getBody();
+        assertNotNull(error);
     }
     @Test
     @Order(14)

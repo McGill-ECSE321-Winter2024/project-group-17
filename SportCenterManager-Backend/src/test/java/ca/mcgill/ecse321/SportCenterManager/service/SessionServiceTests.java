@@ -44,14 +44,28 @@ public class SessionServiceTests {
         int wrongId = 34;
         when(sessionRepo.findById(wrongId)).thenReturn(null);
 
-        boolean deleted = service.deleteSessionById(wrongId);
 
-        //Is it called the correct number of times?
-        verify(sessionRepo, times(1)).findById(wrongId);
-        verify(sessionRepo, times(0)).deleteById(wrongId);
-        verifyNoMoreInteractions(sessionRepo);
+        try {
+            service.deleteSessionById(wrongId);
+        }
+        catch(Exception e) {
 
-        assertFalse(deleted, "The session was not found!");
+            //Is it called the correct number of times?
+            verify(sessionRepo, times(1)).findById(wrongId);
+            verify(sessionRepo, times(0)).deleteById(wrongId);
+
+            lenient().when(sessionRepo.save(any(Session.class))).thenReturn(null);
+            lenient().when(sessionRepo.findSessionById(wrongId)).thenReturn(null);
+
+            lenient().doNothing().when(sessionRepo).deleteById(wrongId);
+
+            IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                    service.deleteSessionById(wrongId)
+            );
+
+            assertEquals("Session with inputted id is not found", exception.getMessage());
+            //verify(sessionRepo, never()).save(any(Session.class));
+        }
     }
 
     @Test
