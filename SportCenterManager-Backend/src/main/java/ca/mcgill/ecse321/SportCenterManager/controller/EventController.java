@@ -1,6 +1,8 @@
 package ca.mcgill.ecse321.SportCenterManager.controller;
 
 
+import java.sql.Time;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -10,6 +12,8 @@ import ca.mcgill.ecse321.SportCenterManager.dto.CourseListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionResponseDto;
+import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
+import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 import ca.mcgill.ecse321.SportCenterManager.service.EventService;
 import ca.mcgill.ecse321.SportCenterManager.model.Course;
 import ca.mcgill.ecse321.SportCenterManager.model.Session; 
@@ -91,8 +95,8 @@ public class EventController {
 
     //TODO
     @PutMapping("/courses/{course_id}/sessions/{session_id}")
-    public void modifySessionById(){
-			//return 
+    public void modifySessionById(@RequestBody SessionRequestDto session, @PathVariable int session_id){
+        eventService.modifySessionById(session_id,session.getStartTime(), session.getEndTime(), session.getDate(),  session.getCourse(), session.getInstructor(), session.getSchedule());
 		}
   
     //TODO

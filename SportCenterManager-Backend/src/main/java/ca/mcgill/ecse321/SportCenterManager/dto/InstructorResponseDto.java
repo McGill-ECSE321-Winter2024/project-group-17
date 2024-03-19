@@ -11,6 +11,10 @@ public class InstructorResponseDto {
     public InstructorResponseDto() {
     }
 
+
+    private InstructorResponseDto() {
+        // Default constructor
+    }
     public InstructorResponseDto(InstructorAccount model) {
         this.id = model.getId();
         this.name = model.getName();

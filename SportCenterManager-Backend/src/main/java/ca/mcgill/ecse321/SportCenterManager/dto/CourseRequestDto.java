@@ -1,9 +1,17 @@
 package ca.mcgill.ecse321.SportCenterManager.dto;
 
+import ca.mcgill.ecse321.SportCenterManager.model.Course;
+import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
+import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
+
+import java.sql.Date;
+import java.sql.Time;
+
 public class CourseRequestDto {
     private String name;
     private String description; 
     private double costPerSession;
+
     private boolean isApproved;
 
     public CourseRequestDto(String name, String description, double costPerSession){
@@ -12,9 +20,11 @@ public class CourseRequestDto {
         this.costPerSession = costPerSession;
         this.isApproved = false;
     }
+  
     public String getName() {
         return name;
     }
+  
     public void setName(String name) {
         this.name = name;
     }

@@ -19,7 +19,7 @@ public class ScheduleService {
     public Schedule updateSchedule(Time startTime, Time endTime){
         if (startTime == null || endTime == null) {
             throw new IllegalArgumentException("Cannot have an empty time");
-         }
+        }
         else if(endTime.before(startTime)){
             throw new IllegalArgumentException("Cannot have closing hour occur before opening hour");
         }else{

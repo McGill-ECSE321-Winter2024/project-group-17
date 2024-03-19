@@ -13,16 +13,15 @@ import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
 import ca.mcgill.ecse321.SportCenterManager.model.Registration;
 
-
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
-
 
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
+import java.time.LocalDate;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -109,9 +108,7 @@ public class EventService {
         courseToApprove.setIsApproved(true);
         return courseRepo.save(courseToApprove);
     }
-
-    //sessions
-
+  
     @Transactional
     public List<Session> findAllSessionsOfCourse(int course_id){
         Iterable<Session> sessions = sessionRepo.findAll();
@@ -127,9 +124,12 @@ public class EventService {
         return sessionsOfCourse;
     }
     
-    @Transactional
+   @Transactional
     public Session findSessionById(int session_id){
-			return sessionRepo.findSessionById(session_id);
+        if(sessionRepo.findSessionById(session_id) == null){
+            throw new IllegalArgumentException("Session with inputted id is not found.");
+        }
+        return sessionRepo.findSessionById(session_id);
 		}
     
     @Transactional
@@ -153,21 +153,53 @@ public class EventService {
     }
 
     @Transactional
-    public void deleteSessionById(int session_id){
-			//return 
-            sessionRepo.deleteById(session_id);
-		}
+    public boolean deleteSessionById(int session_id){
 
+        if(sessionRepo.findById(session_id)==null) {
+            throw new IllegalArgumentException("Session with inputted id is not found"); // Session with the given ID does not exist
+        }
+        sessionRepo.deleteById(session_id);
+        return true;
+    }
     //TODO
     @Transactional
-    public void modifySessionById(){
-			//return 
-		}
+    public Session modifySessionById(int session_id, Time startTime, Time endTime, LocalDate date, Course course, InstructorAccount instructor, Schedule schedule){
+        if(endTime.before(startTime)){
+            throw new IllegalArgumentException("End time must be be after the start time.");
+        }
+
+        long currentTimeMillis = System.currentTimeMillis();
+        Date currentDate = new Date(currentTimeMillis);
+        if(date.isBefore(currentDate.toLocalDate())){
+            throw new IllegalArgumentException("Cannot create a session on date that has passed.");
+        }
+
+        if(sessionRepo.findSessionById(session_id) == null){
+            throw new IllegalArgumentException("Session with inputted id is not found.");
+        }
+
+        Session session = sessionRepo.findSessionById(session_id);
+        session.setStartTime(startTime);
+        session.setEndTime(endTime);
+        session.setDate(date);
+        session.setCourse(course);
+        session.setInstructorAccount(instructor);
+        session.setSchedule(schedule);
+        return sessionRepo.save(session);
+    }
     
     @Transactional
-    public Session createSession(Time start_time, Time end_time, Date date, InstructorAccount aInstructorAccount, Course aCourse, Schedule aSchedule){
+    public Session createSession(Time start_time, Time end_time, LocalDate date, InstructorAccount aInstructorAccount,@NonNull Course aCourse, Schedule aSchedule){
+        if(end_time.before(start_time)){
+            throw new IllegalArgumentException("End time must be be after the start time.");
+        }
+        long currentTimeMillis = System.currentTimeMillis();
+        Date currentDate = new Date(currentTimeMillis);
+        if(date.isBefore(currentDate.toLocalDate())){
+            throw new IllegalArgumentException("Cannot create a session on date that has passed.");
+        }
         Session sessionToCreate = new Session(start_time, end_time, date,aInstructorAccount,aCourse,aSchedule);
-	    return sessionRepo.save(sessionToCreate); 
+        return sessionRepo.save(sessionToCreate);
 	}
     
     @Transactional
