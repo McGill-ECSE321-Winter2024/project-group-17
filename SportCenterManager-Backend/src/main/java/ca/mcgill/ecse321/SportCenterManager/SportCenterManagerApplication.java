@@ -1,10 +1,11 @@
 package ca.mcgill.ecse321.SportCenterManager;
 
-import jakarta.annotation.PostConstruct;
+import java.util.TimeZone;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
-import java.util.TimeZone;
+import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
 public class SportCenterManagerApplication {
@@ -13,5 +14,10 @@ public class SportCenterManagerApplication {
 		SpringApplication.run(SportCenterManagerApplication.class, args);
 	}
 
+
+	@PostConstruct
+	public void init() {
+		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));
+	}
 
 }

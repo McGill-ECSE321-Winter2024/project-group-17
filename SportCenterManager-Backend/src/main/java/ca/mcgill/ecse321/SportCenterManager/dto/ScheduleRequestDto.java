@@ -1,5 +1,9 @@
 package ca.mcgill.ecse321.SportCenterManager.dto;
+
+
 import java.sql.Time;
+
+
 public class ScheduleRequestDto {
     private Time openingHour;
     private Time closingHour;

@@ -8,6 +8,9 @@ public class InstructorListDto {
     }
     private List<InstructorResponseDto> instructors;
 
+    public InstructorListDto() {
+    }
+
     public InstructorListDto(List<InstructorResponseDto> instructors) {
         this.instructors = instructors;
     }

@@ -1,4 +1,5 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
+
 import java.sql.Time;
 
 import org.springframework.beans.factory.annotation.Autowired;

@@ -28,7 +28,7 @@ public class Session
   private Schedule schedule;
 
   // Default constructor for Hibernate
-  private Session(){
+  public Session(){
   }
   public Session(Time aStartTime, Time aEndTime, LocalDate aDate, InstructorAccount aInstructorAccount, Course aCourse, Schedule aSchedule)
   {

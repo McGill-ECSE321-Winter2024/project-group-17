@@ -13,6 +13,9 @@ public class BillingInformationResponseDto {
     private int cvc;
     private Date expirationDate;
 
+    @SuppressWarnings("unused")
+    private BillingInformationResponseDto() {}
+
     public BillingInformationResponseDto(BillingInformation model) {
         this.address = model.getAddress();
         this.postalCode = model.getPostalCode();
