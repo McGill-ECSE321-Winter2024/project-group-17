@@ -32,8 +32,6 @@ public class CourseServiceTests {
   private SessionRepository sessionRepo;
   @Mock
   private RegistrationRepository registrationRepo;
-  @Mock
-  private RegistrationService registrationService;
   @InjectMocks
   private EventService service;
 
@@ -242,10 +240,6 @@ public class CourseServiceTests {
     // setup
     int id = 15;
     Course course = new Course("valid name", "valid description", 10);
-    List<Session> sessions = service.findAllSessionsOfCourse(id);
-    Iterable<Registration> registrations = registrationRepo.findAll();
-    lenient().when(sessionRepo.findAll()).thenReturn(sessions);
-    lenient().when(registrationRepo.findAll()).thenReturn(registrations);
     lenient().when(courseRepo.findCourseById(id)).thenReturn(course);
     lenient().doNothing().when(courseRepo).deleteById(id);
 
@@ -254,7 +248,7 @@ public class CourseServiceTests {
 
     // assertions
     assertTrue(result);
-    verify(courseRepo, times(1)).findCourseById(id);
+    verify(courseRepo, times(2)).findCourseById(id);
     verify(courseRepo, times(1)).deleteById(id);
   }
 
@@ -268,6 +262,45 @@ public class CourseServiceTests {
     try {
       // execution
       service.deleteCourseById(id);
+      fail("No exception was thrown.");
+    }
+    catch (IllegalArgumentException e){
+      // assertions
+      assertEquals("There is no course with ID " + id + ".", e.getMessage());
+      verify(courseRepo, times(1)).findCourseById(id);
+    }
+  }
+
+  @Test
+  public void testDeleteAllSessionsOfCourseByValidId(){
+    // setup
+    int id = 15;
+    Course course = new Course("valid name", "valid description", 10);
+    List<Session> sessions = service.findAllSessionsOfCourse(id);
+    Iterable<Registration> registrations = registrationRepo.findAll();
+    lenient().when(sessionRepo.findAll()).thenReturn(sessions);
+    lenient().when(registrationRepo.findAll()).thenReturn(registrations);
+    lenient().when(courseRepo.findCourseById(id)).thenReturn(course);
+
+    // execution
+    boolean result = service.deleteAllSessionsOfCourse(id);
+
+    // assertions
+    assertTrue(result);
+    verify(courseRepo, times(1)).findCourseById(id);
+    verify(sessionRepo, times(2)).findAll();
+    verify(registrationRepo, times(2)).findAll();
+  }
+
+  @Test
+  public void testDeleteAllSessionsOfCourseByInvalidId(){
+    // setup
+    int id = 15;
+    lenient().when(courseRepo.findCourseById(id)).thenReturn(null);
+
+    try {
+      // execution
+      service.deleteAllSessionsOfCourse(id);
       fail("No exception was thrown.");
     }
     catch (IllegalArgumentException e){
