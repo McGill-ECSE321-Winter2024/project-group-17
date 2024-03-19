@@ -8,7 +8,8 @@ public class CustomerResponseDto {
     private String email;
     private String password;
 
-
+    // default constructor
+    @SuppressWarnings("unused")
     public CustomerResponseDto() {
     }
 

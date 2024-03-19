@@ -35,28 +35,28 @@ public class BillingInformationServiceTests {
     @InjectMocks
     private BillingInformationService billingService;
 
-    // TODO CREATE PRIVATE ATTRIBUTES TO REDUCE REDUNDANCY
+    private String NAME = "testName";
+    private String EMAIL = "testEmail@email.com";
+    private String PASSWORD = "testPassword!";
+    private CustomerAccount customer = new CustomerAccount(NAME, EMAIL, PASSWORD);
+    private int customer_id = 9;
+
+    private String address = "testAddress";
+    private String postalCode = "testPostalCode";
+    private String country = "testCountry";
+    private String cardNumber = "testCardNumber";
+    private int cvc = 123;
+    private BillingInformation billingInformation = new BillingInformation(address, postalCode, country, NAME, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer);
 
     @Test
     public void testCreateBillingInformationForValidCustomer() {
         // Setup
-        String name = "testName";
-        String email = "testEmail";
-        String password = "testPassword";
-        CustomerAccount customer = new CustomerAccount(name, email, password);
-        int customer_id = 9;
         when(customerRepo.existsById(customer_id)).thenReturn(true);
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
 
         // Act
-        String address = "testAddress";
-        String postalCode = "testPostalCode";
-        String country = "testCountry";
-        String cardNumber = "testCardNumber";
-        int cvc = 123;
-        BillingInformation billingInformation = new BillingInformation(address, postalCode, country, name, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer);
         when(billingRepo.save(any(BillingInformation.class))).thenReturn(billingInformation);
-        BillingInformation createdBillingInformation = billingService.createBillingInformation(address, postalCode, country, name, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer_id);
+        BillingInformation createdBillingInformation = billingService.createBillingInformation(address, postalCode, country, NAME, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer_id);
         
         // Assert
         assertNotNull(createdBillingInformation);
@@ -67,7 +67,6 @@ public class BillingInformationServiceTests {
     @Test
     public void testCreateBillingInformationForInvalidCustomer() {
         // Setup
-        int customer_id = 9;
         when(customerRepo.existsById(customer_id)).thenReturn(false);
         
         // Act & Assert
@@ -78,20 +77,8 @@ public class BillingInformationServiceTests {
     @Test
     public void testGetBillingInformationForValidCustomer() {
         // Setup
-        String name = "testName";
-        String email = "testEmail@email.com";
-        String password = "testPassword";
-        CustomerAccount customer = new CustomerAccount(name, email, password);
-        int customer_id = 9;
         when(customerRepo.existsById(customer_id)).thenReturn(true);
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
-
-        String address = "testAddress";
-        String postalCode = "testPostalCode";
-        String country = "testCountry";
-        String cardNumber = "testCardNumber";
-        int cvc = 123;
-        BillingInformation billingInformation = new BillingInformation(address, postalCode, country, name, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer);
         when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
         
         // Act
@@ -105,7 +92,6 @@ public class BillingInformationServiceTests {
     @Test
     public void testGetBillingInformationForInvalidCustomer() {
         // Setup
-        int customer_id = 9;
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(null);
         
         // Act & Assert
@@ -116,21 +102,9 @@ public class BillingInformationServiceTests {
     @Test
     public void testUpdateBillingInformationForValidCustomer() {
         // Setup
-        String name = "testName";
-        String email = "testEmail";
-        String password = "testPassword";
-        int customer_id = 9;
-        CustomerAccount customer = new CustomerAccount(name, email, password);
         when(customerRepo.existsById(customer_id)).thenReturn(true);
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
         when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(true);
-        
-        String address = "testAddress";
-        String postalCode = "testPostalCode";
-        String country = "testCountry";
-        String cardNumber = "testCardNumber";
-        int cvc = 123;
-        BillingInformation billingInformation = new BillingInformation(address, postalCode, country, name, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer);
         when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
 
         String newAddress = "newTestAddress";
@@ -154,7 +128,6 @@ public class BillingInformationServiceTests {
     @Test
     public void testUpdateBillingInformationForInvalidCustomer() {
         // Setup
-        int customer_id = 9;
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(null);
         
         // Act & Assert
@@ -165,11 +138,6 @@ public class BillingInformationServiceTests {
     @Test
     public void testUpdateBillingInformationForInvalidBillingInformation() {
         // Setup
-        String name = "testName";
-        String email = "testEmail";
-        String password = "testPassword";
-        int customer_id = 9;
-        CustomerAccount customer = new CustomerAccount(name, email, password);
         when(customerRepo.existsById(customer_id)).thenReturn(true);
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
         when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(false);
@@ -183,21 +151,9 @@ public class BillingInformationServiceTests {
     @MethodSource("nullAndEmptyParameters")
     public void updateBillingInformationWithNullAndEmptyParameters(String var, String updated_address, String updated_postalCode, String updated_country, String updated_name, String updated_cardNumber, int updated_cvc, Date updated_expirationDate) {
         // Setup
-        String name = "testName";
-        String email = "testEmail";
-        String password = "testPassword";
-        int customer_id = 9;
-        CustomerAccount customer = new CustomerAccount(name, email, password);
         when(customerRepo.existsById(customer_id)).thenReturn(true);
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
         when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(true);
-
-        String address = "testAddress";
-        String postalCode = "testPostalCode";
-        String country = "testCountry";
-        String cardNumber = "testCardNumber";
-        int cvc = 123;
-        BillingInformation billingInformation = new BillingInformation(address, postalCode, country, name, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer);
         when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
 
         // Act & Assert
@@ -233,21 +189,9 @@ public class BillingInformationServiceTests {
     @ValueSource(ints = {99, 1000})
     public void testUpdateBillingInformationForInvalidCvc(int invalid_cvc) {
         // Setup
-        String name = "testName";
-        String email = "testEmail";
-        String password = "testPassword";
-        int customer_id = 9;
-        CustomerAccount customer = new CustomerAccount(name, email, password);
         when(customerRepo.existsById(customer_id)).thenReturn(true);
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
         when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(true);
-
-        String address = "testAddress";
-        String postalCode = "testPostalCode";
-        String country = "testCountry";
-        String cardNumber = "testCardNumber";
-        int cvc = 123;
-        BillingInformation billingInformation = new BillingInformation(address, postalCode, country, name, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer);
         when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
 
         // Act & Assert
@@ -258,21 +202,9 @@ public class BillingInformationServiceTests {
     @Test
     public void testUpdateBillingInformationForInvalidExpirationDate() {
         // Setup
-        String name = "testName";
-        String email = "testEmail";
-        String password = "testPassword";
-        int customer_id = 9;
-        CustomerAccount customer = new CustomerAccount(name, email, password);
         when(customerRepo.existsById(customer_id)).thenReturn(true);
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
         when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(true);
-
-        String address = "testAddress";
-        String postalCode = "testPostalCode";
-        String country = "testCountry";
-        String cardNumber = "testCardNumber";
-        int cvc = 123;
-        BillingInformation billingInformation = new BillingInformation(address, postalCode, country, name, cardNumber, cvc, Date.valueOf(LocalDate.now()), customer);
         when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
 
         // Act & Assert

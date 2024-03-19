@@ -8,6 +8,8 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.util.stream.Stream;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -26,10 +28,14 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import ca.mcgill.ecse321.SportCenterManager.dao.BillingInformationRepository;
+import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dto.BillingInformationRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.BillingInformationResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerResponseDto;
+import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
+import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
@@ -37,10 +43,14 @@ import ca.mcgill.ecse321.SportCenterManager.dto.CustomerResponseDto;
 public class BillingInformationIntegrationTests {
     @Autowired
     private TestRestTemplate client;
+    @Autowired
+    private BillingInformationRepository billingRepo;
+    @Autowired
+    private CustomerAccountRepository customerRepo;
 
     private String NAME = "testName";
-    private String EMAIL = "testEmail@gmail.com";
-    private String PASSWORD = "testPassword";
+    private String EMAIL = "testEmail@email.com";
+    private String PASSWORD = "testPassword!";
     private int validId;
 
     private String DEFAULT_ADDRESS = "address";
@@ -58,31 +68,30 @@ public class BillingInformationIntegrationTests {
     private static int UPDATED_CVC = 456;
     private static Date UPDATED_EXPIRATION_DATE = Date.valueOf(LocalDate.now().plusYears(1));
 
+    @AfterAll
+    public void clearDatabase() {
+        billingRepo.deleteAll();
+        customerRepo.deleteAll();
+    }
+
+    @BeforeAll
+    public void setUp() {
+        // Clear databases
+        billingRepo.deleteAll();
+        customerRepo.deleteAll();
+        
+        // Create a customer account with default billing information
+        CustomerAccount customer = new CustomerAccount(NAME, EMAIL, PASSWORD);
+        CustomerAccount createdCustomer = customerRepo.save(customer);
+        this.validId = createdCustomer.getId();
+
+        // Don't test billing since there is no endpoint for it; created automatically with customer in the service class
+        BillingInformation billing = new BillingInformation(DEFAULT_ADDRESS, DEFAULT_POSTAL_CODE, DEFAULT_COUNTRY, DEFAULT_NAME, DEFAULT_CARD_NUMBER, DEFAULT_CVC, null, createdCustomer);
+        billingRepo.save(billing);
+    }
+
     @Test
     @Order(1)
-    public void createBillingInformation() {
-        // Setup
-        String url = "/customerAccounts";
-        CustomerRequestDto request = new CustomerRequestDto(NAME, EMAIL, PASSWORD);
-
-        // Act
-        ResponseEntity<CustomerResponseDto> response = client.postForEntity(url, request, CustomerResponseDto.class);
-
-        // Assert
-        assertNotNull(response);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        CustomerResponseDto customer = response.getBody();
-        assertNotNull(customer);
-        assertEquals(NAME, customer.getName());
-        assertEquals(EMAIL, customer.getEmail());
-        assertNotNull(customer.getId());
-        assertNotNull(customer.getId() > 0, "Customer ID must be greater than 0.");
-
-        this.validId = customer.getId();
-    }   
-
-    @Test
-    @Order(2)
     public void getDefaultBillingInformation() {
         // Setup
         String url = "/customerAccounts/" + validId + "/billingInformation";
@@ -105,7 +114,7 @@ public class BillingInformationIntegrationTests {
     }
 
     @Test
-    @Order(3)
+    @Order(2)
     public void updateBillingInformation() {
         // Setup
         String url = "/customerAccounts/" + validId + "/billingInformation";
@@ -133,7 +142,7 @@ public class BillingInformationIntegrationTests {
     }
 
     @Test
-    @Order(4)
+    @Order(3)
     public void getUpdatedBillingInformation() {
         // Setup
         String url = "/customerAccounts/" + validId + "/billingInformation";
@@ -159,7 +168,7 @@ public class BillingInformationIntegrationTests {
     }
 
     @Test
-    @Order(5)
+    @Order(4)
     public void getBillingInformationForInvalidCustomer() {
         // Setup
         String url = "/customerAccounts/" + (validId + 1) + "/billingInformation";
@@ -173,7 +182,7 @@ public class BillingInformationIntegrationTests {
     }
 
     @Test
-    @Order(6)
+    @Order(5)
     public void updateBillingInformationForInvalidCustomer() {
         // Setup
         String url = "/customerAccounts/" + (validId + 1) + "/billingInformation";
@@ -190,7 +199,7 @@ public class BillingInformationIntegrationTests {
 
     @ParameterizedTest
     @MethodSource("invalidParameters")
-    @Order(7)
+    @Order(6)
     public void updateBillingInformationWithInvalidParameters(String address, String postalCode, String country, String name, String cardNumber, int cvc, Date expirationDate) {
         // Setup
         String url = "/customerAccounts/" + validId + "/billingInformation";

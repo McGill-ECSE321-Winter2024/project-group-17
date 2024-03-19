@@ -16,8 +16,7 @@ public class Registration
   @EmbeddedId
   private Key key;
   
-  @SuppressWarnings("unused")
-  private Registration() {  
+  public Registration() {  
   }
   
   public Registration(Key aKey)
