@@ -6,4 +6,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface BillingInformationRepository extends CrudRepository<BillingInformation, CustomerAccount> {
     public BillingInformation findBillingInformationByKeyCustomerAccount(CustomerAccount customerAccount);
+    public boolean existsByKeyCustomerAccount(CustomerAccount customerAccount);
 }

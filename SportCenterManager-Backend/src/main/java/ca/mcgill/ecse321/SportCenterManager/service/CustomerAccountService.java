@@ -9,10 +9,10 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CustomerAccountService {
-    @Autowired
-    private CustomerAccountRepository customerRepo;
-    @Autowired
-    private BillingInformationService billingService;
+   @Autowired
+   private CustomerAccountRepository customerRepo;
+   @Autowired
+   private BillingInformationService billingService;
 
    @Transactional
    public Iterable<CustomerAccount> findAllCustomers() {
@@ -24,14 +24,14 @@ public class CustomerAccountService {
       return customerRepo.findCustomerAccountById(id);
    }
 
-     @Transactional
-     public CustomerAccount updateCustomerAccount(int id, String name, String email, String password) {
-        CustomerAccount customerToModify = customerRepo.findCustomerAccountById(id);
-        customerToModify.setName(name);
-        customerToModify.setEmail(email);
-        customerToModify.setPassword(password);
-        return customerRepo.save(customerToModify);
-     }
+   @Transactional
+   public CustomerAccount updateCustomerAccount(int id, String name, String email, String password) {
+      CustomerAccount customerToModify = customerRepo.findCustomerAccountById(id);
+      customerToModify.setName(name);
+      customerToModify.setEmail(email);
+      customerToModify.setPassword(password);
+      return customerRepo.save(customerToModify);
+   }
 
    @Transactional
    public CustomerAccount createCustomer(String name, String email, String password) {
@@ -40,8 +40,9 @@ public class CustomerAccountService {
       }
       CustomerAccount customerToCreate = new CustomerAccount(name, email, password);
       CustomerAccount createdCustomer = customerRepo.save(customerToCreate);
-        billingService.createBillingInformation("address", "postalCode", "country", "name", "cardNumber", 123, null, createdCustomer);
-        return createdCustomer;
+      billingService.createBillingInformation("address", "postalCode", "country", "name", "cardNumber", 123, null,
+            createdCustomer.getId());
+      return createdCustomer;
    }
 
    @Transactional
