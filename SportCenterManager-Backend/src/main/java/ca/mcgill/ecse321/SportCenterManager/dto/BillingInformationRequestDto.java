@@ -11,6 +11,16 @@ public class BillingInformationRequestDto {
     private int cvc;
     private Date expirationDate;
 
+    public BillingInformationRequestDto(String address, String postalCode, String country, String name, String cardNumber, int cvc, Date expirationDate) {
+        this.address = address;
+        this.postalCode = postalCode;
+        this.country = country;
+        this.name = name;
+        this.cardNumber = cardNumber;
+        this.cvc = cvc;
+        this.expirationDate = expirationDate;
+    }
+
     public String getAddress() {
         return address;
     }

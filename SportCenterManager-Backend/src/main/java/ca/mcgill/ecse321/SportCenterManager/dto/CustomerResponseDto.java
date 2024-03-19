@@ -12,6 +12,10 @@ public class CustomerResponseDto {
     public CustomerResponseDto() {
     }
 
+    // default constructor
+    @SuppressWarnings("unused")
+    private CustomerResponseDto() {}
+
     public CustomerResponseDto(CustomerAccount model) {
         this.id = model.getId();
         this.name = model.getName();

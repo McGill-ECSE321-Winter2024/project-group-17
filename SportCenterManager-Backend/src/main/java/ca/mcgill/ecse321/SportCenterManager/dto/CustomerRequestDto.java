@@ -4,7 +4,7 @@ public class CustomerRequestDto {
     private String name;
     private String email;
     private String password;
-
+  
     public CustomerRequestDto(){
     }
 
