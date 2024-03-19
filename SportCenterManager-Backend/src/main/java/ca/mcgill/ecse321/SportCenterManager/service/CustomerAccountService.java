@@ -9,10 +9,10 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CustomerAccountService {
-    @Autowired
-    private CustomerAccountRepository customerRepo;
-    @Autowired
-    private BillingInformationService billingService;
+   @Autowired
+   private CustomerAccountRepository customerRepo;
+   @Autowired
+   private BillingInformationService billingService;
 
     @Transactional
     public Iterable<CustomerAccount> findAllCustomers() {
@@ -58,7 +58,6 @@ public class CustomerAccountService {
 
    @Transactional
    public CustomerAccount createCustomer(String name, String email, String password) {
-
         // Check if email and password are invalid
         String emailError = isEmailValid(email);
         String passwordError = isPasswordValid(password);
