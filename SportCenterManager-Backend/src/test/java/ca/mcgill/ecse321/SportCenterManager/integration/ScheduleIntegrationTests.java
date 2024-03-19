@@ -47,8 +47,8 @@ public class ScheduleIntegrationTests {
         assertEquals(HttpStatus.OK,response.getStatusCode());
         Schedule createdSchedule = response.getBody();
         assertNotNull(createdSchedule);
-        assertEquals(VALID_START_TIME,createdSchedule.getOpeningHours());
-        assertEquals(VALID_END_TIME,createdSchedule.getClosingHours());
+        assertEquals(VALID_START_TIME.toString(),createdSchedule.getOpeningHours().toString());
+        assertEquals(VALID_END_TIME.toString(),createdSchedule.getClosingHours().toString());
     }
 
     @Test 
@@ -65,8 +65,8 @@ public class ScheduleIntegrationTests {
         assertEquals(HttpStatus.OK,response.getStatusCode());
         Schedule createdSchedule = response.getBody();
         assertNotNull(createdSchedule);
-        assertEquals(VALID_START_TIME,createdSchedule.getOpeningHours());
-        assertEquals(VALID_END_TIME,createdSchedule.getClosingHours());
+        assertEquals(VALID_START_TIME.toString(),createdSchedule.getOpeningHours().toString());
+        assertEquals(VALID_END_TIME.toString(),createdSchedule.getClosingHours().toString());
 
     }
 
