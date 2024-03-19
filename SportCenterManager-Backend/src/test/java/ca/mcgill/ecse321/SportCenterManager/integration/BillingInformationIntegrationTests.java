@@ -6,12 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.sql.Date;
 import java.time.LocalDate;
+import java.util.stream.Stream;
 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -46,13 +50,13 @@ public class BillingInformationIntegrationTests {
     private String DEFAULT_CARD_NUMBER = "cardNumber";
     private int DEFAULT_CVC = 123;
 
-    private String UPDATED_ADDRESS = "updatedAddress";
-    private String UPDATED_POSTAL_CODE = "updatedPostalCode";
-    private String UPDATED_COUNTRY = "updatedCountry";
-    private String UPDATED_NAME = "updatedName";
-    private String UPDATED_CARD_NUMBER = "updatedCardNumber";
-    private int UPDATED_CVC = 456;
-    private Date UPDATED_EXPIRATION_DATE = Date.valueOf(LocalDate.now().plusYears(1));
+    private static String UPDATED_ADDRESS = "updatedAddress";
+    private static String UPDATED_POSTAL_CODE = "updatedPostalCode";
+    private static String UPDATED_COUNTRY = "updatedCountry";
+    private static String UPDATED_NAME = "updatedName";
+    private static String UPDATED_CARD_NUMBER = "updatedCardNumber";
+    private static int UPDATED_CVC = 456;
+    private static Date UPDATED_EXPIRATION_DATE = Date.valueOf(LocalDate.now().plusYears(1));
 
     @Test
     @Order(1)
@@ -152,5 +156,69 @@ public class BillingInformationIntegrationTests {
         LocalDate local_UPDATED_EXPIRATION_DATE = UPDATED_EXPIRATION_DATE.toLocalDate();
         LocalDate local_test = billingInformation.getExpirationDate().toLocalDate();
         assertEquals(local_UPDATED_EXPIRATION_DATE, local_test, "Expiration date not updated.");
+    }
+
+    @Test
+    @Order(5)
+    public void getBillingInformationForInvalidCustomer() {
+        // Setup
+        String url = "/customerAccounts/" + (validId + 1) + "/billingInformation";
+
+        // Act
+        ResponseEntity<BillingInformationResponseDto> response = client.getForEntity(url, BillingInformationResponseDto.class);
+
+        // Assert
+        assertNotNull(response, "Response is null.");
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode(), "Incorrect status code.");
+    }
+
+    @Test
+    @Order(6)
+    public void updateBillingInformationForInvalidCustomer() {
+        // Setup
+        String url = "/customerAccounts/" + (validId + 1) + "/billingInformation";
+        BillingInformationRequestDto request = new BillingInformationRequestDto(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE);
+
+        // Act
+        HttpEntity<BillingInformationRequestDto> requestEntity = new HttpEntity<BillingInformationRequestDto>(request);
+        ResponseEntity<BillingInformationResponseDto> response = client.exchange(url, HttpMethod.PUT, requestEntity, BillingInformationResponseDto.class);
+
+        // Assert
+        assertNotNull(response, "Response is null.");
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode(), "Incorrect status code.");
+    }
+
+    @ParameterizedTest
+    @MethodSource("invalidParameters")
+    @Order(7)
+    public void updateBillingInformationWithInvalidParameters(String address, String postalCode, String country, String name, String cardNumber, int cvc, Date expirationDate) {
+        // Setup
+        String url = "/customerAccounts/" + validId + "/billingInformation";
+        BillingInformationRequestDto request = new BillingInformationRequestDto(address, postalCode, country, name, cardNumber, cvc, expirationDate);
+
+        // Act
+        HttpEntity<BillingInformationRequestDto> requestEntity = new HttpEntity<BillingInformationRequestDto>(request);
+        ResponseEntity<BillingInformationResponseDto> response = client.exchange(url, HttpMethod.PUT, requestEntity, BillingInformationResponseDto.class);
+
+        // Assert
+        assertNotNull(response, "Response is null.");
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode(), "Incorrect status code.");
+    }
+
+    private static Stream<Arguments> invalidParameters() {
+        return Stream.of(
+            Arguments.of(null, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, null, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, null, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, null, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, null, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, 99, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, 1000, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, Date.valueOf(LocalDate.now().minusDays(1))),
+            Arguments.of("", UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, "", UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, "", UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, "", UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
+            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, "", UPDATED_CVC, UPDATED_EXPIRATION_DATE));
     }
 }

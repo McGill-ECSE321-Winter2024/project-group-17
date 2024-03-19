@@ -35,6 +35,8 @@ public class BillingInformationServiceTests {
     @InjectMocks
     private BillingInformationService billingService;
 
+    // TODO CREATE PRIVATE ATTRIBUTES TO REDUCE REDUNDANCY
+
     @Test
     public void testCreateBillingInformationForValidCustomer() {
         // Setup
