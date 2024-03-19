@@ -8,13 +8,10 @@ public class CustomerResponseDto {
     private String email;
     private String password;
 
-
-    public CustomerResponseDto() {
-    }
-
     // default constructor
     @SuppressWarnings("unused")
-    private CustomerResponseDto() {}
+    public CustomerResponseDto() {
+    }
 
     public CustomerResponseDto(CustomerAccount model) {
         this.id = model.getId();

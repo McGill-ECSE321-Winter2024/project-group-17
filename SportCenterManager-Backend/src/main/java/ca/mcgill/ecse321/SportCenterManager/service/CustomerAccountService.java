@@ -76,11 +76,12 @@ public class CustomerAccountService {
    }
    @Transactional
    public CustomerAccount login(String email, String password) {
-        if (!customerRepo.existsCustomerAccountByEmailAndPassword(email, password)) {
-            throw new IllegalArgumentException("Invalid email or password");
-        }
-        return customerRepo.findCustomerAccountByEmailAndPassword(email, password);
-    }
+      if (!customerRepo.existsCustomerAccountByEmailAndPassword(email, password)) {
+         //Throw 400 Status Code
+         throw new IllegalArgumentException("Invalid email or password");
+      }
+      return customerRepo.findCustomerAccountByEmailAndPassword(email, password);
+   }
 
     @Transactional
     public boolean deleteCustomer(int id) {
