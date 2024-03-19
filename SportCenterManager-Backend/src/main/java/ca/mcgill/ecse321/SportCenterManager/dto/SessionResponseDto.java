@@ -15,8 +15,13 @@ public class SessionResponseDto {
     private Course course;
     private InstructorAccount instructor;
     private Schedule schedule;
+    private int id;
     //recurring dates? can date just be a string?
 
+    public SessionResponseDto() {
+    	
+    }
+    
     public SessionResponseDto(Session model){
         this.startTime = model.getStartTime();
         this.endTime=model.getEndTime();
@@ -24,6 +29,11 @@ public class SessionResponseDto {
         this.course=model.getCourse();
         this.instructor=model.getInstructorAccount();
         this.schedule=model.getSchedule();
+        this.id=model.getId();
+    }
+    
+    public int getId() {
+    	return id;
     }
     
     public Time getStartTime() {
