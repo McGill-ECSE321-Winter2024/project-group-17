@@ -1,15 +1,11 @@
 package ca.mcgill.ecse321.SportCenterManager.integration;
 
-import ca.mcgill.ecse321.SportCenterManager.dao.BillingInformationRepository;
-import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
-import ca.mcgill.ecse321.SportCenterManager.dto.CourseResponseDto;
-import ca.mcgill.ecse321.SportCenterManager.dto.CustomerListDto;
-import ca.mcgill.ecse321.SportCenterManager.dto.CustomerRequestDto;
-import ca.mcgill.ecse321.SportCenterManager.dto.CustomerResponseDto;
+import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.dto.*;
+import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
@@ -18,18 +14,15 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-public class CustomerAccountIntegrationTests {
-
+public class InstructorAccountIntegrationTests {
     @Autowired
     private TestRestTemplate client;
 
     @Autowired
-    private CustomerAccountRepository customerRepo;
-    @Autowired
-    private BillingInformationRepository billingRepo;
+    private InstructorAccountRepository instructorRepo;
 
     private String name = "Namir";
     private String email = "Namir@gmail.com";
@@ -37,30 +30,27 @@ public class CustomerAccountIntegrationTests {
     private String newName = "Eric";
     private String newEmail = "Eric@gmail.com";
     private String newPassword = "Password$1";
-
     private String newName1 = "Mahmoud";
     private String newEmail1 = "Mahmoud@gmail.com";
     private String newPassword1 = "Password$2";
 
     private int validId;
-    private int invalidId = -1;
-
+    private int invalidId = -2;
 
     @BeforeAll
     @AfterAll
     public void clearDatabase() {
-        billingRepo.deleteAll();
-        customerRepo.deleteAll();
+        instructorRepo.deleteAll();
     }
 
     @Test
     @Order(1)
-    public void testCreateValidCustomer() {
+    public void testCreateValidInstructor() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(name, email, password);
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, email, password);
 
         //act
-        ResponseEntity<CustomerResponseDto> response = client.postForEntity("/customerAccounts", requestDto, CustomerResponseDto.class);
+        ResponseEntity<InstructorResponseDto> response = client.postForEntity("/instructorAccounts", requestDto, InstructorResponseDto.class);
 
         // assertions
         assertNotNull(response);
@@ -75,9 +65,9 @@ public class CustomerAccountIntegrationTests {
     }
     @Test
     @Order(2)
-    public void testFindCustomerByValidId() {
+    public void testFindInstructorByValidId() {
         // act
-        ResponseEntity<CustomerResponseDto> response = client.getForEntity("/customerAccounts/" + this.validId, CustomerResponseDto.class);
+        ResponseEntity<InstructorResponseDto> response = client.getForEntity("/instructorAccounts/" + this.validId, InstructorResponseDto.class);
 
         // assertions
         assertNotNull(response);
@@ -91,9 +81,9 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(3)
-    public void testFindCustomerByInvalidId() {
+    public void testFindInstructorByInvalidId() {
         // act
-        ResponseEntity<IllegalArgumentException> response = client.getForEntity("/customerAccounts/"+ this.invalidId, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.getForEntity("/instructorAccounts/"+ this.invalidId, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -104,25 +94,25 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(4)
-    public void testFindAllCustomers() {
+    public void testFindAllInstructors() {
         // act
-        ResponseEntity<CustomerListDto> response = client.getForEntity("/customerAccounts", CustomerListDto.class);
+        ResponseEntity<InstructorListDto> response = client.getForEntity("/instructorAccounts", InstructorListDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(1, response.getBody().getCustomers().size());
+        assertEquals(1, response.getBody().getInstructors().size());
     }
 
     @Test
     @Order(5)
-    public void testCreateCustomerWithEmptyEmail() {
+    public void testCreateInstructorWithEmptyEmail() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(name, "", password);
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, "", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -133,12 +123,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(6)
-    public void testCreateCustomerWithSpace() {
+    public void testCreateInstructorWithSpace() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(name, email+" ", password);
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, email+" ", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -149,12 +139,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(7)
-    public void testCreateCustomerWithInvalidEmail() {
+    public void testCreateInstructorWithInvalidEmail() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(name, "Namir@gmail.co", password);
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, "Namir@gmail.co", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -165,12 +155,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(8)
-    public void testCreateCustomerWithEmptyPassword() {
+    public void testCreateInstructorWithEmptyPassword() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(name, "m"+email, "");
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -181,12 +171,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(9)
-    public void testCreateCustomerWithShortPassword() {
+    public void testCreateInstructorWithShortPassword() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(name, "m"+email, "Pass$");
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "Pass$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -197,12 +187,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(10)
-    public void testCreateCustomerWithoutUppercasePassword() {
+    public void testCreateInstructorWithoutUppercasePassword() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(name, "m"+email, "password$");
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "password$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -213,12 +203,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(11)
-    public void testCreateCustomerWithoutLowercasePassword() {
+    public void testCreateInstructorWithoutLowercasePassword() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(name, "m"+email, "PASSWORD$");
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "PASSWORD$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -229,12 +219,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(12)
-    public void testCreateCustomerWithoutSpecialCharPassword() {
+    public void testCreateInstructorWithoutSpecialCharPassword() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(name, "m"+email, "Passworddd");
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "Passworddd");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -245,29 +235,29 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(13)
-    public void testCreateCustomerWithSameEmail() {
+    public void testCreateInstructorWithSameEmail() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(name, email, password);
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, email, password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Customer with this email already exists", response.getBody().getMessage());
+        //assertEquals("Instructor with this email already exists", response.getBody().getMessage());
     }
 
     @Test
     @Order(14)
-    public void testUpdateCustomerByValidId() {
+    public void testUpdateInstructorByValidId() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName, newEmail, newPassword);
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName, newEmail, newPassword);
 
         //act
-        client.put("/customerAccounts/" + this.validId, requestDto);
-        ResponseEntity<CustomerResponseDto> response = client.getForEntity("/customerAccounts/" + this.validId, CustomerResponseDto.class);
+        client.put("/instructorAccounts/" + this.validId, requestDto);
+        ResponseEntity<InstructorResponseDto> response = client.getForEntity("/instructorAccounts/" + this.validId, InstructorResponseDto.class);
 
         // assertions
         assertNotNull(response);
@@ -282,29 +272,29 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(15)
-    public void testUpdateCustomerByInvalidId() {
+    public void testUpdateInstructorByInvalidId() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, newPassword1);
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, newPassword1);
 
         //act
         client.put("/customerAccounts/" + this.invalidId, requestDto);
-        ResponseEntity<IllegalArgumentException> response = client.getForEntity("/customerAccounts/" + this.invalidId, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.getForEntity("/instructorAccounts/" + this.invalidId, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("The customer account was not found", response.getBody().getMessage());
+        //assertEquals("The instructor account was not found", response.getBody().getMessage());
     }
 
     @Test
     @Order(16)
-    public void testUpdateCustomerWithEmptyEmail() {
+    public void testUpdateInstructorWithEmptyEmail() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName1, "", newPassword1);
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "", newPassword1);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -315,12 +305,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(17)
-    public void testUpdateCustomerWithSpaceEmail() {
+    public void testUpdateInstructorWithSpaceEmail() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1+" ", newPassword1);
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1+" ", newPassword1);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -331,12 +321,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(18)
-    public void testUpdateCustomerWithInvalidEmail() {
+    public void testUpdateInstructorWithInvalidEmail() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName1, "Mahmoud@gmail", newPassword1);
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "Mahmoud@gmail", newPassword1);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -347,12 +337,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(19)
-    public void testUpdateCustomerWithEmptyPassword() {
+    public void testUpdateInstructorWithEmptyPassword() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, "");
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -363,12 +353,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(20)
-    public void testUpdateCustomerWithShortPassword() {
+    public void testUpdateInstructorWithShortPassword() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, "Pass$");
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "Pass$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -379,12 +369,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(21)
-    public void testUpdateCustomerWithoutUppercasePassword() {
+    public void testUpdateInstructorWithoutUppercasePassword() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, "password$$");
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "password$$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -395,12 +385,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(22)
-    public void testUpdateCustomerWithoutLowercasePassword() {
+    public void testUpdateInstructorWithoutLowercasePassword() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, "PASSWORD$$");
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "PASSWORD$$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -411,12 +401,12 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(23)
-    public void testUpdateCustomerWithoutSpecialCharPassword() {
+    public void testUpdateInstructorWithoutSpecialCharPassword() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, "Passworddddd");
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "Passworddddd");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
@@ -427,25 +417,25 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(24)
-    public void testUpdateCustomerWithSameEmail() {
+    public void testUpdateInstructorWithSameEmail() {
         // setup
-        CustomerRequestDto requestDto = new CustomerRequestDto(newName, newEmail, newPassword);
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName, newEmail, newPassword);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Customer with this email already exists", response.getBody().getMessage());
+        //assertEquals("Instructor with this email already exists", response.getBody().getMessage());
     }
 
     @Test
     @Order(25)
-    public void testDeleteCustomerByInvalidId() {
+    public void testDeleteInstructorByInvalidId() {
         // act
-        ResponseEntity<CustomerListDto> response = client.exchange("/customerAccounts/" + this.invalidId, HttpMethod.DELETE, null, CustomerListDto.class);
+        ResponseEntity<InstructorListDto> response = client.exchange("/instructorAccounts/" + this.invalidId, HttpMethod.DELETE, null, InstructorListDto.class);
 
         // assertions
         assertNotNull(response);
@@ -455,17 +445,16 @@ public class CustomerAccountIntegrationTests {
 
     @Test
     @Order(26)
-    public void testDeleteCustomerByValidId() {
+    public void testDeleteInstructorByValidId() {
         // act
-        client.delete("/customerAccounts/" + this.validId, CustomerResponseDto.class);
-        ResponseEntity<CustomerListDto> response = client.getForEntity("/customerAccounts", CustomerListDto.class);
+        client.delete("/instructorAccounts/" + this.validId, InstructorResponseDto.class);
+        ResponseEntity<InstructorListDto> response = client.getForEntity("/instructorAccounts", InstructorListDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(0, response.getBody().getCustomers().size());
+        assertEquals(0, response.getBody().getInstructors().size());
 
     }
-
 }

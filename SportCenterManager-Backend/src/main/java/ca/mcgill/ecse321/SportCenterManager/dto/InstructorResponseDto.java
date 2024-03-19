@@ -6,11 +6,16 @@ public class InstructorResponseDto {
     private int id;
     private String name;
     private String email;
+    private String password;
+
+    public InstructorResponseDto() {
+    }
 
     public InstructorResponseDto(InstructorAccount model) {
         this.id = model.getId();
         this.name = model.getName();
         this.email = model.getEmail();
+        this.password = model.getPassword();
     }
 
     public int getId() {
@@ -25,6 +30,10 @@ public class InstructorResponseDto {
         return email;
     }
 
+    public String getPassword() {
+        return password;
+    }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -35,5 +44,9 @@ public class InstructorResponseDto {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

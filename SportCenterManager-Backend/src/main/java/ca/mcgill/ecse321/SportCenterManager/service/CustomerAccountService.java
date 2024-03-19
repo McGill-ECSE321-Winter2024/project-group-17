@@ -9,8 +9,9 @@ import jakarta.transaction.Transactional;
 
 @Service
 public class CustomerAccountService {
-   @Autowired
-   private CustomerAccountRepository customerRepo;
+
+    @Autowired
+    private CustomerAccountRepository customerRepo;
    @Autowired
    private BillingInformationService billingService;
 
