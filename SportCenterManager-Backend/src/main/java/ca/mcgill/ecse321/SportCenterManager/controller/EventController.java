@@ -40,8 +40,9 @@ public class EventController {
 		}
 
     @GetMapping("/courses/{course_id}")
-    public Course findCourseById(@PathVariable int course_id){
-        return eventService.findCourseById(course_id);
+    public CourseResponseDto findCourseById(@PathVariable int course_id){
+        Course foundCourse = eventService.findCourseById(course_id);
+        return new CourseResponseDto(foundCourse);
 		}
 
     @DeleteMapping("/courses/{course_id}")
@@ -50,9 +51,13 @@ public class EventController {
 		}
     //TODO
     @PutMapping("/courses/{course_id}")
-    public void modifyCourseById(@PathVariable int course_id){
-			//return 
+    public void modifyCourseById(@RequestBody CourseRequestDto course, @PathVariable int course_id){
+        eventService.modifyCourseById(course_id, course.getDescription(), course.getCostPerSession());
 		}
+    @PutMapping("/courses/{course_id}/approve")
+    public void approveCourseById(@PathVariable int course_id){
+        eventService.approveCourseById(course_id);
+    }
 
     @PostMapping("/courses")
     public CourseResponseDto createCourse(@RequestBody CourseRequestDto course){
