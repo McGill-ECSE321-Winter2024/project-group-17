@@ -101,7 +101,7 @@ public class InstructorAccountServiceTests {
         verify(instructorRepo, times(1)).findAll();
     }
 
-    // CREATE CUSTOMER ACCOUNT
+    // CREATE INSTRUCTOR ACCOUNT
     @Test
     public void testCreateValidInstructor() {
         // setup
@@ -327,7 +327,7 @@ public class InstructorAccountServiceTests {
         verify(instructorRepo, times(1)).existsInstructorAccountByEmail(email);
     }
 
-    // UPDATE CUSTOMER ACCOUNT
+    // UPDATE INSTRUCTOR ACCOUNT
     @Test
     public void testUpdateValidInstructor() {
         // setup
@@ -650,7 +650,7 @@ public class InstructorAccountServiceTests {
         verify(instructorRepo, times(1)).existsInstructorAccountByEmail(email);
     }
 
-    // DELETE CUSTOMER ACCOUNT
+    // DELETE INSTRUCTOR ACCOUNT
     @Test
     public void testDeleteInstructorByValidId() {
         // setup

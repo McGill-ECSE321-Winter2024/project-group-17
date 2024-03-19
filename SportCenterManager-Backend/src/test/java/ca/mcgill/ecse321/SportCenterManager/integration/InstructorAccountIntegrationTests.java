@@ -45,7 +45,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(1)
-    public void testCreateValidCustomer() {
+    public void testCreateValidInstructor() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, email, password);
 
@@ -65,7 +65,7 @@ public class InstructorAccountIntegrationTests {
     }
     @Test
     @Order(2)
-    public void testFindCustomerByValidId() {
+    public void testFindInstructorByValidId() {
         // act
         ResponseEntity<InstructorResponseDto> response = client.getForEntity("/instructorAccounts/" + this.validId, InstructorResponseDto.class);
 
@@ -81,7 +81,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(3)
-    public void testFindCustomerByInvalidId() {
+    public void testFindInstructorByInvalidId() {
         // act
         ResponseEntity<IllegalArgumentException> response = client.getForEntity("/instructorAccounts/"+ this.invalidId, IllegalArgumentException.class);
 
@@ -94,7 +94,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(4)
-    public void testFindAllCustomers() {
+    public void testFindAllInstructors() {
         // act
         ResponseEntity<InstructorListDto> response = client.getForEntity("/instructorAccounts", InstructorListDto.class);
 
@@ -107,7 +107,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(5)
-    public void testCreateCustomerWithEmptyEmail() {
+    public void testCreateInstructorWithEmptyEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "", password);
 
@@ -123,7 +123,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(6)
-    public void testCreateCustomerWithSpace() {
+    public void testCreateInstructorWithSpace() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, email+" ", password);
 
@@ -139,7 +139,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(7)
-    public void testCreateCustomerWithInvalidEmail() {
+    public void testCreateInstructorWithInvalidEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "Namir@gmail.co", password);
 
@@ -155,7 +155,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(8)
-    public void testCreateCustomerWithEmptyPassword() {
+    public void testCreateInstructorWithEmptyPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "");
 
@@ -171,7 +171,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(9)
-    public void testCreateCustomerWithShortPassword() {
+    public void testCreateInstructorWithShortPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "Pass$");
 
@@ -187,7 +187,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(10)
-    public void testCreateCustomerWithoutUppercasePassword() {
+    public void testCreateInstructorWithoutUppercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "password$");
 
@@ -203,7 +203,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(11)
-    public void testCreateCustomerWithoutLowercasePassword() {
+    public void testCreateInstructorWithoutLowercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "PASSWORD$");
 
@@ -219,7 +219,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(12)
-    public void testCreateCustomerWithoutSpecialCharPassword() {
+    public void testCreateInstructorWithoutSpecialCharPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "Passworddd");
 
@@ -235,7 +235,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(13)
-    public void testCreateCustomerWithSameEmail() {
+    public void testCreateInstructorWithSameEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, email, password);
 
@@ -251,7 +251,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(14)
-    public void testUpdateCustomerByValidId() {
+    public void testUpdateInstructorByValidId() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName, newEmail, newPassword);
 
@@ -272,7 +272,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(15)
-    public void testUpdateCustomerByInvalidId() {
+    public void testUpdateInstructorByInvalidId() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, newPassword1);
 
@@ -289,7 +289,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(16)
-    public void testUpdateCustomerWithEmptyEmail() {
+    public void testUpdateInstructorWithEmptyEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "", newPassword1);
 
@@ -305,7 +305,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(17)
-    public void testUpdateCustomerWithSpaceEmail() {
+    public void testUpdateInstructorWithSpaceEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1+" ", newPassword1);
 
@@ -321,7 +321,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(18)
-    public void testUpdateCustomerWithInvalidEmail() {
+    public void testUpdateInstructorWithInvalidEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "Mahmoud@gmail", newPassword1);
 
@@ -337,7 +337,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(19)
-    public void testUpdateCustomerWithEmptyPassword() {
+    public void testUpdateInstructorWithEmptyPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "");
 
@@ -353,7 +353,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(20)
-    public void testUpdateCustomerWithShortPassword() {
+    public void testUpdateInstructorWithShortPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "Pass$");
 
@@ -369,7 +369,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(21)
-    public void testUpdateCustomerWithoutUppercasePassword() {
+    public void testUpdateInstructorWithoutUppercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "password$$");
 
@@ -385,7 +385,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(22)
-    public void testUpdateCustomerWithoutLowercasePassword() {
+    public void testUpdateInstructorWithoutLowercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "PASSWORD$$");
 
@@ -401,7 +401,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(23)
-    public void testUpdateCustomerWithoutSpecialCharPassword() {
+    public void testUpdateInstructorWithoutSpecialCharPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "Passworddddd");
 
@@ -417,7 +417,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(24)
-    public void testUpdateCustomerWithSameEmail() {
+    public void testUpdateInstructorWithSameEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName, newEmail, newPassword);
 
@@ -433,7 +433,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(25)
-    public void testDeleteCustomerByInvalidId() {
+    public void testDeleteInstructorByInvalidId() {
         // act
         ResponseEntity<InstructorListDto> response = client.exchange("/instructorAccounts/" + this.invalidId, HttpMethod.DELETE, null, InstructorListDto.class);
 
@@ -445,7 +445,7 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(26)
-    public void testDeleteCustomerByValidId() {
+    public void testDeleteInstructorByValidId() {
         // act
         client.delete("/instructorAccounts/" + this.validId, InstructorResponseDto.class);
         ResponseEntity<InstructorListDto> response = client.getForEntity("/instructorAccounts", InstructorListDto.class);
