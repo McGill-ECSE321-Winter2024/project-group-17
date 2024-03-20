@@ -2,11 +2,11 @@ package ca.mcgill.ecse321.SportCenterManager.integration;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dto.*;
-import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,13 +83,13 @@ public class InstructorAccountIntegrationTests {
     @Order(3)
     public void testFindInstructorByInvalidId() {
         // act
-        ResponseEntity<IllegalArgumentException> response = client.getForEntity("/instructorAccounts/"+ this.invalidId, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.getForEntity("/instructorAccounts/"+ this.invalidId, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("There is no course with ID" + invalidId, response.getBody().getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("There is no instructor with ID" + invalidId, response.getBody().getMessage());
     }
 
     @Test
@@ -112,13 +112,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Email is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email is empty", response.getBody().getMessage());
     }
 
     @Test
@@ -128,13 +128,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(name, email+" ", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Email cannot contain any space", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email cannot contain any space", response.getBody().getMessage());
     }
 
     @Test
@@ -144,13 +144,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "Namir@gmail.co", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Invalid Email", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Invalid Email", response.getBody().getMessage());
     }
 
     @Test
@@ -160,13 +160,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password is empty", response.getBody().getMessage());
     }
 
     @Test
@@ -176,13 +176,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "Pass$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must be at least four characters long", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must be at least eight characters long", response.getBody().getMessage());
     }
 
     @Test
@@ -192,13 +192,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "password$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
     }
 
     @Test
@@ -208,13 +208,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "PASSWORD$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
     }
 
     @Test
@@ -224,13 +224,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "Passworddd");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must contain at least one special character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain at least one special character", response.getBody().getMessage());
     }
 
     @Test
@@ -240,13 +240,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(name, email, password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Instructor with this email already exists", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Instructor with this email already exists", response.getBody().getMessage());
     }
 
     @Test
@@ -278,13 +278,13 @@ public class InstructorAccountIntegrationTests {
 
         //act
         client.put("/customerAccounts/" + this.invalidId, requestDto);
-        ResponseEntity<IllegalArgumentException> response = client.getForEntity("/instructorAccounts/" + this.invalidId, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.getForEntity("/instructorAccounts/" + this.invalidId, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("The instructor account was not found", response.getBody().getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("There is no instructor with ID" + invalidId, response.getBody().getMessage());
     }
 
     @Test
@@ -294,13 +294,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "", newPassword1);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Email is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email is empty", response.getBody().getMessage());
     }
 
     @Test
@@ -310,13 +310,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1+" ", newPassword1);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Email cannot contain any space", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email cannot contain any space", response.getBody().getMessage());
     }
 
     @Test
@@ -326,13 +326,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "Mahmoud@gmail", newPassword1);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Invalid Email", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Invalid Email", response.getBody().getMessage());
     }
 
     @Test
@@ -342,13 +342,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password is empty", response.getBody().getMessage());
     }
 
     @Test
@@ -358,13 +358,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "Pass$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must be at least four characters long", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must be at least eight characters long", response.getBody().getMessage());
     }
 
     @Test
@@ -374,13 +374,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "password$$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
     }
 
     @Test
@@ -390,13 +390,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "PASSWORD$$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
     }
 
     @Test
@@ -406,13 +406,13 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "Passworddddd");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must contain at least one special character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain at least one special character", response.getBody().getMessage());
     }
 
     @Test
@@ -422,25 +422,26 @@ public class InstructorAccountIntegrationTests {
         InstructorRequestDto requestDto = new InstructorRequestDto(newName, newEmail, newPassword);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Instructor with this email already exists", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Instructor with this email already exists", response.getBody().getMessage());
     }
 
     @Test
     @Order(25)
     public void testDeleteInstructorByInvalidId() {
         // act
-        ResponseEntity<InstructorListDto> response = client.exchange("/instructorAccounts/" + this.invalidId, HttpMethod.DELETE, null, InstructorListDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.invalidId, HttpMethod.DELETE, null, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("There is no instructor with ID" + invalidId, response.getBody().getMessage());
     }
 
     @Test
