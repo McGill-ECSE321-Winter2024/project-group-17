@@ -23,6 +23,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.BillingInformationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 
@@ -70,7 +71,7 @@ public class BillingInformationServiceTests {
         when(customerRepo.existsById(customer_id)).thenReturn(false);
         
         // Act & Assert
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.createBillingInformation("TestAddress", "TestPostalCode", "TestCountry", "TestName", "TestCardNumber", 123, Date.valueOf(LocalDate.now()), customer_id));
+        ServiceException e = assertThrows(ServiceException.class, () -> billingService.createBillingInformation("TestAddress", "TestPostalCode", "TestCountry", "TestName", "TestCardNumber", 123, Date.valueOf(LocalDate.now()), customer_id));
         assertEquals("There is no customer with ID " + customer_id + " in the system.", e.getMessage());
     }
 
@@ -95,7 +96,7 @@ public class BillingInformationServiceTests {
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(null);
         
         // Act & Assert
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.getBillingInformation(customer_id));
+        ServiceException e = assertThrows(ServiceException.class, () -> billingService.getBillingInformation(customer_id));
         assertEquals("There is no customer with ID " + customer_id + " in the system.", e.getMessage());
     }
 
@@ -131,7 +132,7 @@ public class BillingInformationServiceTests {
         when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(null);
         
         // Act & Assert
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.getBillingInformation(customer_id));
+        ServiceException e = assertThrows(ServiceException.class, () -> billingService.getBillingInformation(customer_id));
         assertEquals("There is no customer with ID " + customer_id + " in the system.", e.getMessage());
     }
 
@@ -143,7 +144,7 @@ public class BillingInformationServiceTests {
         when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(false);
         
         // Act & Assert
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", 123, Date.valueOf(LocalDate.now())));
+        ServiceException e = assertThrows(ServiceException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", 123, Date.valueOf(LocalDate.now())));
         assertEquals("There is no billing information for customer with ID " + customer_id + " in the system.", e.getMessage());
     }
 
@@ -157,7 +158,7 @@ public class BillingInformationServiceTests {
         when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
 
         // Act & Assert
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, updated_address, updated_postalCode, updated_country, updated_name, updated_cardNumber, updated_cvc, updated_expirationDate));
+        ServiceException e = assertThrows(ServiceException.class, () -> billingService.updateBillingInformation(customer_id, updated_address, updated_postalCode, updated_country, updated_name, updated_cardNumber, updated_cvc, updated_expirationDate));
         assertEquals(String.format("%s cannot be empty.", var), e.getMessage());
     }
 
@@ -195,7 +196,7 @@ public class BillingInformationServiceTests {
         when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
 
         // Act & Assert
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", invalid_cvc, Date.valueOf(LocalDate.now())));
+        ServiceException e = assertThrows(ServiceException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", invalid_cvc, Date.valueOf(LocalDate.now())));
         assertEquals("CVC must be a 3-digit number.", e.getMessage());
     }
 
@@ -208,7 +209,7 @@ public class BillingInformationServiceTests {
         when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
 
         // Act & Assert
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", 123, Date.valueOf(LocalDate.now().minusDays(1))));
+        ServiceException e = assertThrows(ServiceException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", 123, Date.valueOf(LocalDate.now().minusDays(1))));
         assertEquals("Expiration date cannot be in the past.", e.getMessage());
     }
 }
