@@ -7,6 +7,7 @@ public class SessionListDto {
 
     private List<SessionResponseDto> sessions;
 
+    @SuppressWarnings("unused")
     private SessionListDto(){
 
     }

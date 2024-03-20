@@ -1,10 +1,6 @@
 package ca.mcgill.ecse321.SportCenterManager.dto;
 import java.sql.Time;
 
-import ca.mcgill.ecse321.SportCenterManager.model.Course;
-import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
-import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
-
 import java.sql.Date;
 
 public class SessionRequestDto {

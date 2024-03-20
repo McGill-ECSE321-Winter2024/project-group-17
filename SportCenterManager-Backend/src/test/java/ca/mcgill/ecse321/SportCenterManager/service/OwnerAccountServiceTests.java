@@ -1,19 +1,21 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.OwnerAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.OwnerAccount;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.mockito.Mockito.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
@@ -53,13 +55,13 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount foundOwnerAccount = service.findOwnerById(id);
-        } catch (IllegalArgumentException e) {
+            service.findOwnerById(id);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("There is no course with ID" + id, error);
+        assertEquals("There is no owner with ID" + id, error);
         verify(ownerRepo, times(1)).findOwnerAccountById(id);
     }
 
@@ -92,14 +94,13 @@ public class OwnerAccountServiceTests {
         String name = "validName6";
         String email = "";
         String password = "validPassword$6";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            OwnerAccount createdOwnerAccount = service.createOwner(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createOwner(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -113,14 +114,13 @@ public class OwnerAccountServiceTests {
         String name = "validName6";
         String email = "invalidEmail @gmail.com";
         String password = "validPassword$6";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            OwnerAccount createdOwnerAccount = service.createOwner(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createOwner(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -135,14 +135,13 @@ public class OwnerAccountServiceTests {
         String name = "validName6";
         String email = "invalidEmail6@gmail.co";
         String password = "validPassword$6";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            OwnerAccount createdOwnerAccount = service.createOwner(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createOwner(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -157,14 +156,13 @@ public class OwnerAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            OwnerAccount createdOwnerAccount = service.createOwner(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createOwner(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -179,19 +177,18 @@ public class OwnerAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "P$6";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            OwnerAccount createdOwnerAccount = service.createOwner(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createOwner(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("Password must be at least four characters long", error);
+        assertEquals("Password must be at least eight characters long", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
     }
 
@@ -201,14 +198,13 @@ public class OwnerAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "invalidpassword$6";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            OwnerAccount createdOwnerAccount = service.createOwner(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createOwner(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -223,14 +219,13 @@ public class OwnerAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "PASSWORD$";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            OwnerAccount createdOwnerAccount = service.createOwner(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createOwner(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -245,14 +240,13 @@ public class OwnerAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "invalidPassword6";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            OwnerAccount createdOwnerAccount = service.createOwner(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createOwner(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -278,8 +272,8 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount createdOwnerAccount = service.createOwner(sameName, sameEmail, samePassword);
-        } catch (IllegalArgumentException e) {
+            service.createOwner(sameName, sameEmail, samePassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -337,8 +331,8 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(invalidId, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateOwnerAccount(invalidId, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -367,8 +361,8 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -395,8 +389,8 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -424,8 +418,8 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -453,8 +447,8 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -482,13 +476,13 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("Password must be at least four characters long", error);
+        assertEquals("Password must be at least eight characters long", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
         verify(ownerRepo, times(1)).findOwnerAccountById(id);
     }
@@ -511,8 +505,8 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -540,8 +534,8 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -569,8 +563,8 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -600,8 +594,8 @@ public class OwnerAccountServiceTests {
 
         // act
         try {
-            OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 

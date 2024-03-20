@@ -1,10 +1,11 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
-import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.OwnerAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.OwnerAccount;
 import jakarta.transaction.Transactional;
 
@@ -17,7 +18,7 @@ public class OwnerAccountService {
      public OwnerAccount findOwnerById(int id) {
          OwnerAccount ownerAccount = ownerRepo.findOwnerAccountById(id);
          if (ownerAccount == null) {
-             throw new IllegalArgumentException("There is no course with ID" + id);
+             throw new ServiceException(HttpStatus.NOT_FOUND, "There is no owner with ID" + id);
          }
          return ownerAccount;
      }
@@ -30,10 +31,10 @@ public class OwnerAccountService {
 
         // Error messages are thrown if email or password are is invalid. If not create, save and return
         if (!emailError.isEmpty()) {
-            throw new IllegalArgumentException(emailError);
+            throw new ServiceException(HttpStatus.FORBIDDEN, emailError);
         }
         if (!passwordError.isEmpty()) {
-            throw new IllegalArgumentException(passwordError);
+            throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
         }
         else {
             OwnerAccount ownerToCreate = new OwnerAccount(name, email, password);
@@ -47,7 +48,7 @@ public class OwnerAccountService {
         OwnerAccount ownerToModify = ownerRepo.findOwnerAccountById(id);
 
         if (ownerToModify == null) {
-            throw new IllegalArgumentException("The owner account was not found");
+            throw new ServiceException(HttpStatus.NOT_FOUND, "The owner account was not found");
         }
         else {
             // Check if email and password are invalid
@@ -56,10 +57,10 @@ public class OwnerAccountService {
 
             // Error messages are thrown if email or password are invalid. If not update, save and return
             if (!emailError.isEmpty()) {
-                throw new IllegalArgumentException(emailError);
+                throw new ServiceException(HttpStatus.FORBIDDEN, emailError);
             }
             if (!passwordError.isEmpty()) {
-                throw new IllegalArgumentException(passwordError);
+                throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
             }
             else {
                 ownerToModify.setName(name);
@@ -120,7 +121,7 @@ public class OwnerAccountService {
         else {
             // Check if password is at least 8 character long
             if (password.length() < 8) {
-                error = "Password must be at least four characters long";
+                error = "Password must be at least eight characters long";
                 return error;
             }
 
