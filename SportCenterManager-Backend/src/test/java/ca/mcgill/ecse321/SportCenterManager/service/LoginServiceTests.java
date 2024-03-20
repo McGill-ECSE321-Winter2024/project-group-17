@@ -10,6 +10,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 
 @SpringBootTest
@@ -44,7 +45,7 @@ public class LoginServiceTests{
         String password = "Password321";
         when(customerRepo.existsCustomerAccountByEmailAndPassword(email,password)).thenReturn(false);
         when(customerRepo.findCustomerAccountByEmailAndPassword(email,password)).thenReturn(null);
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,()->customerService.login(email,password));
+        ServiceException e = assertThrows(ServiceException.class,()->customerService.login(email,password));
         assertEquals("Invalid email or password",e.getMessage());
     }
     @Test
@@ -53,7 +54,7 @@ public class LoginServiceTests{
          String password = "";
          when(customerRepo.existsCustomerAccountByEmailAndPassword(email,password)).thenReturn(false);
          when(customerRepo.findCustomerAccountByEmailAndPassword(email,password)).thenReturn(null);   
-         IllegalArgumentException e = assertThrows(IllegalArgumentException.class,()->customerService.login(email,password));
+         ServiceException e = assertThrows(ServiceException.class,()->customerService.login(email,password));
          assertEquals("Invalid email or password",e.getMessage());
     }
 
@@ -62,7 +63,7 @@ public class LoginServiceTests{
         String email = "";
         String password = "";
         when(customerRepo.existsCustomerAccountByEmailAndPassword(email,password)).thenReturn(false);
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,()->customerService.login(email,password));
+        ServiceException e = assertThrows(ServiceException.class,()->customerService.login(email,password));
         assertEquals("Invalid email or password",e.getMessage());
 
     }

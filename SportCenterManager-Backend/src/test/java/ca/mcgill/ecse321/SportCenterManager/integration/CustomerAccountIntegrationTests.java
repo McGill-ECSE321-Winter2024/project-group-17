@@ -2,15 +2,17 @@ package ca.mcgill.ecse321.SportCenterManager.integration;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.BillingInformationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
-import ca.mcgill.ecse321.SportCenterManager.dto.CourseResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerListDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerResponseDto;
+import ca.mcgill.ecse321.SportCenterManager.dto.ErrorDto;
+
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -82,8 +84,6 @@ public class CustomerAccountIntegrationTests {
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        System.out.println(response);
-        System.out.println(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(this.validId, response.getBody().getId());
 
@@ -93,13 +93,13 @@ public class CustomerAccountIntegrationTests {
     @Order(3)
     public void testFindCustomerByInvalidId() {
         // act
-        ResponseEntity<IllegalArgumentException> response = client.getForEntity("/customerAccounts/"+ this.invalidId, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.getForEntity("/customerAccounts/"+ this.invalidId, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("There is no course with ID" + invalidId, response.getBody().getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("There is no customer with ID" + invalidId, response.getBody().getMessage());
     }
 
     @Test
@@ -122,13 +122,13 @@ public class CustomerAccountIntegrationTests {
         CustomerRequestDto requestDto = new CustomerRequestDto(name, "", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/customerAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Email is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email is empty", response.getBody().getMessage());
     }
 
     @Test
@@ -138,13 +138,13 @@ public class CustomerAccountIntegrationTests {
         CustomerRequestDto requestDto = new CustomerRequestDto(name, email+" ", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/customerAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Email cannot contain any space", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email cannot contain any space", response.getBody().getMessage());
     }
 
     @Test
@@ -154,13 +154,13 @@ public class CustomerAccountIntegrationTests {
         CustomerRequestDto requestDto = new CustomerRequestDto(name, "Namir@gmail.co", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/customerAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Invalid Email", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Invalid Email", response.getBody().getMessage());
     }
 
     @Test
@@ -170,13 +170,13 @@ public class CustomerAccountIntegrationTests {
         CustomerRequestDto requestDto = new CustomerRequestDto(name, "m"+email, "");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/customerAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password is empty", response.getBody().getMessage());
     }
 
     @Test
@@ -186,13 +186,13 @@ public class CustomerAccountIntegrationTests {
         CustomerRequestDto requestDto = new CustomerRequestDto(name, "m"+email, "Pass$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/customerAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must be at least four characters long", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must be at least eight characters long", response.getBody().getMessage());
     }
 
     @Test
@@ -202,13 +202,13 @@ public class CustomerAccountIntegrationTests {
         CustomerRequestDto requestDto = new CustomerRequestDto(name, "m"+email, "password$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/customerAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
     }
 
     @Test
@@ -218,13 +218,13 @@ public class CustomerAccountIntegrationTests {
         CustomerRequestDto requestDto = new CustomerRequestDto(name, "m"+email, "PASSWORD$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/customerAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
     }
 
     @Test
@@ -234,13 +234,13 @@ public class CustomerAccountIntegrationTests {
         CustomerRequestDto requestDto = new CustomerRequestDto(name, "m"+email, "Passworddd");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/customerAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must contain at least one special character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain at least one special character", response.getBody().getMessage());
     }
 
     @Test
@@ -250,13 +250,13 @@ public class CustomerAccountIntegrationTests {
         CustomerRequestDto requestDto = new CustomerRequestDto(name, email, password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/customerAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/customerAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Customer with this email already exists", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Customer with this email already exists", response.getBody().getMessage());
     }
 
     @Test
@@ -288,13 +288,13 @@ public class CustomerAccountIntegrationTests {
 
         //act
         client.put("/customerAccounts/" + this.invalidId, requestDto);
-        ResponseEntity<IllegalArgumentException> response = client.getForEntity("/customerAccounts/" + this.invalidId, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.getForEntity("/customerAccounts/" + this.invalidId, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("The customer account was not found", response.getBody().getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("There is no customer with ID" + this.invalidId, response.getBody().getMessage());
     }
 
     @Test
@@ -302,15 +302,16 @@ public class CustomerAccountIntegrationTests {
     public void testUpdateCustomerWithEmptyEmail() {
         // setup
         CustomerRequestDto requestDto = new CustomerRequestDto(newName1, "", newPassword1);
-
+        HttpEntity<CustomerRequestDto> requestEntity = new HttpEntity<CustomerRequestDto>(requestDto);
+        
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Email is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email is empty", response.getBody().getMessage());
     }
 
     @Test
@@ -318,15 +319,16 @@ public class CustomerAccountIntegrationTests {
     public void testUpdateCustomerWithSpaceEmail() {
         // setup
         CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1+" ", newPassword1);
+        HttpEntity<CustomerRequestDto> requestEntity = new HttpEntity<CustomerRequestDto>(requestDto);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Email cannot contain any space", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email cannot contain any space", response.getBody().getMessage());
     }
 
     @Test
@@ -334,15 +336,16 @@ public class CustomerAccountIntegrationTests {
     public void testUpdateCustomerWithInvalidEmail() {
         // setup
         CustomerRequestDto requestDto = new CustomerRequestDto(newName1, "Mahmoud@gmail", newPassword1);
-
+        HttpEntity<CustomerRequestDto> requestEntity = new HttpEntity<CustomerRequestDto>(requestDto);
+        
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Invalid Email", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Invalid Email", response.getBody().getMessage());
     }
 
     @Test
@@ -350,15 +353,16 @@ public class CustomerAccountIntegrationTests {
     public void testUpdateCustomerWithEmptyPassword() {
         // setup
         CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, "");
+        HttpEntity<CustomerRequestDto> requestEntity = new HttpEntity<CustomerRequestDto>(requestDto);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password is empty", response.getBody().getMessage());
     }
 
     @Test
@@ -366,15 +370,16 @@ public class CustomerAccountIntegrationTests {
     public void testUpdateCustomerWithShortPassword() {
         // setup
         CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, "Pass$");
+        HttpEntity<CustomerRequestDto> requestEntity = new HttpEntity<CustomerRequestDto>(requestDto);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must be at least four characters long", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must be at least eight characters long", response.getBody().getMessage());
     }
 
     @Test
@@ -382,15 +387,16 @@ public class CustomerAccountIntegrationTests {
     public void testUpdateCustomerWithoutUppercasePassword() {
         // setup
         CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, "password$$");
+        HttpEntity<CustomerRequestDto> requestEntity = new HttpEntity<CustomerRequestDto>(requestDto);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
     }
 
     @Test
@@ -398,15 +404,16 @@ public class CustomerAccountIntegrationTests {
     public void testUpdateCustomerWithoutLowercasePassword() {
         // setup
         CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, "PASSWORD$$");
+        HttpEntity<CustomerRequestDto> requestEntity = new HttpEntity<CustomerRequestDto>(requestDto);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
     }
 
     @Test
@@ -414,15 +421,16 @@ public class CustomerAccountIntegrationTests {
     public void testUpdateCustomerWithoutSpecialCharPassword() {
         // setup
         CustomerRequestDto requestDto = new CustomerRequestDto(newName1, newEmail1, "Passworddddd");
-
+        HttpEntity<CustomerRequestDto> requestEntity = new HttpEntity<CustomerRequestDto>(requestDto);
+        
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must contain at least one special character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain at least one special character", response.getBody().getMessage());
     }
 
     @Test
@@ -430,27 +438,29 @@ public class CustomerAccountIntegrationTests {
     public void testUpdateCustomerWithSameEmail() {
         // setup
         CustomerRequestDto requestDto = new CustomerRequestDto(newName, newEmail, newPassword);
+        HttpEntity<CustomerRequestDto> requestEntity = new HttpEntity<CustomerRequestDto>(requestDto);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/customerAccounts/" + this.validId, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Customer with this email already exists", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Customer with this email already exists", response.getBody().getMessage());
     }
 
     @Test
     @Order(25)
     public void testDeleteCustomerByInvalidId() {
         // act
-        ResponseEntity<CustomerListDto> response = client.exchange("/customerAccounts/" + this.invalidId, HttpMethod.DELETE, null, CustomerListDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/customerAccounts/" + this.invalidId, HttpMethod.DELETE, null, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("There is no customer with ID" + this.invalidId, response.getBody().getMessage());
     }
 
     @Test

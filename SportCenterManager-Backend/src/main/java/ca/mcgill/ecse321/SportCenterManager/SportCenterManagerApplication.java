@@ -14,6 +14,7 @@ public class SportCenterManagerApplication {
 		SpringApplication.run(SportCenterManagerApplication.class, args);
 	}
 
+
 	@PostConstruct
 	public void init() {
 		TimeZone.setDefault(TimeZone.getTimeZone("UTC"));

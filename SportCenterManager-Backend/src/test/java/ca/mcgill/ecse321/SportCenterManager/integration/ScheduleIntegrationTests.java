@@ -79,7 +79,7 @@ public class ScheduleIntegrationTests {
         ResponseEntity<ErrorDto> response = client.postForEntity("/schedule",request,ErrorDto.class);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
         ErrorDto createdSchedule = response.getBody();
         assertNotNull(createdSchedule);
         assertEquals("Cannot have an empty time",createdSchedule.getMessage());
@@ -93,7 +93,7 @@ public class ScheduleIntegrationTests {
         ResponseEntity<ErrorDto> response = client.postForEntity("/schedule",request,ErrorDto.class);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
         ErrorDto createdSchedule = response.getBody();
         assertNotNull(createdSchedule);
         assertEquals("Cannot have an empty time",createdSchedule.getMessage());
@@ -107,7 +107,7 @@ public class ScheduleIntegrationTests {
         ResponseEntity<ErrorDto> response = client.postForEntity("/schedule",request,ErrorDto.class);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
         ErrorDto createdSchedule = response.getBody();
         assertNotNull(createdSchedule);
         assertEquals("Cannot have an empty time",createdSchedule.getMessage());
@@ -122,7 +122,7 @@ public class ScheduleIntegrationTests {
         ResponseEntity<ErrorDto> response = client.postForEntity("/schedule",request,ErrorDto.class);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
         ErrorDto createdSchedule = response.getBody();
         assertNotNull(createdSchedule);
         assertEquals("Cannot have closing hour occur before opening hour",createdSchedule.getMessage());

@@ -1,5 +1,6 @@
 package ca.mcgill.ecse321.SportCenterManager.controller;
 
+
 import java.sql.Time;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,5 +24,5 @@ public class ScheduleController {
         Schedule modifiedschedule = service.updateSchedule(opening,closing);
         return modifiedschedule;
     }
-
+  
 }

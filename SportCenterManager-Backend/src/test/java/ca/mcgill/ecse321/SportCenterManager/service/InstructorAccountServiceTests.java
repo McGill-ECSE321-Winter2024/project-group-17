@@ -1,6 +1,7 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -55,13 +56,13 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount foundCustomerAccount = service.findInstructorById(id);
-        } catch (IllegalArgumentException e) {
+            service.findInstructorById(id);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("There is no course with ID" + id, error);
+        assertEquals("There is no instructor with ID" + id, error);
         verify(instructorRepo, times(1)).findInstructorAccountById(id);
     }
 
@@ -130,14 +131,13 @@ public class InstructorAccountServiceTests {
         String name = "validName6";
         String email = "";
         String password = "validPassword$6";
-        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            InstructorAccount createdInstructorAccount = service.createInstructor(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -151,14 +151,13 @@ public class InstructorAccountServiceTests {
         String name = "validName6";
         String email = "invalidEmail @gmail.com";
         String password = "validPassword$6";
-        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            InstructorAccount createdInstructorAccount = service.createInstructor(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -173,14 +172,13 @@ public class InstructorAccountServiceTests {
         String name = "validName6";
         String email = "invalidEmail6@gmail.co";
         String password = "validPassword$6";
-        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            InstructorAccount createdInstructorAccount = service.createInstructor(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -195,14 +193,13 @@ public class InstructorAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "";
-        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            InstructorAccount createdInstructorAccount = service.createInstructor(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -217,19 +214,18 @@ public class InstructorAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "P$6";
-        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            InstructorAccount createdInstructorAccount = service.createInstructor(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("Password must be at least four characters long", error);
+        assertEquals("Password must be at least eight characters long", error);
         verify(instructorRepo, times(0)).save(any(InstructorAccount.class));
     }
 
@@ -239,14 +235,13 @@ public class InstructorAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "invalidpassword$6";
-        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            InstructorAccount createdInstructorAccount = service.createInstructor(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -261,14 +256,13 @@ public class InstructorAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "PASSWORD$";
-        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            InstructorAccount createdInstructorAccount = service.createInstructor(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -283,14 +277,13 @@ public class InstructorAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "invalidPassword6";
-        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            InstructorAccount createdInstructorAccount = service.createInstructor(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -316,8 +309,8 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount createdInstructorAccount = service.createInstructor(sameName, sameEmail, samePassword);
-        } catch (IllegalArgumentException e) {
+            service.createInstructor(sameName, sameEmail, samePassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -375,8 +368,8 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount updatedInstructorAccount = service.updateInstructorAccount(invalidId, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateInstructorAccount(invalidId, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -405,8 +398,8 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount updatedInstructorAccount = service.updateInstructorAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -433,8 +426,8 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount updatedInstructorAccount = service.updateInstructorAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -462,8 +455,8 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount updatedInstructorAccount = service.updateInstructorAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -491,8 +484,8 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount updatedInstructorAccount = service.updateInstructorAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -520,13 +513,13 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount updatedInstructorAccount = service.updateInstructorAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("Password must be at least four characters long", error);
+        assertEquals("Password must be at least eight characters long", error);
         verify(instructorRepo, times(0)).save(any(InstructorAccount.class));
         verify(instructorRepo, times(1)).findInstructorAccountById(id);
     }
@@ -549,8 +542,8 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount updatedInstructorAccount = service.updateInstructorAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -578,8 +571,8 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount updatedInstructorAccount = service.updateInstructorAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -607,8 +600,8 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount updatedInstructorAccount = service.updateInstructorAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -638,8 +631,8 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            InstructorAccount updatedInstructorAccount = service.updateInstructorAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -679,13 +672,13 @@ public class InstructorAccountServiceTests {
 
         // act
         try {
-            boolean deletedInstructorAccount = service.deleteInstructor(id);
-        } catch (IllegalArgumentException e) {
+            service.deleteInstructor(id);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("There is no course with ID" + id, error);
+        assertEquals("There is no instructor with ID" + id, error);
         verify(instructorRepo, times(1)).findInstructorAccountById(id);
     }
 }

@@ -16,6 +16,7 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.ScheduleRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 
 @SpringBootTest
@@ -69,7 +70,7 @@ public class ScheduleTests {
         Time end = new Time(3600000);
 
 
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,()->scheduleService.updateSchedule(start, end));
+        ServiceException e = assertThrows(ServiceException.class,()->scheduleService.updateSchedule(start, end));
         assertEquals("Cannot have an empty time",e.getMessage());
 
     }
@@ -79,7 +80,7 @@ public class ScheduleTests {
         Time start = new Time(1);
         Time end = null;
         
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,()->scheduleService.updateSchedule(start, end));
+        ServiceException e = assertThrows(ServiceException.class,()->scheduleService.updateSchedule(start, end));
         assertEquals("Cannot have an empty time",e.getMessage());
 
     }
@@ -88,7 +89,7 @@ public class ScheduleTests {
         Time start = null;
         Time end = null;
         
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,()->scheduleService.updateSchedule(start, end));
+        ServiceException e = assertThrows(ServiceException.class,()->scheduleService.updateSchedule(start, end));
         assertEquals("Cannot have an empty time",e.getMessage());
 
     }
@@ -97,7 +98,7 @@ public class ScheduleTests {
         Time start = new Time(3600000);
         Time end = new Time(1);
         
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class,()->scheduleService.updateSchedule(start, end));
+        ServiceException e = assertThrows(ServiceException.class,()->scheduleService.updateSchedule(start, end));
         assertEquals("Cannot have closing hour occur before opening hour",e.getMessage());
 
     }

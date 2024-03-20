@@ -90,6 +90,24 @@ public class RegistrationServiceTests {
 	}
 	
 	@Test
+	public void testFindRegistrationForNonExistingSession() {
+		// setup
+		CustomerAccount customer = createCustomer();
+		int customerId = 20;
+		int sessionId = 25;
+		lenient().when(eventService.findSessionById(sessionId)).thenReturn(null);
+		lenient().when(customerService.findCustomerById(customerId)).thenReturn(customer);
+		
+		// execution
+		Registration result = service.findRegistration(customerId, sessionId);
+		
+		// assertions
+		assertNull(result);
+		verify(eventService, times(1)).findSessionById(sessionId);
+		verify(customerService, times(1)).findCustomerById(customerId);
+	}
+	
+	@Test
 	public void testFindAllRegistrations() {
 		// setup
 		Iterable<Registration> registrations = getExistingRegistrations(new CustomerAccount());
@@ -240,7 +258,34 @@ public class RegistrationServiceTests {
 	}
 	
 	@Test
-	public void testRegisterConflictingSession() {
+	public void testRegisterConflictingSessionWithStartTime() {
+		CustomerAccount customer = createCustomer();
+		int customerId = customer.getId();
+		lenient().when(customerService.findCustomerById(customerId)).thenReturn(customer);
+		
+		Session session = new Session();
+		session.setStartTime(Time.valueOf("19:30:00"));
+		session.setEndTime(Time.valueOf("20:30:00"));
+		session.setDate(Date.valueOf("2024-05-05"));
+		int sessionId = 25;
+		lenient().when(eventService.findSessionById(sessionId)).thenReturn(session);
+		
+		lenient().when(registrationRepo.findAll()).thenReturn(getExistingRegistrations(customer));
+		lenient().when(registrationRepo.findRegistrationByKey(any(Registration.Key.class))).thenReturn(null);
+		String msg = "";
+		try {
+			Registration registration = service.register(customerId, sessionId);
+			lenient().when(registrationRepo.save(any(Registration.class))).thenReturn(registration);
+		} catch (ServiceException e) {
+			msg = e.getMessage();
+		}
+		
+		assertEquals("Failed to Register: Session overlaps with an existing registration!", msg);
+		verify(registrationRepo, times(0)).save(any(Registration.class));
+	}
+	
+	@Test
+	public void testRegisterConflictingSessionWithEndTime() {
 		CustomerAccount customer = createCustomer();
 		int customerId = customer.getId();
 		lenient().when(customerService.findCustomerById(customerId)).thenReturn(customer);
@@ -248,6 +293,60 @@ public class RegistrationServiceTests {
 		Session session = new Session();
 		session.setStartTime(Time.valueOf("20:30:00"));
 		session.setEndTime(Time.valueOf("21:30:00"));
+		session.setDate(Date.valueOf("2024-05-05"));
+		int sessionId = 25;
+		lenient().when(eventService.findSessionById(sessionId)).thenReturn(session);
+		
+		lenient().when(registrationRepo.findAll()).thenReturn(getExistingRegistrations(customer));
+		lenient().when(registrationRepo.findRegistrationByKey(any(Registration.Key.class))).thenReturn(null);
+		String msg = "";
+		try {
+			Registration registration = service.register(customerId, sessionId);
+			lenient().when(registrationRepo.save(any(Registration.class))).thenReturn(registration);
+		} catch (ServiceException e) {
+			msg = e.getMessage();
+		}
+		
+		assertEquals("Failed to Register: Session overlaps with an existing registration!", msg);
+		verify(registrationRepo, times(0)).save(any(Registration.class));
+	}
+	
+	@Test
+	public void testRegisterConflictingWithSameTime() {
+		CustomerAccount customer = createCustomer();
+		int customerId = customer.getId();
+		lenient().when(customerService.findCustomerById(customerId)).thenReturn(customer);
+		
+		Session session = new Session();
+		session.setStartTime(Time.valueOf("20:00:00"));
+		session.setEndTime(Time.valueOf("21:00:00"));
+		session.setDate(Date.valueOf("2024-05-05"));
+		int sessionId = 25;
+		lenient().when(eventService.findSessionById(sessionId)).thenReturn(session);
+		
+		lenient().when(registrationRepo.findAll()).thenReturn(getExistingRegistrations(customer));
+		lenient().when(registrationRepo.findRegistrationByKey(any(Registration.Key.class))).thenReturn(null);
+		String msg = "";
+		try {
+			Registration registration = service.register(customerId, sessionId);
+			lenient().when(registrationRepo.save(any(Registration.class))).thenReturn(registration);
+		} catch (ServiceException e) {
+			msg = e.getMessage();
+		}
+		
+		assertEquals("Failed to Register: Session overlaps with an existing registration!", msg);
+		verify(registrationRepo, times(0)).save(any(Registration.class));
+	}
+	
+	@Test
+	public void testRegisterConflictingWithCompleteOverlappingTime() {
+		CustomerAccount customer = createCustomer();
+		int customerId = customer.getId();
+		lenient().when(customerService.findCustomerById(customerId)).thenReturn(customer);
+		
+		Session session = new Session();
+		session.setStartTime(Time.valueOf("19:00:00"));
+		session.setEndTime(Time.valueOf("22:00:00"));
 		session.setDate(Date.valueOf("2024-05-05"));
 		int sessionId = 25;
 		lenient().when(eventService.findSessionById(sessionId)).thenReturn(session);
@@ -368,7 +467,7 @@ public class RegistrationServiceTests {
 
 	/*------------ CANCEL REGISTRATION -- ENDPOINT SERVICE METHOD TESTS  -----------*/
 	@Test
-	public void testCancelRegistration() {
+	public void testCancelRegistrationValid() {
 		// setup
 		CustomerAccount customer = createCustomer();
 		int customerId = customer.getId();
@@ -389,6 +488,38 @@ public class RegistrationServiceTests {
 		// assertion
 		assertNotNull(result);
 		assertTrue(result);
+		verify(customerService, times(2)).findCustomerById(customerId);
+		verify(eventService, times(2)).findSessionById(sessionId);
+		verify(registrationRepo, times(2)).findRegistrationByKey(registrationKey);
+		verify(registrationRepo, times(1)).delete(registration);
+	}
+	
+	@Test
+	public void testCancelRegistrationInvalid() {
+		// setup
+		CustomerAccount customer = createCustomer();
+		int customerId = customer.getId();
+		Session session = new Session();
+		int sessionId = 5;
+		session.setId(sessionId);
+		Registration.Key registrationKey = new Registration.Key(session, customer);
+		Registration registration = new Registration(registrationKey);
+		
+		lenient().when(customerService.findCustomerById(customerId)).thenReturn(customer);
+		lenient().when(eventService.findSessionById(sessionId)).thenReturn(session);
+		lenient().when(registrationRepo.findRegistrationByKey(registrationKey)).thenReturn(registration).thenReturn(registration);
+		lenient().doNothing().when(registrationRepo).delete(registration);
+		
+		// execution
+		String msg = "";
+		
+		try {
+			service.cancelRegistration(customerId, sessionId);
+		} catch (ServiceException e) {
+			msg = e.getMessage();
+		}
+		// assertion
+		assertEquals("An error has occurred while canceling the registration.", msg);
 		verify(customerService, times(2)).findCustomerById(customerId);
 		verify(eventService, times(2)).findSessionById(sessionId);
 		verify(registrationRepo, times(2)).findRegistrationByKey(registrationKey);

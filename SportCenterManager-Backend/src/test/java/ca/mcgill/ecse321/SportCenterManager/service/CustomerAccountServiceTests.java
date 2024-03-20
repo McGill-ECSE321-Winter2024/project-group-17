@@ -2,7 +2,7 @@ package ca.mcgill.ecse321.SportCenterManager.service;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.BillingInformationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
-import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -11,7 +11,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -60,13 +59,13 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount foundCustomerAccount = service.findCustomerById(id);
-        } catch (IllegalArgumentException e) {
+            service.findCustomerById(id);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("There is no course with ID" + id, error);
+        assertEquals("There is no customer with ID" + id, error);
         verify(customerRepo, times(1)).findCustomerAccountById(id);
     }
 
@@ -137,14 +136,13 @@ public class CustomerAccountServiceTests {
         String name = "validName6";
         String email = "";
         String password = "validPassword$6";
-        CustomerAccount customerAccount = new CustomerAccount(name, email, password);
         lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            CustomerAccount createdCustomerAccount = service.createCustomer(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createCustomer(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -158,14 +156,13 @@ public class CustomerAccountServiceTests {
         String name = "validName6";
         String email = "invalidEmail @gmail.com";
         String password = "validPassword$6";
-        CustomerAccount customerAccount = new CustomerAccount(name, email, password);
         lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            CustomerAccount createdCustomerAccount = service.createCustomer(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createCustomer(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -180,14 +177,13 @@ public class CustomerAccountServiceTests {
         String name = "validName6";
         String email = "invalidEmail6@gmail.co";
         String password = "validPassword$6";
-        CustomerAccount customerAccount = new CustomerAccount(name, email, password);
         lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            CustomerAccount createdCustomerAccount = service.createCustomer(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createCustomer(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -202,14 +198,13 @@ public class CustomerAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "";
-        CustomerAccount customerAccount = new CustomerAccount(name, email, password);
         lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            CustomerAccount createdCustomerAccount = service.createCustomer(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createCustomer(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -224,14 +219,13 @@ public class CustomerAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "P$6";
-        CustomerAccount customerAccount = new CustomerAccount(name, email, password);
         lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            CustomerAccount createdCustomerAccount = service.createCustomer(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createCustomer(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -246,14 +240,13 @@ public class CustomerAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "invalidpassword$6";
-        CustomerAccount customerAccount = new CustomerAccount(name, email, password);
         lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            CustomerAccount createdCustomerAccount = service.createCustomer(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createCustomer(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -268,14 +261,13 @@ public class CustomerAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "PASSWORD$";
-        CustomerAccount customerAccount = new CustomerAccount(name, email, password);
         lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            CustomerAccount createdCustomerAccount = service.createCustomer(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createCustomer(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -290,14 +282,13 @@ public class CustomerAccountServiceTests {
         String name = "validName6";
         String email = "validEmail6@gmail.com";
         String password = "invalidPassword6";
-        CustomerAccount customerAccount = new CustomerAccount(name, email, password);
         lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            CustomerAccount createdCustomerAccount = service.createCustomer(name, email, password);
-        } catch (IllegalArgumentException e) {
+            service.createCustomer(name, email, password);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -323,8 +314,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount createdCustomerAccount = service.createCustomer(sameName, sameEmail, samePassword);
-        } catch (IllegalArgumentException e) {
+            service.createCustomer(sameName, sameEmail, samePassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -382,8 +373,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount updatedCustomerAccount = service.updateCustomerAccount(invalidId, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateCustomerAccount(invalidId, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -412,8 +403,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount updatedCustomerAccount = service.updateCustomerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateCustomerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -440,8 +431,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount updatedCustomerAccount = service.updateCustomerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateCustomerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -469,8 +460,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount updatedCustomerAccount = service.updateCustomerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateCustomerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -498,8 +489,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount updatedCustomerAccount = service.updateCustomerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateCustomerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -527,8 +518,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount updatedCustomerAccount = service.updateCustomerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateCustomerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -556,8 +547,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount updatedCustomerAccount = service.updateCustomerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateCustomerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -585,8 +576,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount updatedCustomerAccount = service.updateCustomerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateCustomerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -614,8 +605,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount updatedCustomerAccount = service.updateCustomerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateCustomerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -645,8 +636,8 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            CustomerAccount updatedCustomerAccount = service.updateCustomerAccount(id, newName, newEmail, newPassword);
-        } catch (IllegalArgumentException e) {
+            service.updateCustomerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
@@ -686,13 +677,13 @@ public class CustomerAccountServiceTests {
 
         // act
         try {
-            boolean deletedCustomerAccount = service.deleteCustomer(id);
-        } catch (IllegalArgumentException e) {
+            service.deleteCustomer(id);
+        } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("There is no course with ID" + id, error);
+        assertEquals("There is no customer with ID" + id, error);
         verify(customerRepo, times(1)).findCustomerAccountById(id);
     }
 }

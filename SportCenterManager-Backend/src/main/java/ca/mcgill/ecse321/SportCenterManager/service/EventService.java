@@ -1,7 +1,6 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.CourseRepository;
-import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.RegistrationRepository;
 
@@ -13,16 +12,12 @@ import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
 import ca.mcgill.ecse321.SportCenterManager.model.Registration;
 
-
 import org.springframework.stereotype.Service;
-
 
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
-import java.util.ArrayList;
-import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +34,10 @@ public class EventService {
     private InstructorAccountService instructorService;
     @Autowired
     private RegistrationRepository registrationRepo;
+    @Autowired
+    private ScheduleService scheduleService;
+    //@Autowired
+    //private RegistrationService registrationService;
 
     @Transactional 
     public Iterable<Course> findAllCourses(){
@@ -49,7 +48,7 @@ public class EventService {
     public Course findCourseById(int course_id ){
         Course course = courseRepo.findCourseById(course_id);
         if (course == null){
-          throw new IllegalArgumentException("There is no course with ID " + course_id + ".");
+          throw new ServiceException(HttpStatus.NOT_FOUND, "There is no course with ID " + course_id + ".");
         }
         return course;
     }
@@ -57,7 +56,7 @@ public class EventService {
     @Transactional 
     public boolean deleteCourseById(int course_id){
         if (courseRepo.findCourseById(course_id) == null){
-          throw new IllegalArgumentException("There is no course with ID " + course_id + ".");
+          throw new ServiceException(HttpStatus.NOT_FOUND, "There is no course with ID " + course_id + ".");
         }
         deleteAllSessionsOfCourse(course_id);
         courseRepo.deleteById(course_id);
@@ -69,11 +68,11 @@ public class EventService {
         Course courseToModify = courseRepo.findCourseById(course_id);
 
         if (courseToModify == null){
-            throw new IllegalArgumentException("There is no course with ID " + course_id + ".");
+            throw new ServiceException(HttpStatus.NOT_FOUND, "There is no course with ID " + course_id + ".");
         }
 
         if (costPerSession <= 0){
-            throw new IllegalArgumentException("Failed to modify course: Cost per session must be greater than 0.");
+            throw new ServiceException(HttpStatus.FORBIDDEN, "Failed to modify course: Cost per session must be greater than 0.");
         }
 
         courseToModify.setDescription(description);
@@ -88,12 +87,12 @@ public class EventService {
 
         for (Course course : courses){
             if (course.getName().equals(name)){
-                throw new IllegalArgumentException("Failed to create course: Course with name " + name + " already exists.");
+                throw new ServiceException(HttpStatus.CONFLICT, "Failed to create course: Course with name " + name + " already exists.");
             }
         }
 
         if (costPerSession <= 0){
-            throw new IllegalArgumentException("Failed to create course: Cost per session must be greater than 0.");
+            throw new ServiceException(HttpStatus.FORBIDDEN, "Failed to create course: Cost per session must be greater than 0.");
         }
 
         Course courseToCreate = new Course(name, description, costPerSession);
@@ -104,14 +103,12 @@ public class EventService {
     public Course approveCourseById(int course_id){
         Course courseToApprove = courseRepo.findCourseById(course_id);
         if (courseToApprove == null){
-            throw new IllegalArgumentException("There is no course with ID " + course_id + ".");
+            throw new ServiceException(HttpStatus.NOT_FOUND, "There is no course with ID " + course_id + ".");
         }
         courseToApprove.setIsApproved(true);
         return courseRepo.save(courseToApprove);
     }
-
-    //sessions
-
+  
     @Transactional
     public List<Session> findAllSessionsOfCourse(int course_id){
         Iterable<Session> sessions = sessionRepo.findAll();
@@ -127,13 +124,22 @@ public class EventService {
         return sessionsOfCourse;
     }
     
-    @Transactional
+   @Transactional
     public Session findSessionById(int session_id){
-			return sessionRepo.findSessionById(session_id);
+        if(sessionRepo.findSessionById(session_id) == null){
+            throw new ServiceException(HttpStatus.NOT_FOUND, "Session with inputted id is not found.");
+        }
+        return sessionRepo.findSessionById(session_id);
 		}
     
     @Transactional
     public boolean deleteAllSessionsOfCourse(int course_id){
+        Course course = courseRepo.findCourseById(course_id);
+        if (course == null){
+            throw new ServiceException(HttpStatus.NOT_FOUND, "There is no course with ID " + course_id + ".");
+        }
+
+        //List<Registration> registrations = registrationService.findAllRegistrations();
         Iterable<Registration> registrations = registrationRepo.findAll();
         List<Session> sessionsToDelete = findAllSessionsOfCourse(course_id);
 
@@ -141,33 +147,77 @@ public class EventService {
             for (Session session : sessionsToDelete){
                 if (registration.getKey().getSession().getId() == session.getId()){
                     registrationRepo.delete(registration);
+                    //registrationService.cancelRegistration(registration.getKey().getCustomerAccount().getId(), session.getId());
                 }
             }
         }
 
         for (Session session : sessionsToDelete){
-            sessionRepo.delete(session);
+            deleteSessionById(session.getId());
         }
 
         return true;
     }
 
     @Transactional
-    public void deleteSessionById(int session_id){
-			//return 
-            sessionRepo.deleteById(session_id);
-		}
+    public boolean deleteSessionById(int session_id){
 
-    //TODO
-    @Transactional
-    public void modifySessionById(){
-			//return 
-		}
+    	//Check if session exists
+        findSessionById(session_id);
+        sessionRepo.deleteById(session_id);
+        return true;
+    }
     
     @Transactional
-    public Session createSession(Time start_time, Time end_time, Date date, InstructorAccount aInstructorAccount, Course aCourse, Schedule aSchedule){
+    public Session modifySessionById(int session_id, Time startTime, Time endTime, Date date, int courseId, int instructorId){
+        if(endTime.before(startTime)){
+            throw new ServiceException(HttpStatus.FORBIDDEN, "End time must be be after the start time.");
+        }
+
+        long currentTimeMillis = System.currentTimeMillis();
+        Date currentDate = new Date(currentTimeMillis);
+        if(date.before(currentDate)){
+            throw new ServiceException(HttpStatus.FORBIDDEN, "Cannot create a session on date that has passed.");
+        }
+
+        Course course = findCourseById(courseId);
+        InstructorAccount instructor = instructorService.findInstructorById(instructorId);
+        Schedule schedule = scheduleService.findSchedule();
+        
+        Session session = findSessionById(session_id);
+        session.setStartTime(startTime);
+        session.setEndTime(endTime);
+        session.setDate(date);
+        session.setCourse(course);
+        session.setInstructorAccount(instructor);
+        session.setSchedule(schedule);
+        return sessionRepo.save(session);
+    }
+    
+    @Transactional
+    public Session createSession(Time start_time, Time end_time, Date date, int instructorId, int courseId){
+        if(end_time.before(start_time)){
+            throw new ServiceException(HttpStatus.FORBIDDEN, "End time must be be after the start time.");
+        }
+        long currentTimeMillis = System.currentTimeMillis();
+        Date currentDate = new Date(currentTimeMillis);
+        if(date.before(currentDate)){
+            throw new ServiceException(HttpStatus.FORBIDDEN, "Cannot create a session on date that has passed.");
+        }
+        
+        InstructorAccount aInstructorAccount;
+        // If instructorId == -1, then instructor will be assigned later on
+        if (instructorId == -1) {
+        	aInstructorAccount = null;
+        } else {
+        	aInstructorAccount = instructorService.findInstructorById(instructorId);
+        }
+        
+        Course aCourse = findCourseById(courseId);
+        Schedule aSchedule = scheduleService.findSchedule();
+        
         Session sessionToCreate = new Session(start_time, end_time, date,aInstructorAccount,aCourse,aSchedule);
-	    return sessionRepo.save(sessionToCreate); 
+        return sessionRepo.save(sessionToCreate);
 	}
     
     @Transactional
@@ -175,7 +225,7 @@ public class EventService {
     	InstructorAccount instructor = instructorService.findInstructorById(instructorId);
     	Session session = findSessionById(sessionId);
     	if (session.getInstructorAccount() != null) {
-    		throw new ServiceException(HttpStatus.BAD_REQUEST, "An instructor is already supervising this session!");
+    		throw new ServiceException(HttpStatus.CONFLICT, "An instructor is already supervising this session!");
     	}
     	if (hasConflict(instructor, session)) {
     		throw new ServiceException(HttpStatus.FORBIDDEN, "Session overlaps with another that is already supervised by the instructor!");
@@ -206,7 +256,9 @@ public class EventService {
 				newSession.getEndTime().before(session.getEndTime()) &&
 				newSession.getEndTime().after(session.getStartTime()) ||
 				newSession.getStartTime().equals(session.getStartTime()) &&
-				newSession.getEndTime().equals(session.getEndTime()))) {
+				newSession.getEndTime().equals(session.getEndTime())||
+				newSession.getStartTime().before(session.getStartTime()) &&
+				newSession.getEndTime().after(session.getEndTime()))) {
 				return true;
 			}
 		}
