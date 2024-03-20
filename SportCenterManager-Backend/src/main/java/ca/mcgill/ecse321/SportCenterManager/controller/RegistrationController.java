@@ -27,7 +27,7 @@ public class RegistrationController {
     @Autowired
     private RegistrationService service;
     
-    @PutMapping("/courses/{course_id}/{session_id}/registrations/{customerAccount_id}")
+    @PutMapping("/courses/{course_id}/sessions/{session_id}/registrations/{customerAccount_id}")
     @ResponseStatus(HttpStatus.CREATED)
     public RegistrationResponseDto register(@PathVariable(name="customerAccount_id") int customerId, @PathVariable(name="session_id") int sessionId) {
     	Registration registration = service.register(customerId, sessionId);
@@ -40,7 +40,7 @@ public class RegistrationController {
     	return new RegistrationListDto(registrations);
     }
     
-    @GetMapping("/courses/{course_id}/{session_id}/registrations/customers")
+    @GetMapping("/courses/{course_id}/sessions/{session_id}/registrations/customers")
     public CustomerListDto findAllRegistrantsForSession(@PathVariable(name="session_id") int sessionId) {
     	List<CustomerResponseDto> registrants = new ArrayList<CustomerResponseDto>();
     	for (CustomerAccount customer : service.findSessionRegistrants(sessionId)) {
@@ -49,7 +49,7 @@ public class RegistrationController {
     	return new CustomerListDto(registrants);
     }
     
-    @DeleteMapping("/courses/{course_id}/{session_id}/registrations/{customerAccount_id}")
+    @DeleteMapping("/courses/{course_id}/sessions/{session_id}/registrations/{customerAccount_id}")
     public void cancelRegistration(@PathVariable(name="customerAccount_id") int customerId, @PathVariable(name="session_id") int sessionId) {
     	service.cancelRegistration(customerId, sessionId);
     }

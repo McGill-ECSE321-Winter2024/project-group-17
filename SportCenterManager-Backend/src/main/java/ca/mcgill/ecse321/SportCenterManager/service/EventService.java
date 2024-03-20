@@ -256,7 +256,9 @@ public class EventService {
 				newSession.getEndTime().before(session.getEndTime()) &&
 				newSession.getEndTime().after(session.getStartTime()) ||
 				newSession.getStartTime().equals(session.getStartTime()) &&
-				newSession.getEndTime().equals(session.getEndTime()))) {
+				newSession.getEndTime().equals(session.getEndTime())||
+				newSession.getStartTime().before(session.getStartTime()) &&
+				newSession.getEndTime().after(session.getEndTime()))) {
 				return true;
 			}
 		}

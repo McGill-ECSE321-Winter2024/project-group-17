@@ -23,7 +23,7 @@ import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class EventServiceTests {
+public class SuperviseServiceTests {
 	@Mock
 	InstructorAccountService instructorService;
 	@Mock

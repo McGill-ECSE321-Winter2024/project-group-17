@@ -8,10 +8,14 @@ import java.sql.Date;
 import java.sql.Time;
 import java.util.List;
 
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.TestInstance.Lifecycle;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
@@ -39,6 +43,8 @@ import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+@TestInstance(Lifecycle.PER_CLASS)
 public class RegistrationIntegrationTests {
 	@Autowired
 	private TestRestTemplate client;
@@ -59,21 +65,23 @@ public class RegistrationIntegrationTests {
 	
 	private int customerOneId;
 	private int customerTwoId;
-	private int customerThreeId;
 	private int sessionOneId;
 	private int sessionTwoId;
 	private int sessionThreeId;
 	private int sessionFourId;
+	private int sessionFiveId;
+	private int sessionSixId;
+	private int sessionSevenId;
 	private int courseOneId;
 	private int courseTwoId;
 	
-	@BeforeEach
+	@BeforeAll
 	public void setupDatabase() {
 		clearDatabase();
 		populateDatabase();
 	}
 	
-	@AfterEach
+	@AfterAll
 	public void cleanDatabase() {
 		clearDatabase();
 	}
@@ -94,8 +102,6 @@ public class RegistrationIntegrationTests {
 		this.customerOneId = customerRepo.save(customerOne).getId();
 		CustomerAccount customerTwo = new CustomerAccount("Mahmoud", "MahmoudA2@gmail.com", "smolPassword2@");
 		this.customerTwoId = customerRepo.save(customerTwo).getId();
-		CustomerAccount customerThree = new CustomerAccount("Eric", "ez@gmail.com", "pass1#");
-		this.customerThreeId = customerRepo.save(customerThree).getId();
 		
 		InstructorAccount instructorOne = new InstructorAccount("Haoyuan", "5g@gmail.com", "bigPassword4@");
 		instructorRepo.save(instructorOne);
@@ -126,6 +132,15 @@ public class RegistrationIntegrationTests {
 		Session sessionFour = new Session(Time.valueOf("19:30:00"), Time.valueOf("20:30:00"), Date.valueOf("2024-05-05"), 
 				instructorTwo, courseTwo, schedule);
 		sessionFourId = sessionRepo.save(sessionFour).getId();
+		Session sessionFive = new Session(Time.valueOf("20:30:00"), Time.valueOf("21:30:00"), Date.valueOf("2024-05-05"), 
+				instructorOne, courseOne, schedule);
+		sessionFiveId = sessionRepo.save(sessionFive).getId();
+		Session sessionSix = new Session(Time.valueOf("19:30:00"), Time.valueOf("20:30:00"), Date.valueOf("2024-05-05"), 
+				instructorOne, courseOne, schedule);
+		sessionSixId = sessionRepo.save(sessionSix).getId();
+		Session sessionSeven = new Session(Time.valueOf("19:00:00"), Time.valueOf("22:00:00"), Date.valueOf("2024-05-05"), 
+				instructorOne, courseOne, schedule);
+		sessionSevenId = sessionRepo.save(sessionSeven).getId();
 	}
 	
 	@Test
@@ -139,42 +154,89 @@ public class RegistrationIntegrationTests {
 	@Test
 	@Order(2)
 	public void testRegisterWithDuplicate() {
-		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
-		ResponseEntity<ErrorDto> response = client.exchange("/courses/" + Integer.toString(courseOneId) + "/"
+		//Execution
+		ResponseEntity<ErrorDto> response = client.exchange("/courses/" + Integer.toString(courseOneId) + "/sessions/"
 		+ Integer.toString(sessionOneId) + "/registrations/" + Integer.toString(customerOneId) , 
 				HttpMethod.PUT, null, ErrorDto.class);
+		
+		//Assertions
 		assertNotNull(response);
 		assertNotNull(response.getBody());
-		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
 		assertEquals("Failed to Register: You are already registered to this session!", response.getBody().getMessage());
 	}
 	
 	@Test
 	@Order(3)
-	public void testRegisterWithConflict() {
-		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
-		ResponseEntity<ErrorDto> response = client.exchange("/courses/" + Integer.toString(courseTwoId) + "/"
+	public void testRegisterWithSameTimeConflict() {
+		//Execution
+		ResponseEntity<ErrorDto> response = client.exchange("/courses/" + Integer.toString(courseTwoId) + "/sessions/"
 				+ Integer.toString(sessionFourId) + "/registrations/" + Integer.toString(customerOneId), 
 				HttpMethod.PUT, null, ErrorDto.class);
+		//Assertions
 		assertNotNull(response);
 		assertNotNull(response.getBody());
-		assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+		assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
 		assertEquals("Failed to Register: Session overlaps with an existing registration!", response.getBody().getMessage());
 	}
 	
 	@Test
 	@Order(4)
+	public void testRegisterWithEndTimeConflict() {
+		//Execution
+		ResponseEntity<ErrorDto> response = client.exchange("/courses/" + Integer.toString(courseOneId) + "/sessions/"
+				+ Integer.toString(sessionFiveId) + "/registrations/" + Integer.toString(customerOneId), 
+				HttpMethod.PUT, null, ErrorDto.class);
+		//Assertions
+		assertNotNull(response);
+		assertNotNull(response.getBody());
+		assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+		assertEquals("Failed to Register: Session overlaps with an existing registration!", response.getBody().getMessage());
+	}
+	
+	@Test
+	@Order(5)
+	public void testRegisterWithStartTimeConflict() {
+		//Execution
+		ResponseEntity<ErrorDto> response = client.exchange("/courses/" + Integer.toString(courseOneId) + "/sessions/"
+				+ Integer.toString(sessionSixId) + "/registrations/" + Integer.toString(customerOneId), 
+				HttpMethod.PUT, null, ErrorDto.class);
+		//Assertions
+		assertNotNull(response);
+		assertNotNull(response.getBody());
+		assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+		assertEquals("Failed to Register: Session overlaps with an existing registration!", response.getBody().getMessage());
+	}
+	
+	@Test
+	@Order(6)
+	public void testRegisterWithCompleteOverlapConflict() {
+		//Execution
+		ResponseEntity<ErrorDto> response = client.exchange("/courses/" + Integer.toString(courseOneId) + "/sessions/"
+				+ Integer.toString(sessionSevenId) + "/registrations/" + Integer.toString(customerOneId), 
+				HttpMethod.PUT, null, ErrorDto.class);
+		//Assertions
+		assertNotNull(response);
+		assertNotNull(response.getBody());
+		assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+		assertEquals("Failed to Register: Session overlaps with an existing registration!", response.getBody().getMessage());
+	}
+	
+	@Test
+	@Order(7)
 	public void testFindAllRegistrationsByCustomer() {
-		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
+		//Setup
 		registerCustomerValid(customerOneId, sessionTwoId, courseOneId);
 		registerCustomerValid(customerOneId, sessionThreeId, courseOneId);
 		registerCustomerValid(customerTwoId, sessionOneId, courseOneId);
 		
+		//Execution
 		ResponseEntity<RegistrationListDto> response = client.getForEntity("/customerAccounts/" + Integer.toString(customerOneId) + "/registrations", 
 				RegistrationListDto.class);
 		RegistrationListDto responseBody = response.getBody();
 		List<RegistrationResponseDto> registrationDtos = responseBody.getRegistrations();
 		
+		//Assertions
 		assertNotNull(response);
 		assertNotNull(responseBody);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
@@ -185,41 +247,39 @@ public class RegistrationIntegrationTests {
 	}
 	
 	@Test
-	@Order(5)
+	@Order(8)
 	public void testFindAllSessionRegistrants() {
-		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
-		registerCustomerValid(customerThreeId, sessionOneId, courseOneId);
-		registerCustomerValid(customerTwoId, sessionTwoId, courseOneId);
-		
-		ResponseEntity<CustomerListDto> response = client.getForEntity("/courses/" + Integer.toString(courseOneId) + "/"
+		//Execution
+		ResponseEntity<CustomerListDto> response = client.getForEntity("/courses/" + Integer.toString(courseOneId) + "/sessions/"
 				+ Integer.toString(sessionOneId) + "/registrations/customers", CustomerListDto.class);
 		CustomerListDto responseBody = response.getBody();
 		List<CustomerResponseDto> customerDtos = responseBody.getCustomers();
 		
+		//Assertions
 		assertNotNull(response);
 		assertNotNull(responseBody);
 		assertEquals(HttpStatus.OK, response.getStatusCode());
 		assertEquals(2, customerDtos.size());
 		assertTrue(containsCustomer(customerOneId, customerDtos));
-		assertTrue(containsCustomer(customerThreeId, customerDtos));
+		assertTrue(containsCustomer(customerTwoId, customerDtos));
 		
 	}
 	
 	@Test
-	@Order(6)
+	@Order(9)
 	public void testCancelRegistration() {
-		registerCustomerValid(customerOneId, sessionOneId, courseOneId);
-		registerCustomerValid(customerTwoId, sessionOneId, courseOneId);
-		
-		ResponseEntity<CustomerListDto> responseBeforeDelete = client.getForEntity("/courses/" + Integer.toString(courseOneId) + "/"
+		//Setup
+		ResponseEntity<CustomerListDto> responseBeforeDelete = client.getForEntity("/courses/" + Integer.toString(courseOneId) + "/sessions/"
 				+ Integer.toString(sessionOneId) + "/registrations/customers", CustomerListDto.class);
 		CustomerListDto preDeleteBody = responseBeforeDelete.getBody();
 		List<CustomerResponseDto> initialCustomerDtos = preDeleteBody.getCustomers();
 		
-		client.delete("/courses/" + Integer.toString(courseOneId) + "/"
+		//Execution
+		client.delete("/courses/" + Integer.toString(courseOneId) + "/sessions/"
 				+ Integer.toString(sessionOneId) + "/registrations/" + Integer.toString(customerOneId));
 		
-		ResponseEntity<CustomerListDto> responseAfterDelete = client.getForEntity("/courses/" + Integer.toString(courseOneId) + "/"
+		//Assertions
+		ResponseEntity<CustomerListDto> responseAfterDelete = client.getForEntity("/courses/" + Integer.toString(courseOneId) + "/sessions/"
 				+ Integer.toString(sessionOneId) + "/registrations/customers", CustomerListDto.class);
 		CustomerListDto postDeleteBody = responseAfterDelete.getBody();
 		List<CustomerResponseDto> finalCustomerDtos = postDeleteBody.getCustomers();
@@ -235,8 +295,9 @@ public class RegistrationIntegrationTests {
 		assertTrue(containsCustomer(customerTwoId, finalCustomerDtos));
 	}
 	
+	/*------------------------HELPER METHODS-------------------------*/
 	private void registerCustomerValid(int customerId, int sessionId, int courseId) {
-		ResponseEntity<RegistrationResponseDto> response = client.exchange("/courses/" + Integer.toString(courseId) + "/"
+		ResponseEntity<RegistrationResponseDto> response = client.exchange("/courses/" + Integer.toString(courseId) + "/sessions/"
 				+ Integer.toString(sessionId) + "/registrations/" + Integer.toString(customerId), 
 				HttpMethod.PUT, null, RegistrationResponseDto.class);
 		assertNotNull(response);
