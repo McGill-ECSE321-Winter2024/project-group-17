@@ -11,16 +11,14 @@ public class SessionRequestDto {
     private Time startTime;
     private Time endTime; 
     private Date date;
-    private Course course;
-    private InstructorAccount instructor;
-    private Schedule schedule;
-    public SessionRequestDto(Time startTime, Time endTime, Date date, InstructorAccount instructor, Course courseSchedule, Schedule schedule){
+    private int courseId;
+    private int instructorId;
+    public SessionRequestDto(Time startTime, Time endTime, Date date, int instructorId, int courseId){
         this.startTime = startTime;
         this.endTime = endTime;
         this.date = date;
-        this.course = course;
-        this.instructor = instructor;
-        this.schedule = schedule;
+        this.courseId = courseId;
+        this.instructorId = instructorId;
     }
 
 
@@ -48,27 +46,20 @@ public class SessionRequestDto {
         this.date = date;
     }
 
-    public Course getCourse() {
-        return course;
+    public int getCourseId() {
+        return courseId;
     }
 
-    public void setCourse(Course course) {
-        this.course = course;
+    public void setCourse(int courseId) {
+        this.courseId = courseId;
     }
 
-    public InstructorAccount getInstructor() {
-         return instructor;
+    public int getInstructorId() {
+         return instructorId;
     }
 
-    public void setInstructor(InstructorAccount instructor) {
-         this.instructor = instructor;
+    public void setInstructorId(int instructorId) {
+         this.instructorId = instructorId;
     }
-
-    public Schedule getSchedule() {
-         return schedule;
-    }
-
-    public void setSchedule(Schedule schedule) {
-         this.schedule = schedule;
-    }
+    
 }

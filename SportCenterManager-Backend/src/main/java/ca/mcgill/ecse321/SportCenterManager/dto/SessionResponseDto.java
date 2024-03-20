@@ -12,12 +12,12 @@ public class SessionResponseDto {
     private Time startTime;
     private Time endTime; 
     private Date date;
-    private Course course;
-    private InstructorAccount instructor;
-    private Schedule schedule;
+    private CourseResponseDto course;
+    private InstructorResponseDto instructor;
+    private ScheduleResponseDto schedule;
     private int id;
     //recurring dates? can date just be a string?
-
+    
     public SessionResponseDto() {
     	
     }
@@ -26,9 +26,13 @@ public class SessionResponseDto {
         this.startTime = model.getStartTime();
         this.endTime=model.getEndTime();
         this.date= model.getDate();
-        this.course=model.getCourse();
-        this.instructor=model.getInstructorAccount();
-        this.schedule=model.getSchedule();
+        this.course= new CourseResponseDto(model.getCourse());
+        if (model.getInstructorAccount() != null) {
+        	this.instructor= new InstructorResponseDto(model.getInstructorAccount());
+        } else {
+        	this.instructor = new InstructorResponseDto(new InstructorAccount("DummyAccount", "DummyAccount", "DummyAccount"));
+        }
+        this.schedule= new ScheduleResponseDto(model.getSchedule());
         this.id= model.getId();
     }
   
@@ -60,28 +64,28 @@ public class SessionResponseDto {
         this.date = date;
     }
 
-    public Course getCourse() {
+    public CourseResponseDto getCourse() {
         return course;
     }
 
     public void setCourse(Course course) {
-        this.course = course;
+        this.course = new CourseResponseDto(course);
     }
 
-    public InstructorAccount getInstructor() {
+    public InstructorResponseDto getInstructor() {
         return instructor;
     }
 
     public void setInstructor(InstructorAccount instructor) {
-        this.instructor = instructor;
+        this.instructor = new InstructorResponseDto(instructor);
     }
 
-    public Schedule getSchedule() {
+    public ScheduleResponseDto getSchedule() {
         return schedule;
     }
 
     public void setSchedule(Schedule schedule) {
-        this.schedule = schedule;
+        this.schedule = new ScheduleResponseDto(schedule);
     }
     
 }
