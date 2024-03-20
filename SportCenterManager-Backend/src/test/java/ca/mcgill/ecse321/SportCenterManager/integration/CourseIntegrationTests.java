@@ -62,9 +62,7 @@ public class CourseIntegrationTests {
         assertEquals(VALID_COST_PER_SESSION, createdCourse.getCostPerSession());
         assertNotNull(createdCourse.getId());
         assertTrue(createdCourse.getId() > 0, "Response should have a positive ID.");
-        System.out.println(createdCourse.getId());
         this.validId = createdCourse.getId();
-        System.out.println(this.validId);
     }
 
     @Test

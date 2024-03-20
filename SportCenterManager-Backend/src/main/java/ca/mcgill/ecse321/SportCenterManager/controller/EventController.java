@@ -53,7 +53,7 @@ public class EventController {
     public void deleteCourseById(@PathVariable int course_id){
         eventService.deleteCourseById(course_id);
 		}
-    //TODO
+
     @PutMapping("/courses/{course_id}")
     public void modifyCourseById(@RequestBody CourseRequestDto course, @PathVariable int course_id){
         eventService.modifyCourseById(course_id, course.getDescription(), course.getCostPerSession());
@@ -83,11 +83,11 @@ public class EventController {
 			return eventService.findSessionById(session_id);
 		}
 
-    // //TODO: DOES NOT WORK -- need to access sessions which have foreign key course_id... does not work yet, see event service 
-    //  @DeleteMapping("/courses/{course_id}/sessions")
-    //   public void deleteAllSessionsOfCourse(@PathVariable int course_id){
-		//  	eventService.deleteAllSessionsOfCourse(course_id);
-		//  }
+    @DeleteMapping("/courses/{course_id}/sessions")
+    public void deleteAllSessionsOfCourse(@PathVariable int course_id){
+        eventService.deleteAllSessionsOfCourse(course_id);
+    }
+
     @DeleteMapping("/courses/{course_id}/sessions/{session_id}")
     public void deleteSessionById(@PathVariable int course_id, @PathVariable int session_id){
 			eventService.deleteSessionById(session_id);
