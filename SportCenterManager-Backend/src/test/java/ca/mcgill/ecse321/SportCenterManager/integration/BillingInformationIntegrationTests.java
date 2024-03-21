@@ -34,6 +34,7 @@ import ca.mcgill.ecse321.SportCenterManager.dto.BillingInformationRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.BillingInformationResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.CustomerResponseDto;
+import ca.mcgill.ecse321.SportCenterManager.dto.ErrorDto;
 import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 
@@ -174,11 +175,14 @@ public class BillingInformationIntegrationTests {
         String url = "/customerAccounts/" + (validId + 1) + "/billingInformation";
 
         // Act
-        ResponseEntity<BillingInformationResponseDto> response = client.getForEntity(url, BillingInformationResponseDto.class);
+        //ResponseEntity<BillingInformationResponseDto> response = client.getForEntity(url, BillingInformationResponseDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange(url, HttpMethod.GET, null, ErrorDto.class);
 
         // Assert
         assertNotNull(response, "Response is null.");
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode(), "Incorrect status code.");
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Incorrect status code.");
+        assertEquals("There is no customer with ID " + (validId + 1) + " in the system.", response.getBody().getMessage());
     }
 
     @Test
@@ -190,11 +194,13 @@ public class BillingInformationIntegrationTests {
 
         // Act
         HttpEntity<BillingInformationRequestDto> requestEntity = new HttpEntity<BillingInformationRequestDto>(request);
-        ResponseEntity<BillingInformationResponseDto> response = client.exchange(url, HttpMethod.PUT, requestEntity, BillingInformationResponseDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange(url, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // Assert
         assertNotNull(response, "Response is null.");
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode(), "Incorrect status code.");
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Incorrect status code.");
+        assertNotNull(response.getBody());
+        assertEquals("There is no customer with ID " + (validId + 1) + " in the system.", response.getBody().getMessage());
     }
 
     @ParameterizedTest
@@ -207,11 +213,12 @@ public class BillingInformationIntegrationTests {
 
         // Act
         HttpEntity<BillingInformationRequestDto> requestEntity = new HttpEntity<BillingInformationRequestDto>(request);
-        ResponseEntity<BillingInformationResponseDto> response = client.exchange(url, HttpMethod.PUT, requestEntity, BillingInformationResponseDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange(url, HttpMethod.PUT, requestEntity, ErrorDto.class);
 
         // Assert
         assertNotNull(response, "Response is null.");
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode(), "Incorrect status code.");
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(), "Incorrect status code.");
+        assertNotNull(response.getBody());
     }
 
     private static Stream<Arguments> invalidParameters() {
