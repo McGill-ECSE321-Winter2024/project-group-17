@@ -15,98 +15,59 @@ public class OwnerAccountService {
     private OwnerAccountRepository ownerRepo;
 
      @Transactional
-     public OwnerAccount findOwnerById(int id) {
-         OwnerAccount ownerAccount = ownerRepo.findOwnerAccountById(id);
+     public OwnerAccount findOwner() {
+         String email = "owner@gmail.com";
+         OwnerAccount ownerAccount = ownerRepo.findOwnerAccountByEmail(email);
          if (ownerAccount == null) {
-             throw new ServiceException(HttpStatus.NOT_FOUND, "There is no owner with ID" + id);
+             throw new ServiceException(HttpStatus.NOT_FOUND, "There is no owner");
          }
          return ownerAccount;
      }
 
     @Transactional
-    public OwnerAccount createOwner(String name, String email, String password) {
-        // Check if email and password are invalid
-        String emailError = isEmailValid(email);
-        String passwordError = isPasswordValid(password);
+    public OwnerAccount createOwner(String name, String password) {
+         String email = "owner@gmail.com";
+         if (ownerRepo.existsOwnerAccountByEmail(email)) {
+             throw new ServiceException(HttpStatus.FORBIDDEN, "Only one owner can exist");
+         }
+         else {
+             // Check if password is invalid
+             String passwordError = isPasswordValid(password);
 
-        // Error messages are thrown if email or password are is invalid. If not create, save and return
-        if (!emailError.isEmpty()) {
-            throw new ServiceException(HttpStatus.FORBIDDEN, emailError);
-        }
-        if (!passwordError.isEmpty()) {
-            throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
-        }
-        else {
-            OwnerAccount ownerToCreate = new OwnerAccount(name, email, password);
-            return ownerRepo.save(ownerToCreate);
-        }
+             // Error messages are thrown if password is invalid. If not create, save and return
+             if (!passwordError.isEmpty()) {
+                 throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
+             } else {
+                 OwnerAccount ownerToCreate = new OwnerAccount(name, email, password);
+                 return ownerRepo.save(ownerToCreate);
+             }
+         }
     }
 
     @Transactional
-    public OwnerAccount updateOwnerAccount(int id, String name, String email, String password) {
-        // Retrieve ownerAccount with id
-        OwnerAccount ownerToModify = ownerRepo.findOwnerAccountById(id);
+    public OwnerAccount updateOwnerAccount(String name, String password) {
+        String email = "owner@gmail.com";
+
+        // Retrieve ownerAccount with email
+        OwnerAccount ownerToModify = ownerRepo.findOwnerAccountByEmail(email);
 
         if (ownerToModify == null) {
             throw new ServiceException(HttpStatus.NOT_FOUND, "The owner account was not found");
         }
         else {
-            // Check if email and password are invalid
-            String emailError = isEmailValid(email);
+            // Check if password is invalid
             String passwordError = isPasswordValid(password);
 
-            // Error messages are thrown if email or password are invalid. If not update, save and return
-            if (!emailError.isEmpty()) {
-                throw new ServiceException(HttpStatus.FORBIDDEN, emailError);
-            }
+            // Error messages are thrown if password is invalid. If not update, save and return
             if (!passwordError.isEmpty()) {
                 throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
             }
             else {
                 ownerToModify.setName(name);
-                ownerToModify.setEmail(email);
                 ownerToModify.setPassword(password);
                 return ownerRepo.save(ownerToModify);
             }
         }
-    }
-    private String isEmailValid(String email) {
-        String error = "";
-        // Check if email is empty
-        if (email == null || email.isEmpty()) {
-            error = "Email is empty";
-            return error;
-        }
-        else {
-            // Check if email contains any spaces
-            if (email.contains(" ")) {
-                error = "Email cannot contain any space";
-                return error;
-            }
-
-            int count = 0;
-            String allowedCharacters = "abcdefghijklmnopqrstuvwxyz._-@1234567890";
-            boolean validEmail = false;
-            for (char c : email.toLowerCase().toCharArray()) {
-                if (c == '@') {
-                    count++;
-                }
-                if (allowedCharacters.indexOf(c) == -1) {
-                    validEmail = true;
-                }
-            }
-
-            // Check if email is valid
-            if (count != 1 || (!(email.endsWith(".com")) && !(email.endsWith(".ca"))) || email.startsWith("@") || email.contains(".@") || email.contains("@.") || validEmail) {
-                error = "Invalid Email";
-                return error;
-            }
-        }
-        // Check if email already exists
-        if (ownerRepo.existsOwnerAccountByEmail(email)) {
-            error = "Owner with this email already exists";
-        }
-        return error;
     }
 
     private String isPasswordValid(String password) {
