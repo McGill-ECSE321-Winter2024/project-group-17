@@ -181,7 +181,7 @@ public class OwnerAccountIntegrationTests {
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Owner with this email already exists", response.getBody().getMessage());
+        assertEquals("Only one owner can exist", response.getBody().getMessage());
     }
 
     @Test
@@ -191,8 +191,7 @@ public class OwnerAccountIntegrationTests {
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName, this.email, this.newPassword);
 
         //act
-        client.put("/ownerAccount/update", requestDto);
-        ResponseEntity<OwnerResponseDto> response = client.getForEntity("/ownerAccount/update", OwnerResponseDto.class);
+        ResponseEntity<OwnerResponseDto> response = client.exchange("/ownerAccount/update", HttpMethod.PUT, new HttpEntity<>(requestDto), OwnerResponseDto.class);
 
         // assertions
         assertNotNull(response);
