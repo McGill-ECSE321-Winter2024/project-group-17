@@ -1,8 +1,10 @@
 package ca.mcgill.ecse321.SportCenterManager.controller;
 
+import ca.mcgill.ecse321.SportCenterManager.dto.ErrorDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,25 +30,32 @@ public class BillingInformationController {
 
     @GetMapping()
     @Operation(
-            summary = "Retrieve the billing information of a specific customer.",
+            summary = "Find the billing information of a customer by id.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully retrieved billing information.",
+                            description = "OK: Successfully retrieved billing information.",
                             content = @Content(
-                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BillingInformationResponseDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"code\" : 200, \"Status\" : \"OK.\"}")
+                                            @ExampleObject(value = "{" +
+                                                    "\"address\" : \"address\", " +
+                                                    "\"postalCode\" : \"postalCode\", " +
+                                                    "\"country\" : \"country\", " +
+                                                    "\"name\" : \"postalCode\", " +
+                                                    "\"cardNumber\" : \"cardNumber\", " +
+                                                    "\"cvc\" : 123, " +
+                                                    "\"expirationDate\" : \"2024-03-21T03:30:07.329Z\"}")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Failed to retrieve billing information: invalid customer id.",
+                            description = "Not Found: invalid customer id.",
                             content = @Content(
-                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"code\" : 404, \"Status\" : \"Not Found.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"There is no customer with ID 11 in the system.\"}")
                                     }
                             )
                     )
@@ -60,35 +69,52 @@ public class BillingInformationController {
 
     @PutMapping()
     @Operation(
-            summary = "Update the billing information of a specific customer.",
+            summary = "Update the billing information of a customer by id.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "Successfully updated billing information.",
+                            description = "OK: Successfully updated billing information.",
                             content = @Content(
-                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = BillingInformationResponseDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"code\" : 200, \"Status\" : \"OK.\"}")
+                                            @ExampleObject(value = "{" +
+                                                    "\"address\" : \"updatedAddress\", " +
+                                                    "\"postalCode\" : \"updatedPostalCode\", " +
+                                                    "\"country\" : \"updatedCountry\", " +
+                                                    "\"name\" : \"updatedPostalCode\", " +
+                                                    "\"cardNumber\" : \"updatedCardNumber\", " +
+                                                    "\"cvc\" : 456, " +
+                                                    "\"expirationDate\" : \"2024-03-21T03:30:07.329Z\"}")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Failed to update billing information: invalid customer id.",
+                            description = "Not Found: invalid customer id.",
                             content = @Content(
-                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"code\" : 404, \"Status\" : \"Not Found.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"There is no customer with ID 11 in the system.\"}")
+                                    }
+                            )
+                    ),
+                    @ApiResponse(
+                            responseCode = "404",
+                            description = "Not Found: invalid billing information.",
+                            content = @Content(
+                                    schema = @Schema(implementation = ErrorDto.class),
+                                    examples = {
+                                            @ExampleObject(value = "{\"message\" : \"There is no billing information for customer with ID 11 in the system.\"}")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Failed to update billing information: invalid parameters.",
+                            description = "Forbidden: invalid parameters.",
                             content = @Content(
-                                    mediaType = "application/json",
+                                    schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"code\" : 403, \"Status\" : \"Forbidden.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"Card number cannot be empty.\"}")
                                     }
                             )
                     )
@@ -97,7 +123,7 @@ public class BillingInformationController {
     public BillingInformationResponseDto updateBillingInformation(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
-                            mediaType = "/application/json",
+                            schema = @Schema(implementation = BillingInformationRequestDto.class),
                             examples = {
                                     @ExampleObject(value = "{" +
                                             "\"address\" : \"updatedAddress\", " +
@@ -111,7 +137,7 @@ public class BillingInformationController {
                             }
                     )
             )
-            @PathVariable int customerAccount_id, @RequestBody BillingInformationRequestDto billingInfo) {
+            @RequestBody BillingInformationRequestDto billingInfo, @PathVariable int customerAccount_id) {
         BillingInformation billingInformation = billingService.updateBillingInformation(customerAccount_id, billingInfo.getAddress(), billingInfo.getPostalCode(), billingInfo.getCountry(), billingInfo.getName(), billingInfo.getCardNumber(), billingInfo.getCvc(), billingInfo.getExpirationDate());
         return new BillingInformationResponseDto(billingInformation);
     }
