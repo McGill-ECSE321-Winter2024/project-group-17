@@ -48,27 +48,9 @@ public class BillingInformationService {
         if (!billingRepo.existsByKeyCustomerAccount(customer)) {
             throw new ServiceException(HttpStatus.NOT_FOUND, "There is no billing information for customer with ID " + customerId + " in the system.");
         }
-        if (address == null || address.trim().length() == 0) {
-            throw new IllegalArgumentException("Address cannot be empty.");
-        }
-        if (postalCode == null || postalCode.trim().length() == 0) {
-            throw new IllegalArgumentException("Postal code cannot be empty.");
-        }
-        if (country == null || country.trim().length() == 0) {
-            throw new IllegalArgumentException("Country cannot be empty.");
-        }
-        if (name == null || name.trim().length() == 0) {
-            throw new IllegalArgumentException("Name cannot be empty.");
-        }
-        if (cardNumber == null || cardNumber.trim().length() == 0) {
-            throw new IllegalArgumentException("Card number cannot be empty.");
-        }
         if (cvc < 100 || cvc > 999) {
             //throw new IllegalArgumentException("CVC must be a 3-digit number.");
             throw new ServiceException(HttpStatus.BAD_REQUEST, "CVC must be a 3-digit number.");
-        }
-        if (expirationDate == null) {
-            throw new IllegalArgumentException("Expiration date cannot be empty.");
         }
         if (expirationDate.before(Date.valueOf(java.time.LocalDate.now()))) {
             //throw new IllegalArgumentException("Expiration date cannot be in the past.");

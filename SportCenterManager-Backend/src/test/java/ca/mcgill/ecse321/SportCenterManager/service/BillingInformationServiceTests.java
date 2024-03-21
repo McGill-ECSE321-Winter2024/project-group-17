@@ -149,44 +149,6 @@ public class BillingInformationServiceTests {
     }
 
     @ParameterizedTest
-    @MethodSource("nullAndEmptyParameters")
-    public void updateBillingInformationWithNullAndEmptyParameters(String var, String updated_address, String updated_postalCode, String updated_country, String updated_name, String updated_cardNumber, int updated_cvc, Date updated_expirationDate) {
-        // Setup
-        when(customerRepo.existsById(customer_id)).thenReturn(true);
-        when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
-        when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(true);
-        when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
-
-        // Act & Assert
-        IllegalArgumentException e = assertThrows(IllegalArgumentException.class, () -> billingService.updateBillingInformation(customer_id, updated_address, updated_postalCode, updated_country, updated_name, updated_cardNumber, updated_cvc, updated_expirationDate));
-        assertEquals(String.format("%s cannot be empty.", var), e.getMessage());
-    }
-
-    private static Stream<Arguments> nullAndEmptyParameters() {
-        String address = "testAddress";
-        String postalCode = "testPostalCode";
-        String country = "testCountry";
-        String name = "testName";
-        String cardNumber = "testCardNumber";
-        int cvc = 123;
-        Date expirationDate = Date.valueOf(LocalDate.now());
-
-        return Stream.of(
-            Arguments.of("Address", null, postalCode, country, name, cardNumber, cvc, expirationDate),
-            Arguments.of("Postal code", address, null, country, name, cardNumber, cvc, expirationDate),
-            Arguments.of("Country", address, postalCode, null, name, cardNumber, cvc, expirationDate),
-            Arguments.of("Name", address, postalCode, country, null, cardNumber, cvc, expirationDate),
-            Arguments.of("Card number", address, postalCode, country, name, null, cvc, expirationDate),
-            Arguments.of("Expiration date", address, postalCode, country, name, cardNumber, cvc, null),
-            Arguments.of("Address", "", postalCode, country, name, cardNumber, cvc, expirationDate),
-            Arguments.of("Postal code", address, "", country, name, cardNumber, cvc, expirationDate),
-            Arguments.of("Country", address, postalCode, "", name, cardNumber, cvc, expirationDate),
-            Arguments.of("Name", address, postalCode, country, "", cardNumber, cvc, expirationDate),
-            Arguments.of("Card number", address, postalCode, country, name, "", cvc, expirationDate)
-        );
-    }
-
-    @ParameterizedTest
     @ValueSource(ints = {99, 1000})
     public void testUpdateBillingInformationForInvalidCvc(int invalid_cvc) {
         // Setup
