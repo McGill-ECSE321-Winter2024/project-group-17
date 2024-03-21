@@ -180,7 +180,7 @@ public class OwnerAccountIntegrationTests {
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
         assertEquals("Only one owner can exist", response.getBody().getMessage());
     }
 

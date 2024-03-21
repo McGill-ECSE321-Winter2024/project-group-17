@@ -28,7 +28,7 @@ public class OwnerAccountService {
     public OwnerAccount createOwner(String name, String password) {
          String email = "owner@gmail.com";
          if (ownerRepo.existsOwnerAccountByEmail(email)) {
-             throw new ServiceException(HttpStatus.FORBIDDEN, "Only one owner can exist");
+             throw new ServiceException(HttpStatus.CONFLICT, "Only one owner can exist");  //??
          }
          else {
              // Check if password is invalid
