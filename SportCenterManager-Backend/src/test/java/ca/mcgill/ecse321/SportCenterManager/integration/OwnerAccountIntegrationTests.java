@@ -191,7 +191,7 @@ public class OwnerAccountIntegrationTests {
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName, this.email, this.newPassword);
 
         //act
-        ResponseEntity<OwnerResponseDto> response = client.exchange("/ownerAccount/update", HttpMethod.PUT, new HttpEntity<>(requestDto), OwnerResponseDto.class);
+        ResponseEntity<OwnerResponseDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), OwnerResponseDto.class);
 
         // assertions
         assertNotNull(response);
@@ -210,7 +210,7 @@ public class OwnerAccountIntegrationTests {
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "");
 
         //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/update", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
@@ -226,7 +226,7 @@ public class OwnerAccountIntegrationTests {
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "Pass$");
 
         //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/update", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
@@ -242,7 +242,7 @@ public class OwnerAccountIntegrationTests {
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "password$$");
 
         //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/update", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
@@ -258,7 +258,7 @@ public class OwnerAccountIntegrationTests {
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "PASSWORD$$");
 
         //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/update", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
@@ -274,7 +274,7 @@ public class OwnerAccountIntegrationTests {
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "Passworddddd");
 
         //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/update", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);

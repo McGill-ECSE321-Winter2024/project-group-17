@@ -28,7 +28,7 @@ public class OwnerAccountController {
         return new OwnerResponseDto(owner);
     }
 
-    @PutMapping("/update")
+    @PutMapping()
     public OwnerResponseDto updateOwnerAccount(@RequestBody OwnerRequestDto owner) {
         OwnerAccount modifiedOwner = ownerAccountService.updateOwnerAccount(owner.getName(), owner.getPassword());
         return new OwnerResponseDto(modifiedOwner);
