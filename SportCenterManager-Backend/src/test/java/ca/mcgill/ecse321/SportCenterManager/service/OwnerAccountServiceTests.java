@@ -265,6 +265,27 @@ public class OwnerAccountServiceTests {
     }
 
     @Test
+    public void testUpdateOwnerNotFound() {
+        // setup
+        String email = "owner@sportcenter.com";
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(null);
+        String newName = "validName6";
+        String newPassword = "validPassword$7";
+        String error = "";
+
+        // act
+        try {
+            service.updateOwnerAccount(newName, newPassword);
+        } catch (ServiceException e) {
+            error = e.getMessage();
+        }
+
+        // assertions
+        assertEquals("The owner account was not found", error);
+        verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
+    }
+    @Test
     public void testUpdateOwnerByEmptyName() {
         // setup
         String name = "validName6";
