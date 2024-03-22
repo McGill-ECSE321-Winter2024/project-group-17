@@ -155,7 +155,7 @@ public class CustomerAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully updated customer.",
+                            description = "OK: successfully created customer account.",
                             content = @Content(
                                     schema = @Schema(implementation = CustomerResponseDto.class),
                                     examples = {
