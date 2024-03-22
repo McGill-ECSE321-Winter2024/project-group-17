@@ -131,6 +131,27 @@ public class CustomerAccountServiceTests {
     }
 
     @Test
+    public void testCreateCustomerByEmptyName() {
+        // setup
+        String name = "";
+        String email = "validEmail6@gmail.com";
+        String password = "validPassword$6";
+        lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(null);
+        String error = "";
+
+        // act
+        try {
+            service.createCustomer(name, email, password);
+        } catch (ServiceException e) {
+            error = e.getMessage();
+        }
+
+        // assertions
+        assertEquals("Name is empty", error);
+        verify(customerRepo, times(0)).save(any(CustomerAccount.class));
+    }
+
+    @Test
     public void testCreateCustomerByEmptyEmail() {
         // setup
         String name = "validName6";
@@ -383,6 +404,35 @@ public class CustomerAccountServiceTests {
         verify(customerRepo, times(0)).save(any(CustomerAccount.class));
         verify(customerRepo, times(1)).findCustomerAccountById(invalidId);
 
+    }
+
+    @Test
+    public void testUpdateCustomerByEmptyName() {
+        // setup
+        String name = "validName6";
+        String email = "validEmail6@gmail.com";
+        String password = "validPassword$6";
+        CustomerAccount customerAccount = new CustomerAccount(name, email, password);
+        int id = customerAccount.getId();
+        lenient().when(customerRepo.save(any(CustomerAccount.class))).thenReturn(customerAccount);
+        lenient().when(customerRepo.findCustomerAccountById(id)).thenReturn(customerAccount);
+
+        String newName = "";
+        String newEmail = "validEmail7@gmail.com";
+        String newPassword = "validPassword7$";
+        String error = "";
+
+        // act
+        try {
+            service.updateCustomerAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
+            error = e.getMessage();
+        }
+
+        // assertions
+        assertEquals("Name is empty", error);
+        verify(customerRepo, times(0)).save(any(CustomerAccount.class));
+        verify(customerRepo, times(1)).findCustomerAccountById(id);
     }
 
     @Test

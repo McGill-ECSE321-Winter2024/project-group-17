@@ -16,7 +16,7 @@ public class OwnerAccountService {
 
      @Transactional
      public OwnerAccount findOwner() {
-         String email = "owner@gmail.com";
+         String email = "owner@sportcenter.com";
          OwnerAccount ownerAccount = ownerRepo.findOwnerAccountByEmail(email);
          if (ownerAccount == null) {
              throw new ServiceException(HttpStatus.NOT_FOUND, "There is no owner");
@@ -26,15 +26,19 @@ public class OwnerAccountService {
 
     @Transactional
     public OwnerAccount createOwner(String name, String password) {
-         String email = "owner@gmail.com";
+         String email = "owner@sportcenter.com";
          if (ownerRepo.existsOwnerAccountByEmail(email)) {
              throw new ServiceException(HttpStatus.CONFLICT, "Only one owner can exist");  //??
          }
          else {
-             // Check if password is invalid
+             // Check if name and password are invalid
+             String nameError = isNameEmpty(name);
              String passwordError = isPasswordValid(password);
 
-             // Error messages are thrown if password is invalid. If not create, save and return
+             // Error messages are thrown if name or password is invalid. If not create, save and return
+             if (!nameError.isEmpty()) {
+                 throw new ServiceException(HttpStatus.FORBIDDEN, nameError);
+             }
              if (!passwordError.isEmpty()) {
                  throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
              } else {
@@ -46,7 +50,7 @@ public class OwnerAccountService {
 
     @Transactional
     public OwnerAccount updateOwnerAccount(String name, String password) {
-        String email = "owner@gmail.com";
+        String email = "owner@sportcenter.com";
 
         // Retrieve ownerAccount with email
         OwnerAccount ownerToModify = ownerRepo.findOwnerAccountByEmail(email);
@@ -55,10 +59,14 @@ public class OwnerAccountService {
             throw new ServiceException(HttpStatus.NOT_FOUND, "The owner account was not found");
         }
         else {
-            // Check if password is invalid
+            // Check if name and password are invalid
+            String nameError = isNameEmpty(name);
             String passwordError = isPasswordValid(password);
 
-            // Error messages are thrown if password is invalid. If not update, save and return
+            // Error messages are thrown if name or password is invalid. If not create, save and return
+            if (!nameError.isEmpty()) {
+                throw new ServiceException(HttpStatus.FORBIDDEN, nameError);
+            }
             if (!passwordError.isEmpty()) {
                 throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
             }
@@ -109,6 +117,17 @@ public class OwnerAccountService {
                 error = "Password must contain at least one special character";
             }
         }
+        return error;
+    }
+
+    private String isNameEmpty(String name) {
+        String error = "";
+
+        // Check if name is empty
+        if (name == null || name.isEmpty()) {
+            error = "Name is empty";
+        }
+
         return error;
     }
 }

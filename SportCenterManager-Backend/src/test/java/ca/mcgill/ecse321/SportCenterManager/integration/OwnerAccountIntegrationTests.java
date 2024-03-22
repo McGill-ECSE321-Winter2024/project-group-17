@@ -27,11 +27,12 @@ public class OwnerAccountIntegrationTests {
     private OwnerAccountRepository ownerRepo;
 
     private String name = "Namir";
-    private String email = "owner@gmail.com";
+    private String email = "owner@sportcenter.com";
     private String password = "Password$";
     private String newName = "Eric";
     private String newPassword = "Password$1";
     private String newName1 = "Mahmoud";
+    private String newPassword1 = "Password$2";
 
 
     @BeforeAll
@@ -53,8 +54,24 @@ public class OwnerAccountIntegrationTests {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("There is no owner", response.getBody().getMessage());
     }
+
     @Test
     @Order(2)
+    public void testCreateOwnerWithEmptyName() {
+        // setup
+        OwnerRequestDto requestDto = new OwnerRequestDto("", this.email, this.password);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Name is empty", response.getBody().getMessage());
+    }
+    @Test
+    @Order(3)
     public void testCreateOwnerWithEmptyPassword() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, "");
@@ -70,7 +87,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(3)
+    @Order(4)
     public void testCreateOwnerWithShortPassword() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, "Pass$");
@@ -86,7 +103,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(4)
+    @Order(5)
     public void testCreateOwnerWithoutUppercasePassword() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, "password$");
@@ -102,7 +119,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(5)
+    @Order(6)
     public void testCreateOwnerWithoutLowercasePassword() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, "PASSWORD$");
@@ -118,7 +135,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void testCreateOwnerWithoutSpecialCharPassword() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, "Passworddd");
@@ -134,7 +151,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void testCreateValidOwner() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, this.password);
@@ -152,7 +169,7 @@ public class OwnerAccountIntegrationTests {
         assertTrue(response.getBody().getId() > 0, "ID is not positive" );
     }
     @Test
-    @Order(8)
+    @Order(9)
     public void testFindOwner() {
         // act
         ResponseEntity<OwnerResponseDto> response = client.getForEntity("/ownerAccount", OwnerResponseDto.class);
@@ -169,7 +186,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     public void testSecondCreateOwner() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, this.password);
@@ -185,7 +202,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     public void testUpdateValidOwner() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName, this.email, this.newPassword);
@@ -202,9 +219,24 @@ public class OwnerAccountIntegrationTests {
         assertEquals(this.newPassword, response.getBody().getPassword());
 
     }
+    @Test
+    @Order(12)
+    public void testUpdateOwnerWithEmptyName() {
+        // setup
+        OwnerRequestDto requestDto = new OwnerRequestDto("", this.email, this.newPassword1);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Name is empty", response.getBody().getMessage());
+    }
 
     @Test
-    @Order(11)
+    @Order(13)
     public void testUpdateOwnerWithEmptyPassword() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "");
@@ -220,7 +252,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(12)
+    @Order(14)
     public void testUpdateOwnerWithShortPassword() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "Pass$");
@@ -236,7 +268,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(13)
+    @Order(15)
     public void testUpdateOwnerWithoutUppercasePassword() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "password$$");
@@ -252,7 +284,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(14)
+    @Order(16)
     public void testUpdateOwnerWithoutLowercasePassword() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "PASSWORD$$");
@@ -268,7 +300,7 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(15)
+    @Order(17)
     public void testUpdateOwnerWithoutSpecialCharPassword() {
         // setup
         OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "Passworddddd");
