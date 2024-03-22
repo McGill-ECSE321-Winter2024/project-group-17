@@ -63,8 +63,28 @@ public class EventController {
         }
         return new CourseListDto(courses);
 		}
-
     @GetMapping("/courses/{course_id}")
+    @Operation(
+            summary = "Find course by id",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OK: Successfully retrieved all courses.",
+                            content = @Content(
+                                    schema = @Schema(implementation = CourseResponseDto.class),
+                                    examples = {
+                                            @ExampleObject(value = "{" +
+                                                    "\"name\" : \"Yoga\", " +
+                                                    "\"description\" : \"Intermediate\", " +
+                                                    "\"costPerSession\" : 44, " +
+                                                    "\"isApproved\" : true, " +
+                                                    "\"id\" : 10}")
+                                    }
+                            )
+                    )
+
+            }
+    )
     public CourseResponseDto findCourseById(@PathVariable int course_id){
         Course foundCourse = eventService.findCourseById(course_id);
         return new CourseResponseDto(foundCourse);
