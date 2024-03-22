@@ -37,11 +37,15 @@ public class InstructorAccountService {
             throw new ServiceException(HttpStatus.NOT_FOUND, "The instructor account was not found");
         }
         else {
-            // Check if email and password are invalid
+            // Check if name, email and password are invalid
+            String nameError = isNameEmpty(name);
             String emailError = isEmailValid(email);
             String passwordError = isPasswordValid(password);
 
-            // Error messages are thrown if email or password are invalid. If not update, save and return
+            // Error messages are thrown if name or email or password are invalid. If not update, save and return
+            if (!nameError.isEmpty()) {
+                throw new ServiceException(HttpStatus.FORBIDDEN, nameError);
+            }
             if (!emailError.isEmpty()) {
                 throw new ServiceException(HttpStatus.FORBIDDEN, emailError);
             }
@@ -59,11 +63,15 @@ public class InstructorAccountService {
 
     @Transactional
     public InstructorAccount createInstructor(String name, String email, String password) {
-        // Check if email and password are invalid
+        // Check if name, email and password are invalid
+        String nameError = isNameEmpty(name);
         String emailError = isEmailValid(email);
         String passwordError = isPasswordValid(password);
 
-        // Error messages are thrown if email or password are is invalid. If not create, save and return
+        // Error messages are thrown if name or email or password are invalid. If not create, save and return
+        if (!nameError.isEmpty()) {
+            throw new ServiceException(HttpStatus.FORBIDDEN, nameError);
+        }
         if (!emailError.isEmpty()) {
             throw new ServiceException(HttpStatus.FORBIDDEN, emailError);
         }
@@ -169,6 +177,15 @@ public class InstructorAccountService {
         }
         return error;
     }
+    private String isNameEmpty(String name) {
+        String error = "";
 
+        // Check if name is empty
+        if (name == null || name.isEmpty()) {
+            error = "Name is empty";
+        }
+
+        return error;
+    }
 
 }

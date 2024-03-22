@@ -22,21 +22,21 @@ public class OwnerAccountController {
     @Autowired
     private OwnerAccountService ownerAccountService;
 
-    @GetMapping("/{ownerAccount_id}")
-    public OwnerResponseDto findOwnerById(@PathVariable int ownerAccount_id) {
-        OwnerAccount owner = ownerAccountService.findOwnerById(ownerAccount_id);
+    @GetMapping()
+    public OwnerResponseDto findOwner() {
+        OwnerAccount owner = ownerAccountService.findOwner();
         return new OwnerResponseDto(owner);
     }
 
-    @PutMapping("/{ownerAccount_id}")
-    public OwnerResponseDto updateOwnerAccount(@PathVariable int ownerAccount_id, @RequestBody OwnerRequestDto owner) {
-        OwnerAccount modifiedOwner = ownerAccountService.updateOwnerAccount(ownerAccount_id, owner.getName(), owner.getEmail(), owner.getPassword());
+    @PutMapping()
+    public OwnerResponseDto updateOwnerAccount(@RequestBody OwnerRequestDto owner) {
+        OwnerAccount modifiedOwner = ownerAccountService.updateOwnerAccount(owner.getName(), owner.getPassword());
         return new OwnerResponseDto(modifiedOwner);
     }
 
     @PostMapping()
     public OwnerResponseDto createOwner(@RequestBody OwnerRequestDto owner) {
-        OwnerAccount ownerToCreate = ownerAccountService.createOwner(owner.getName(), owner.getEmail(), owner.getPassword());
+        OwnerAccount ownerToCreate = ownerAccountService.createOwner(owner.getName(), owner.getPassword());
         return new OwnerResponseDto(ownerToCreate);
     }
 }
