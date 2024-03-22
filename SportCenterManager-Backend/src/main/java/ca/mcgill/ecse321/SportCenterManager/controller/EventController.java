@@ -12,8 +12,13 @@ import ca.mcgill.ecse321.SportCenterManager.dto.SessionRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.SessionResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.service.EventService;
 import ca.mcgill.ecse321.SportCenterManager.model.Course;
-import ca.mcgill.ecse321.SportCenterManager.model.Session; 
+import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,6 +34,28 @@ public class EventController {
     private EventService eventService;
 
     @GetMapping("/courses")
+    @Operation(
+            summary = "Find all courses",
+            responses = {
+                    @ApiResponse(
+                            responseCode = "200",
+                            description = "OK: Successfully retrieved all courses.",
+                            content = @Content(
+                                    schema = @Schema(implementation = CourseListDto.class),
+                                    examples = {@ExampleObject(value = "{" +
+                                            "\"courses\": [" +
+                                            "{" +
+                                            "\"id\": 10, " +
+                                            "\"name\": \"Yoga\", " +
+                                            "\"description\": \"Intermediate\", " +
+                                            "\"costPerSession\": 44, " +
+                                            "\"isApproved\": true}]}"
+                                    )}
+                            )
+                    )
+
+            }
+    )
     public CourseListDto findAllCourses(){
         List<CourseResponseDto> courses = new ArrayList<CourseResponseDto>();
         for (Course model : eventService.findAllCourses()){
