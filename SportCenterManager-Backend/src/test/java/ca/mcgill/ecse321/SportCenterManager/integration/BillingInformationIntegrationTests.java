@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,8 +15,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,8 +30,6 @@ import ca.mcgill.ecse321.SportCenterManager.dao.BillingInformationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dto.BillingInformationRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.BillingInformationResponseDto;
-import ca.mcgill.ecse321.SportCenterManager.dto.CustomerRequestDto;
-import ca.mcgill.ecse321.SportCenterManager.dto.CustomerResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.ErrorDto;
 import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
