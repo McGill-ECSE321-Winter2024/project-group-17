@@ -174,4 +174,54 @@ public class BillingInformationServiceTests {
         ServiceException e = assertThrows(ServiceException.class, () -> billingService.updateBillingInformation(customer_id, "testAddress", "testPostalCode", "testCountry", "testName", "testCardNumber", 123, Date.valueOf(LocalDate.now().minusDays(1))));
         assertEquals("Expiration date cannot be in the past.", e.getMessage());
     }
+
+    @Test
+    public void testDeleteBillingInformationForValidCustomer() {
+        // Setup
+        when(customerRepo.existsById(customer_id)).thenReturn(true);
+        when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
+        when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(true, false);
+        when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
+
+        // Act
+        billingService.deleteBillingInformation(customer_id);
+
+        // Assert
+        verify(billingRepo, times(1)).delete(billingInformation);
+    }
+
+    @Test
+    public void testDeleteBillingInformationForInvalidCustomer() {
+        // Setup
+        when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(null);
+        
+        // Act & Assert
+        ServiceException e = assertThrows(ServiceException.class, () -> billingService.deleteBillingInformation(customer_id));
+        assertEquals("There is no customer with ID " + customer_id + " in the system.", e.getMessage());
+    }
+
+    @Test
+    public void testDeleteBillingInformationForInvalidBillingInformation() {
+        // Setup
+        when(customerRepo.existsById(customer_id)).thenReturn(true);
+        when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
+        when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(false);
+        
+        // Act & Assert
+        ServiceException e = assertThrows(ServiceException.class, () -> billingService.deleteBillingInformation(customer_id));
+        assertEquals("There is no billing information for customer with ID " + customer_id + " in the system.", e.getMessage());
+    }
+
+    @Test
+    public void testDeleteBillingInformationFailure() {
+        // Setup
+        when(customerRepo.existsById(customer_id)).thenReturn(true);
+        when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
+        when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(true, true);
+        when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
+
+        // Act & Assert
+        ServiceException e = assertThrows(ServiceException.class, () -> billingService.deleteBillingInformation(customer_id));
+        assertEquals("There was an error deleting the billing information for customer with ID " + customer_id + " in the system.", e.getMessage());
+    }
 }

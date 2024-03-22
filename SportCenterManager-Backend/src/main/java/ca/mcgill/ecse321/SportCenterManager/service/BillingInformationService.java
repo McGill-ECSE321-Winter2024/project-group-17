@@ -77,6 +77,9 @@ public class BillingInformationService {
             throw new ServiceException(HttpStatus.NOT_FOUND, "There is no billing information for customer with ID " + customerId + " in the system.");
         }
         BillingInformation billingToDelete = billingRepo.findBillingInformationByKeyCustomerAccount(customer);
+        if (billingRepo.existsByKeyCustomerAccount(customer)) {
+            throw new ServiceException(HttpStatus.INTERNAL_SERVER_ERROR, "There was an error deleting the billing information for customer with ID " + customerId + " in the system.");
+        }
         billingRepo.delete(billingToDelete);
     }
 }
