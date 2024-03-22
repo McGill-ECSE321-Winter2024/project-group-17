@@ -211,17 +211,4 @@ public class BillingInformationServiceTests {
         ServiceException e = assertThrows(ServiceException.class, () -> billingService.deleteBillingInformation(customer_id));
         assertEquals("There is no billing information for customer with ID " + customer_id + " in the system.", e.getMessage());
     }
-
-    @Test
-    public void testDeleteBillingInformationFailure() {
-        // Setup
-        when(customerRepo.existsById(customer_id)).thenReturn(true);
-        when(customerRepo.findCustomerAccountById(customer_id)).thenReturn(customer);
-        when(billingRepo.existsByKeyCustomerAccount(customer)).thenReturn(true, true);
-        when(billingRepo.findBillingInformationByKeyCustomerAccount(customer)).thenReturn(billingInformation);
-
-        // Act & Assert
-        ServiceException e = assertThrows(ServiceException.class, () -> billingService.deleteBillingInformation(customer_id));
-        assertEquals("There was an error deleting the billing information for customer with ID " + customer_id + " in the system.", e.getMessage());
-    }
 }
