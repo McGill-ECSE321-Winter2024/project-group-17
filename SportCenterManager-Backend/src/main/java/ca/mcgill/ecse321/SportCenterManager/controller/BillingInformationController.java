@@ -34,7 +34,7 @@ public class BillingInformationController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: Successfully retrieved billing information.",
+                            description = "OK: successfully retrieved billing information.",
                             content = @Content(
                                     schema = @Schema(implementation = BillingInformationResponseDto.class),
                                     examples = {
@@ -73,7 +73,7 @@ public class BillingInformationController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: Successfully updated billing information.",
+                            description = "OK: successfully updated billing information.",
                             content = @Content(
                                     schema = @Schema(implementation = BillingInformationResponseDto.class),
                                     examples = {
