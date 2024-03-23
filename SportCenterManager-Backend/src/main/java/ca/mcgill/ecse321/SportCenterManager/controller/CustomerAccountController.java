@@ -27,7 +27,7 @@ public class CustomerAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully found customer account by id.",
+                            description = "OK: Successfully found customer account by id.",
                             content = @Content(
                                     schema = @Schema(implementation = CustomerResponseDto.class),
                                     examples = {
@@ -63,7 +63,7 @@ public class CustomerAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully found all customer accounts.",
+                            description = "OK: Successfully found all customer accounts.",
                             content = @Content(
                                     schema = @Schema(implementation = CustomerListDto.class),
                                     examples = {
@@ -96,7 +96,7 @@ public class CustomerAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully updated customer account.",
+                            description = "OK: Successfully updated customer account.",
                             content = @Content(
                                     schema = @Schema(implementation = CustomerResponseDto.class),
                                     examples = {
@@ -155,7 +155,7 @@ public class CustomerAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully created customer account.",
+                            description = "OK: Successfully created customer account.",
                             content = @Content(
                                     schema = @Schema(implementation = CustomerResponseDto.class),
                                     examples = {
@@ -204,7 +204,7 @@ public class CustomerAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully deleted customer account by id.",
+                            description = "OK: Successfully deleted customer account by id.",
                             content = @Content(
                                     schema = @Schema(implementation = CustomerListDto.class),
                                     examples = {

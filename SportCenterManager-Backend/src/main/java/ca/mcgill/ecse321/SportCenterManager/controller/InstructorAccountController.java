@@ -35,7 +35,7 @@ public class InstructorAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully found all instructor accounts.",
+                            description = "OK: Successfully found all instructor accounts.",
                             content = @Content(
                                     schema = @Schema(implementation = InstructorListDto.class),
                                     examples = {
@@ -68,7 +68,7 @@ public class InstructorAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully found instructor account by id.",
+                            description = "OK: Successfully found instructor account by id.",
                             content = @Content(
                                     schema = @Schema(implementation = InstructorResponseDto.class),
                                     examples = {
@@ -104,7 +104,7 @@ public class InstructorAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully updated instructor account.",
+                            description = "OK: Successfully updated instructor account.",
                             content = @Content(
                                     schema = @Schema(implementation = InstructorResponseDto.class),
                                     examples = {
@@ -163,7 +163,7 @@ public class InstructorAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully created instructor account.",
+                            description = "OK: Successfully created instructor account.",
                             content = @Content(
                                     schema = @Schema(implementation = InstructorResponseDto.class),
                                     examples = {
@@ -212,7 +212,7 @@ public class InstructorAccountController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: successfully deleted instructor account by id.",
+                            description = "OK: Successfully deleted instructor account by id.",
                             content = @Content(
                                     schema = @Schema(implementation = InstructorListDto.class),
                                     examples = {
