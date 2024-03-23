@@ -8,5 +8,4 @@ public interface OwnerAccountRepository extends CrudRepository<OwnerAccount, Int
     public OwnerAccount findOwnerAccountById(int id);
     public OwnerAccount findOwnerAccountByEmail(String email);
     public boolean existsOwnerAccountByEmail(String email);
-    public boolean existsOwnerAccountByEmailAndPassword(String email, String password);
 }

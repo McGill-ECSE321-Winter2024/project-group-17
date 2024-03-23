@@ -28,41 +28,42 @@ public class OwnerAccountServiceTests {
     private OwnerAccountService service;
 
     @Test
-    public void testFindOwnerByValidId() {
+    public void testFindOwner() {
         // setup
-        int id = 30;
-        OwnerAccount ownerAccount = new OwnerAccount("validName", "validEmail@gmail.com", "validPassword$");
-        ownerAccount.setId(30);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
+        String name = "validName";
+        String email = "owner@sportcenter.com";
+        String password = "validPassword$";
+        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(ownerAccount);
 
         // act
-        OwnerAccount foundOwnerAccount = service.findOwnerById(id);
+        OwnerAccount foundOwnerAccount = service.findOwner();
 
         // assertions
         assertNotNull(foundOwnerAccount);
         assertEquals(foundOwnerAccount.getName(), ownerAccount.getName());
         assertEquals(foundOwnerAccount.getEmail(), ownerAccount.getEmail());
         assertEquals(foundOwnerAccount.getPassword(), ownerAccount.getPassword());
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
     }
 
     @Test
-    public void testFindOwnerByInvalidId() {
+    public void testCannotFindOwner() {
         // setup
-        int id = 33;
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(null);
+        String email = "owner@sportcenter.com";
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(null);
         String error = "";
 
         // act
         try {
-            service.findOwnerById(id);
+            service.findOwner();
         } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("There is no owner with ID" + id, error);
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
+        assertEquals("There is no owner", error);
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
     }
 
     // CREATE OWNER ACCOUNT
@@ -70,15 +71,13 @@ public class OwnerAccountServiceTests {
     public void testCreateValidOwner() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "validPassword$6";
         OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = 30;
-        ownerAccount.setId(id);
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
 
         // act
-        OwnerAccount createdOwnerAccount = service.createOwner(name, email, password);
+        OwnerAccount createdOwnerAccount = service.createOwner(name,password);
 
         // assertions
         assertNotNull(createdOwnerAccount);
@@ -89,79 +88,37 @@ public class OwnerAccountServiceTests {
     }
 
     @Test
-    public void testCreateOwnerByEmptyEmail() {
+    public void testCreateOwnerByEmptyName() {
         // setup
-        String name = "validName6";
-        String email = "";
+        String name = "";
+        String email = "owner@sportcenter.com";
         String password = "validPassword$6";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            service.createOwner(name, email, password);
+            service.createOwner(name, password);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("Email is empty", error);
+        assertEquals("Name is empty", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
     }
-    @Test
-    public void testCreateOwnerByEmailWithSpace() {
-        // setup
-        String name = "validName6";
-        String email = "invalidEmail @gmail.com";
-        String password = "validPassword$6";
-        lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
-        String error = "";
-
-        // act
-        try {
-            service.createOwner(name, email, password);
-        } catch (ServiceException e) {
-            error = e.getMessage();
-        }
-
-        // assertions
-        assertEquals("Email cannot contain any space", error);
-        verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-    }
-
-    @Test
-    public void testCreateOwnerByInvalidEmail() {
-        // setup
-        String name = "validName6";
-        String email = "invalidEmail6@gmail.co";
-        String password = "validPassword$6";
-        lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
-        String error = "";
-
-        // act
-        try {
-            service.createOwner(name, email, password);
-        } catch (ServiceException e) {
-            error = e.getMessage();
-        }
-
-        // assertions
-        assertEquals("Invalid Email", error);
-        verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-    }
-
     @Test
     public void testCreateOwnerByEmptyPassword() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            service.createOwner(name, email, password);
+            service.createOwner(name, password);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -175,14 +132,14 @@ public class OwnerAccountServiceTests {
     public void testCreateOwnerByShortPassword() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "P$6";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            service.createOwner(name, email, password);
+            service.createOwner(name, password);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -196,14 +153,14 @@ public class OwnerAccountServiceTests {
     public void testCreateOwnerByPasswordWithoutUppercaseChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "invalidpassword$6";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            service.createOwner(name, email, password);
+            service.createOwner(name, password);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -217,14 +174,14 @@ public class OwnerAccountServiceTests {
     public void testCreateOwnerByPasswordWithoutLowercaseChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "PASSWORD$";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            service.createOwner(name, email, password);
+            service.createOwner(name, password);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -238,14 +195,14 @@ public class OwnerAccountServiceTests {
     public void testCreateOwnerByPasswordWithoutSpecialChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "invalidPassword6";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
 
         // act
         try {
-            service.createOwner(name, email, password);
+            service.createOwner(name, password);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -255,30 +212,29 @@ public class OwnerAccountServiceTests {
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
     }
     @Test
-    public void testCreateDuplicateOwner() {
+    public void testCreateSecondOwner() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "validPassword$6";
         OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
         lenient().when(ownerRepo.existsOwnerAccountByEmail(email)).thenReturn(true);
 
-        String sameName = "validName6";
-        String sameEmail = "validEmail6@gmail.com";
-        String samePassword = "validPassword$6";
+        String newName = "validName7";
+        String newPassword = "validPassword$7";
 
         String error = "";
 
         // act
         try {
-            service.createOwner(sameName, sameEmail, samePassword);
+            service.createOwner(newName, newPassword);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("Owner with this email already exists", error);
+        assertEquals("Only one owner can exist", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
         verify(ownerRepo, times(1)).existsOwnerAccountByEmail(email);
     }
@@ -288,50 +244,38 @@ public class OwnerAccountServiceTests {
     public void testUpdateValidOwner() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "validPassword$6";
         OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = ownerAccount.getId();
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(ownerAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
         String newPassword = "validPassword7$";
 
         // act
-        OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(id, newName, newEmail, newPassword);
+        OwnerAccount updatedOwnerAccount = service.updateOwnerAccount(newName, newPassword);
 
         // assertions
         assertNotNull(updatedOwnerAccount);
         assertEquals(updatedOwnerAccount.getName(), newName);
-        assertEquals(updatedOwnerAccount.getEmail(), newEmail);
         assertEquals(updatedOwnerAccount.getPassword(), newPassword);
         verify(ownerRepo, times(1)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)). findOwnerAccountById(id);
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
     }
 
     @Test
-    public void testUpdateOwnerWithInvalidId() {
+    public void testUpdateOwnerNotFound() {
         // setup
-        String name = "validName6";
-        String email = "validEmail6@gmail.com";
-        String password = "validPassword$6";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = 50;
-        ownerAccount.setId(id);
-        lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
-
-        int invalidId = 60;
-        String newName = "validName8";
-        String newEmail = "validEmail8@gmail.com";
-        String newPassword = "validPassword8$";
+        String email = "owner@sportcenter.com";
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(null);
+        String newName = "validName6";
+        String newPassword = "validPassword$7";
         String error = "";
 
         // act
         try {
-            service.updateOwnerAccount(invalidId, newName, newEmail, newPassword);
+            service.updateOwnerAccount(newName, newPassword);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -339,115 +283,52 @@ public class OwnerAccountServiceTests {
         // assertions
         assertEquals("The owner account was not found", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)).findOwnerAccountById(invalidId);
-
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
     }
-
     @Test
-    public void testUpdateOwnerByEmptyEmail() {
+    public void testUpdateOwnerByEmptyName() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "validPassword$6";
         OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = ownerAccount.getId();
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(ownerAccount);
 
-        String newName = "validName7";
-        String newEmail = "";
-        String newPassword = "validPassword7$";
+        String newName = "";
+        String newPassword = "validPassword$7";
         String error = "";
 
         // act
         try {
-            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+            service.updateOwnerAccount(newName, newPassword);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
 
         // assertions
-        assertEquals("Email is empty", error);
+        assertEquals("Name is empty", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
-    }
-    @Test
-    public void testUpdateOwnerByEmailWithSpace() {
-        // setup
-        String name = "validName6";
-        String email = "validEmail6@gmail.com";
-        String password = "validPassword$6";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = ownerAccount.getId();
-        lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
-
-        String newName = "validName7";
-        String newEmail = "validEmail @gmail.com";
-        String newPassword = "validPassword7$";
-        String error = "";
-
-        // act
-        try {
-            service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (ServiceException e) {
-            error = e.getMessage();
-        }
-
-        // assertions
-        assertEquals("Email cannot contain any space", error);
-        verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
-    }
-
-    @Test
-    public void testUpdateOwnerByInvalidEmail() {
-        // setup
-        String name = "validName6";
-        String email = "validEmail6@gmail.com";
-        String password = "validPassword$6";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = ownerAccount.getId();
-        lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
-
-        String newName = "validName7";
-        String newEmail = "validEmail7@gmail.co";
-        String newPassword = "validPassword7$";
-        String error = "";
-
-        // act
-        try {
-            service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (ServiceException e) {
-            error = e.getMessage();
-        }
-
-        // assertions
-        assertEquals("Invalid Email", error);
-        verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
     }
 
     @Test
     public void testUpdateOwnerByEmptyPassword() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "validPassword$6";
         OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = ownerAccount.getId();
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(ownerAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
         String newPassword = "";
         String error = "";
 
         // act
         try {
-            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+            service.updateOwnerAccount(newName, newPassword);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -455,28 +336,26 @@ public class OwnerAccountServiceTests {
         // assertions
         assertEquals("Password is empty", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
     }
 
     @Test
     public void testUpdateOwnerByShortPassword() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "validPassword$6";
         OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = ownerAccount.getId();
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(ownerAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
         String newPassword = "valP$";
         String error = "";
 
         // act
         try {
-            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+            service.updateOwnerAccount(newName, newPassword);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -484,28 +363,26 @@ public class OwnerAccountServiceTests {
         // assertions
         assertEquals("Password must be at least eight characters long", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
     }
 
     @Test
     public void testUpdateOwnerByPasswordWithoutUppercaseChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "validPassword$6";
         OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = ownerAccount.getId();
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(ownerAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
         String newPassword = "validpassword7$";
         String error = "";
 
         // act
         try {
-            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+            service.updateOwnerAccount(newName, newPassword);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -513,28 +390,26 @@ public class OwnerAccountServiceTests {
         // assertions
         assertEquals("Password must contain one upper-case character", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
     }
 
     @Test
     public void testUpdateOwnerByPasswordWithoutLowercaseChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "validPassword$6";
         OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = ownerAccount.getId();
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(ownerAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
         String newPassword = "PASSWORD7$";
         String error = "";
 
         // act
         try {
-            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+            service.updateOwnerAccount(newName, newPassword);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -542,28 +417,26 @@ public class OwnerAccountServiceTests {
         // assertions
         assertEquals("Password must contain one lower-case character", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
     }
 
     @Test
     public void testUpdateOwnerByPasswordWithoutSpecialChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "owner@sportcenter.com";
         String password = "validPassword$6";
         OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = ownerAccount.getId();
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
+        lenient().when(ownerRepo.findOwnerAccountByEmail(email)).thenReturn(ownerAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
         String newPassword = "validPassword7";
         String error = "";
 
         // act
         try {
-            service.updateOwnerAccount(id, newName, newEmail, newPassword);
+            service.updateOwnerAccount(newName, newPassword);
         } catch (ServiceException e) {
             error = e.getMessage();
         }
@@ -571,38 +444,6 @@ public class OwnerAccountServiceTests {
         // assertions
         assertEquals("Password must contain at least one special character", error);
         verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
-    }
-
-    @Test
-    public void testUpdateDuplicateOwner() {
-        // setup
-        String name = "validName6";
-        String email = "validEmail6@gmail.com";
-        String password = "validPassword$6";
-        OwnerAccount ownerAccount = new OwnerAccount(name, email, password);
-        int id = 50;
-        ownerAccount.setId(id);
-        lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.findOwnerAccountById(id)).thenReturn(ownerAccount);
-        lenient().when(ownerRepo.existsOwnerAccountByEmail(email)).thenReturn(true);
-
-        String newName = "validName7";
-        String newEmail = "validEmail6@gmail.com";
-        String newPassword = "validPassword$7";
-        String error = "";
-
-        // act
-        try {
-            service.updateOwnerAccount(id, newName, newEmail, newPassword);
-        } catch (ServiceException e) {
-            error = e.getMessage();
-        }
-
-        // assertions
-        assertEquals("Owner with this email already exists", error);
-        verify(ownerRepo, times(0)).save(any(OwnerAccount.class));
-        verify(ownerRepo, times(1)).findOwnerAccountById(id);
-        verify(ownerRepo, times(1)).existsOwnerAccountByEmail(email);
+        verify(ownerRepo, times(1)).findOwnerAccountByEmail(email);
     }
 }

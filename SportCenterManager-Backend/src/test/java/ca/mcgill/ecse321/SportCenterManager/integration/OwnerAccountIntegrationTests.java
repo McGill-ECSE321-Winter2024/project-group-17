@@ -27,18 +27,13 @@ public class OwnerAccountIntegrationTests {
     private OwnerAccountRepository ownerRepo;
 
     private String name = "Namir";
-    private String email = "Namir@gmail.com";
+    private String email = "owner@sportcenter.com";
     private String password = "Password$";
     private String newName = "Eric";
-    private String newEmail = "Eric@gmail.com";
     private String newPassword = "Password$1";
-
     private String newName1 = "Mahmoud";
-    private String newEmail1 = "Mahmoud@gmail.com";
     private String newPassword1 = "Password$2";
 
-    private int validId;
-    private int invalidId = -1;
 
     @BeforeAll
     @AfterAll
@@ -46,11 +41,135 @@ public class OwnerAccountIntegrationTests {
         ownerRepo.deleteAll();
     }
 
+
     @Test
     @Order(1)
+    public void testCannotFindOwner() {
+        // act
+        ResponseEntity<ErrorDto> response = client.getForEntity("/ownerAccount", ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("There is no owner", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(2)
+    public void testCreateOwnerWithEmptyName() {
+        // setup
+        OwnerRequestDto requestDto = new OwnerRequestDto("", this.email, this.password);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Name is empty", response.getBody().getMessage());
+    }
+    @Test
+    @Order(3)
+    public void testCreateOwnerWithEmptyPassword() {
+        // setup
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, "");
+
+        //act
+        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password is empty", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(4)
+    public void testCreateOwnerWithShortPassword() {
+        // setup
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, "Pass$");
+
+        //act
+        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must be at least eight characters long", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(5)
+    public void testCreateOwnerWithoutUppercasePassword() {
+        // setup
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, "password$");
+
+        //act
+        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(6)
+    public void testCreateOwnerWithoutLowercasePassword() {
+        // setup
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, "PASSWORD$");
+
+        //act
+        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(7)
+    public void testCreateOwnerWithoutSpecialCharPassword() {
+        // setup
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, "Passworddd");
+
+        //act
+        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain at least one special character", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(8)
+    public void testUpdateOwnerNotFound() {
+        // setup
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, this.newPassword1);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("The owner account was not found", response.getBody().getMessage());
+    }
+    @Test
+    @Order(9)
     public void testCreateValidOwner() {
         // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(name, email, password);
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, this.password);
 
         //act
         ResponseEntity<OwnerResponseDto> response = client.postForEntity("/ownerAccount", requestDto, OwnerResponseDto.class);
@@ -60,17 +179,15 @@ public class OwnerAccountIntegrationTests {
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Namir", response.getBody().getName());
-        assertEquals("Namir@gmail.com", response.getBody().getEmail());
+        assertEquals(this.email, response.getBody().getEmail());
         assertEquals("Password$", response.getBody().getPassword());
         assertTrue(response.getBody().getId() > 0, "ID is not positive" );
-
-        this.validId = response.getBody().getId();
     }
     @Test
-    @Order(2)
-    public void testFindOwnerByValidId() {
+    @Order(10)
+    public void testFindOwner() {
         // act
-        ResponseEntity<OwnerResponseDto> response = client.getForEntity("/ownerAccount/" + this.validId, OwnerResponseDto.class);
+        ResponseEntity<OwnerResponseDto> response = client.getForEntity("/ownerAccount", OwnerResponseDto.class);
 
         // assertions
         assertNotNull(response);
@@ -78,140 +195,16 @@ public class OwnerAccountIntegrationTests {
         System.out.println(response);
         System.out.println(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(this.validId, response.getBody().getId());
-
-    }
-
-    @Test
-    @Order(3)
-    public void testFindOwnerByInvalidId() {
-        // act
-        ResponseEntity<ErrorDto> response = client.getForEntity("/ownerAccount/"+ this.invalidId, ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("There is no owner with ID" + invalidId, response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(4)
-    public void testCreateOwnerWithEmptyEmail() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(name, "", password);
-
-        //act
-        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Email is empty", response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(5)
-    public void testCreateOwnerWithSpace() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(name, email+" ", password);
-
-        //act
-        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Email cannot contain any space", response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(6)
-    public void testCreateOwnerWithInvalidEmail() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(name, "Namir@gmail.co", password);
-
-        //act
-        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Invalid Email", response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(7)
-    public void testCreateOwnerWithEmptyPassword() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(name, "m"+email, "");
-
-        //act
-        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Password is empty", response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(8)
-    public void testCreateOwnerWithShortPassword() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(name, "m"+email, "Pass$");
-
-        //act
-        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Password must be at least eight characters long", response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(9)
-    public void testCreateOwnerWithoutUppercasePassword() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(name, "m"+email, "password$");
-
-        //act
-        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(10)
-    public void testCreateOwnerWithoutLowercasePassword() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(name, "m"+email, "PASSWORD$");
-
-        //act
-        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
+        assertEquals("Namir", response.getBody().getName());
+        assertEquals(this.email, response.getBody().getEmail());
+        assertEquals("Password$", response.getBody().getPassword());
     }
 
     @Test
     @Order(11)
-    public void testCreateOwnerWithoutSpecialCharPassword() {
+    public void testSecondCreateOwner() {
         // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(name, "m"+email, "Passworddd");
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.name, this.email, this.password);
 
         //act
         ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
@@ -219,120 +212,52 @@ public class OwnerAccountIntegrationTests {
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Password must contain at least one special character", response.getBody().getMessage());
+        assertEquals(HttpStatus.CONFLICT, response.getStatusCode());
+        assertEquals("Only one owner can exist", response.getBody().getMessage());
     }
 
     @Test
     @Order(12)
-    public void testCreateOwnerWithSameEmail() {
+    public void testUpdateValidOwner() {
         // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(name, email, password);
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.newName, this.email, this.newPassword);
 
         //act
-        ResponseEntity<ErrorDto> response = client.postForEntity("/ownerAccount", requestDto, ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Owner with this email already exists", response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(13)
-    public void testUpdateOwnerByValidId() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName, newEmail, newPassword);
-
-        //act
-        client.put("/ownerAccount/" + this.validId, requestDto);
-        ResponseEntity<OwnerResponseDto> response = client.getForEntity("/ownerAccount/" + this.validId, OwnerResponseDto.class);
+        ResponseEntity<OwnerResponseDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), OwnerResponseDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Eric", response.getBody().getName());
-        assertEquals("Eric@gmail.com", response.getBody().getEmail());
-        assertEquals("Password$1", response.getBody().getPassword());
-        assertEquals(this.validId, response.getBody().getId());
+        assertEquals(this.newName, response.getBody().getName());
+        assertEquals(this.email, response.getBody().getEmail());
+        assertEquals(this.newPassword, response.getBody().getPassword());
 
+    }
+    @Test
+    @Order(13)
+    public void testUpdateOwnerWithEmptyName() {
+        // setup
+        OwnerRequestDto requestDto = new OwnerRequestDto("", this.email, this.newPassword1);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Name is empty", response.getBody().getMessage());
     }
 
     @Test
     @Order(14)
-    public void testUpdateOwnerByInvalidId() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName1, newEmail1, newPassword1);
-
-        //act
-        client.put("/ownerAccount/" + this.invalidId, requestDto);
-        ResponseEntity<ErrorDto> response = client.getForEntity("/ownerAccount/" + this.invalidId, ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("There is no owner with ID" + invalidId, response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(15)
-    public void testUpdateOwnerWithEmptyEmail() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName1, "", newPassword1);
-
-        //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Email is empty", response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(16)
-    public void testUpdateOwnerWithSpaceEmail() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName1, newEmail1+" ", newPassword1);
-
-        //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Email cannot contain any space", response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(17)
-    public void testUpdateOwnerWithInvalidEmail() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName1, "Mahmoud@gmail", newPassword1);
-
-        //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Invalid Email", response.getBody().getMessage());
-    }
-
-    @Test
-    @Order(18)
     public void testUpdateOwnerWithEmptyPassword() {
         // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName1, newEmail1, "");
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "");
 
         //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
@@ -342,13 +267,13 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(19)
+    @Order(15)
     public void testUpdateOwnerWithShortPassword() {
         // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName1, newEmail1, "Pass$");
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "Pass$");
 
         //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
@@ -358,13 +283,13 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(20)
+    @Order(16)
     public void testUpdateOwnerWithoutUppercasePassword() {
         // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName1, newEmail1, "password$$");
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "password$$");
 
         //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
@@ -374,13 +299,13 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(21)
+    @Order(17)
     public void testUpdateOwnerWithoutLowercasePassword() {
         // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName1, newEmail1, "PASSWORD$$");
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "PASSWORD$$");
 
         //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
@@ -390,13 +315,13 @@ public class OwnerAccountIntegrationTests {
     }
 
     @Test
-    @Order(22)
+    @Order(18)
     public void testUpdateOwnerWithoutSpecialCharPassword() {
         // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName1, newEmail1, "Passworddddd");
+        OwnerRequestDto requestDto = new OwnerRequestDto(this.newName1, this.email, "Passworddddd");
 
         //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount", HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
@@ -404,21 +329,4 @@ public class OwnerAccountIntegrationTests {
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
         assertEquals("Password must contain at least one special character", response.getBody().getMessage());
     }
-
-    @Test
-    @Order(23)
-    public void testUpdateOwnerWithSameEmail() {
-        // setup
-        OwnerRequestDto requestDto = new OwnerRequestDto(newName, newEmail, newPassword);
-
-        //act
-        ResponseEntity<ErrorDto> response = client.exchange("/ownerAccount/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
-
-        // assertions
-        assertNotNull(response);
-        assertNotNull(response.getBody());
-        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
-        assertEquals("Owner with this email already exists", response.getBody().getMessage());
-    }
-
 }

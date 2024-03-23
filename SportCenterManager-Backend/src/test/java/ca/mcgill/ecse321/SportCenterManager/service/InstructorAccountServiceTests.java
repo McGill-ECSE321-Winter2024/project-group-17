@@ -126,6 +126,26 @@ public class InstructorAccountServiceTests {
     }
 
     @Test
+    public void testCreateInstructorByEmptyName() {
+        // setup
+        String name = "";
+        String email = "validEmail@gmail.com";
+        String password = "validPassword$6";
+        lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
+        String error = "";
+
+        // act
+        try {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
+            error = e.getMessage();
+        }
+
+        // assertions
+        assertEquals("Name is empty", error);
+        verify(instructorRepo, times(0)).save(any(InstructorAccount.class));
+    }
+    @Test
     public void testCreateInstructorByEmptyEmail() {
         // setup
         String name = "validName6";
@@ -380,6 +400,34 @@ public class InstructorAccountServiceTests {
 
     }
 
+    @Test
+    public void testUpdateInstructorByEmptyName() {
+        // setup
+        String name = "validName6";
+        String email = "validEmail6@gmail.com";
+        String password = "validPassword$6";
+        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
+        int id = instructorAccount.getId();
+        lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(instructorAccount);
+        lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
+
+        String newName = "";
+        String newEmail = "validEmail7@gmail.com";
+        String newPassword = "validPassword7$";
+        String error = "";
+
+        // act
+        try {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
+            error = e.getMessage();
+        }
+
+        // assertions
+        assertEquals("Name is empty", error);
+        verify(instructorRepo, times(0)).save(any(InstructorAccount.class));
+        verify(instructorRepo, times(1)).findInstructorAccountById(id);
+    }
     @Test
     public void testUpdateInstructorByEmptyEmail() {
         // setup
