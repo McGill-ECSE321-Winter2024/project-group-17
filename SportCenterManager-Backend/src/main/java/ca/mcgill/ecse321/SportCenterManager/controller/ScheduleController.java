@@ -24,23 +24,23 @@ public class ScheduleController {
     @Autowired
     ScheduleService service;
 
-    @Operation( summary = "Update the information of a session by id.",
+    @Operation( summary = "Update the schedule.",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: Successfully updated billing information.",
+                            description = "OK: Successfully updated schedule.",
                             content = @Content(
                                     schema = @Schema(implementation = CourseResponseDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" +
-                                                    "\"startTime\" : \"2024-03-22T03:03:06.561Z\", " +
-                                                    "\"endTime\" : \"2024-03-22T03:03:06.561Z\" }")
+                                                    "\"startTime\" : \"09:00:00\", " +
+                                                    "\"endTime\" : \"23:00:00\" }")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Not Found: null time not allowed.",
+                            description = "Forbidden: null time not allowed.",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
@@ -50,7 +50,7 @@ public class ScheduleController {
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Not Found: invalid opening hour.",
+                            description = "Forbidden: invalid opening hour.",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
@@ -67,16 +67,16 @@ public class ScheduleController {
                             schema = @Schema(implementation = ScheduleRequestDto.class),
                             examples = {
                                     @ExampleObject(value = "{" +
-                                            "\"startTime\" : \"2024-03-22T03:03:06.561Z\", " +
-                                            "\"endTime\" : \"2024-03-22T03:03:06.561Z\"}")
+                                            "\"startTime\" : \"09:00:00\", " +
+                                            "\"endTime\" : \"23:00:00\"}")
                             }
                     )
             )
             @RequestBody ScheduleRequestDto schedule){
         Time opening = schedule.getOpeningHour();
         Time closing = schedule.getClosingHour();
-        Schedule modifiedschedule = service.updateSchedule(opening,closing);
-        return modifiedschedule;
+        Schedule modifiedSchedule = service.updateSchedule(opening,closing);
+        return modifiedSchedule;
     }
 
 }

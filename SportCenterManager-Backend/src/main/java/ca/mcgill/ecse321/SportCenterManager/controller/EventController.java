@@ -73,17 +73,17 @@ public class EventController {
                                                     "\"name\" : \"Yoga\", " +
                                                     "\"description\" : \"Intermediate\", " +
                                                     "\"costPerSession\" : 44, " +
-                                                    "\"isApproved\" : true }")
+                                                    "\"isApproved\" : false }")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "404",
-                            description = "Not Found: invalid customer id.",
+                            description = "Not Found: invalid course id.",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"There is no customer with ID 11 in the system.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"There is no course with ID 11.\"}")
                                     }
                             )
                     )
@@ -105,10 +105,11 @@ public class EventController {
                             responseCode = "200",
                             description = "OK: Successfully deleted course by id.",
                             content = @Content(
-                                    schema = @Schema(implementation = CourseResponseDto.class),
+                                    schema = @Schema(implementation = CourseListDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" +
-                                                    "\"courses\": []}")
+                                                    "\"courses\": []}"
+                                            )
                                     }
                             )
                     ),
@@ -118,7 +119,7 @@ public class EventController {
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"There is no course with ID 11 in the system.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"There is no course with ID 11.\"}")
                                     }
                             )
                     )
@@ -140,10 +141,11 @@ public class EventController {
                                     schema = @Schema(implementation = CourseResponseDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" +
-                                                    "\"name\" : \"updatedName\", " +
-                                                    "\"description\" : \"updatedDescription\", " +
-                                                    "\"costPerSession\" : 20, " +
-                                                    "\"isApproved\" : true }")
+                                                    "\"id\" : 10, " +
+                                                    "\"name\" : \"Yoga\", " +
+                                                    "\"description\" : \"Advanced\", " +
+                                                    "\"costPerSession\" : 50, " +
+                                                    "\"isApproved\" : false }")
                                     }
                             )
                     ),
@@ -153,17 +155,17 @@ public class EventController {
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"There is no course with ID in the system.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"There is no course with ID 11 .\"}")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Not Found: invalid cost per session.",
+                            description = "Forbidden: invalid cost per session.",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"The course cost must be positive.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"Failed to modify course: Cost per session must be greater than 0.\"}")
                                     }
                             )
                     )
@@ -176,10 +178,10 @@ public class EventController {
                             schema = @Schema(implementation = CourseRequestDto.class),
                             examples = {
                                     @ExampleObject(value = "{" +
-                                            "\"name\" : \"updatedName\", " +
-                                            "\"description\" : \"updatedDescription\", " +
-                                            "\"costPerSession\" : 20, " +
-                                            "\"isApproved\" : true }"
+                                            "\"name\" : \"Yoga\", " +
+                                            "\"description\" : \"Advanced\", " +
+                                            "\"costPerSession\" : 50, " +
+                                            "\"isApproved\" : false }"
                                     )
                             }
                     )
@@ -193,14 +195,15 @@ public class EventController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: Successfully approved course by id.",
+                            description = "OK: Successfully approved a course by id.",
                             content = @Content(
                                     schema = @Schema(implementation = CourseResponseDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" +
-                                                    "\"name\" : \"updatedName\", " +
-                                                    "\"description\" : \"updatedDescription\", " +
-                                                    "\"costPerSession\" : 20, " +
+                                                    "\"id\" : 10, " +
+                                                    "\"name\" : \"Yoga\", " +
+                                                    "\"description\" : \"Advanced\", " +
+                                                    "\"costPerSession\" : 50, " +
                                                     "\"isApproved\" : true }")
                                     }
                             )
@@ -211,7 +214,7 @@ public class EventController {
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"There is no course with ID in the system.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"There is no course with ID 10.\"}")
                                     }
                             )
                     )
@@ -235,30 +238,29 @@ public class EventController {
                                     schema = @Schema(implementation = CourseResponseDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" +
-                                                    "\"name\" : \"Name\", " +
-                                                    "\"description\" : \"Description\", " +
-                                                    "\"costPerSession\" : 40, " +
-                                                    "\"isApproved\" : false }")
+                                                    "\"name\" : \"Yoga\", " +
+                                                    "\"description\" : \"Intermediate\", " +
+                                                    "\"costPerSession\" : 44}")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "409",
-                            description = "Conflict: name already exists.",
+                            description = "Conflict: invalid name.",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"The course name already exists.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"Failed to create course: Course with name yoga already exists.\"}")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Forbidden: invalid cost per session.",
+                            description = "Forbidden: invalid course cost.",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"The course cost must be positive.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"Failed to modify course: Cost per session must be greater than 0.\"}")
                                     }
                             )
                     )
@@ -273,8 +275,7 @@ public class EventController {
                                     @ExampleObject(value = "{" +
                                             "\"name\" : \"Name\", " +
                                             "\"description\" : \"Description\", " +
-                                            "\"costPerSession\" : 40, " +
-                                            "\"isApproved\" : false }"
+                                            "\"costPerSession\" : \"Cost\"}"
                                     )
                             }
                     )
@@ -296,24 +297,24 @@ public class EventController {
                                     examples = {@ExampleObject(value = "{" +
                                             "\"sessions\": [" +
                                             "{" +
-                                            "\"startTime\": \"2024-03-22T03:03:06.560Z\", " +
-                                            "\"endTime\": \"2024-03-22T03:03:06.560Z\", " +
-                                            "\"date\":\"2024-03-22T03:03:06.560Z\", " +
+                                            "\"startTime\": \"20:00:00\", " +
+                                            "\"endTime\": \"21:00:00\", " +
+                                            "\"date\":\"2024-05-05\", " +
                                             "\"course\": {" +
                                             "\"name\": \"string\", " +
                                             "\"description\": \"string\", " +
-                                            "\"costPerSession\": 0, " +
+                                            "\"costPerSession\": 10, " +
                                             "\"isApproved\": true, " +
-                                            "\"id\": 0 }," +
+                                            "\"id\": 10 }," +
                                             "\"instructor\": {" +
-                                            "\"id\":0 ," +
+                                            "\"id\": 20 ," +
                                             "\"name\": \"string\", " +
                                             "\"email\": \"string\", " +
                                             "\"password\": \"string\" + }, " +
                                             "\"schedule\": {" +
-                                            "\"openingHours\": \"2024-03-22T03:03:06.561Z\" , "+
-                                            "\"closingHours\": \"2024-03-22T03:03:06.561Z\" , }, "+
-                                            "\"id\": 0 }]}"
+                                            "\"openingHours\": \"09:00:00\" , "+
+                                            "\"closingHours\": \"23:00:00\" , }, "+
+                                            "\"id\": 30 }]}"
                                     )}
                             )
                     )
@@ -338,26 +339,24 @@ public class EventController {
                             content = @Content(
                                     schema = @Schema(implementation = SessionResponseDto.class),
                                     examples = {@ExampleObject(value = "{" +
-                                            "\"sessions\": [" +
-                                            "{" +
-                                            "\"startTime\": \"2024-03-22T03:03:06.560Z\", " +
-                                            "\"endTime\": \"2024-03-22T03:03:06.560Z\", " +
-                                            "\"date\":\"2024-03-22T03:03:06.560Z\", " +
+                                            "\"startTime\": \"20:00:00\", " +
+                                            "\"endTime\": \"21:00:00\", " +
+                                            "\"date\":\"2024-05-05\", " +
                                             "\"course\": {" +
                                             "\"name\": \"string\", " +
                                             "\"description\": \"string\", " +
-                                            "\"costPerSession\": 0, " +
+                                            "\"costPerSession\": 10, " +
                                             "\"isApproved\": true, " +
-                                            "\"id\": 0 }," +
+                                            "\"id\": 10 }," +
                                             "\"instructor\": {" +
-                                            "\"id\":0 ," +
+                                            "\"id\": 20 ," +
                                             "\"name\": \"string\", " +
                                             "\"email\": \"string\", " +
                                             "\"password\": \"string\" + }, " +
                                             "\"schedule\": {" +
-                                            "\"openingHours\": \"2024-03-22T03:03:06.561Z\" , "+
-                                            "\"closingHours\": \"2024-03-22T03:03:06.561Z\" , }, "+
-                                            "\"id\": 0 }]}"
+                                            "\"openingHours\": \"09:00:00\" , "+
+                                            "\"closingHours\": \"23:00:00\" , }, "+
+                                            "\"id\": 30 }"
                                     )}
                             )
                     ),
@@ -367,7 +366,7 @@ public class EventController {
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"There is no session with ID in the system.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"Session with inputted id is not found.\"}")
                                     }
                             )
                     )
@@ -385,12 +384,12 @@ public class EventController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: Successfully deleted all sessions for a course.",
+                            description = "OK: Successfully deleted all sessions for a course by id.",
                             content = @Content(
                                     schema = @Schema(implementation = SessionListDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" +
-                                                    "\"id\" :  14533 }")
+                                                    "\"sessions\": []}")
                                     }
                             )
                     ),
@@ -400,7 +399,7 @@ public class EventController {
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"There is no course with ID 11 in the system.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"There is no course with ID 11\"}")
                                     }
                             )
                     )
@@ -417,12 +416,12 @@ public class EventController {
             responses = {
                     @ApiResponse(
                             responseCode = "200",
-                            description = "OK: Successfully deleted all sessions for a course.",
+                            description = "OK: Successfully deleted a session by id.",
                             content = @Content(
-                                    schema = @Schema(implementation = SessionResponseDto.class),
+                                    schema = @Schema(implementation = SessionListDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" +
-                                                    "\"id\" :  14533 }")
+                                                    "\"sessions\": []}")
                                     }
                             )
                     ),
@@ -432,7 +431,7 @@ public class EventController {
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"There is no session with ID 11 in the system.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"Session with inputted id is not found.\"}")
                                     }
                             )
                     )
@@ -453,25 +452,30 @@ public class EventController {
                                     schema = @Schema(implementation = SessionResponseDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" +
-                                                    "\"startTime\" : \"2024-03-22T03:03:06.561Z\", " +
-                                                    "\"endTime\" : \"2024-03-22T03:03:06.561Z\", " +
-                                                    "\"date\" : \"updatedCost\" }")
-                                    }
-                            )
-                    ),
-                    @ApiResponse(
-                            responseCode = "404",
-                            description = "Not Found: invalid session id.",
-                            content = @Content(
-                                    schema = @Schema(implementation = ErrorDto.class),
-                                    examples = {
-                                            @ExampleObject(value = "{\"message\" : \"There is no session with ID in the system.\"}")
+                                                    "\"startTime\": \"14:00:00\", " +
+                                                    "\"endTime\": \"15:00:00\", " +
+                                                    "\"date\":\"2024-05-06\", " +
+                                                    "\"course\": {" +
+                                                    "\"name\": \"string\", " +
+                                                    "\"description\": \"string\", " +
+                                                    "\"costPerSession\": 10, " +
+                                                    "\"isApproved\": true, " +
+                                                    "\"id\": 10 }," +
+                                                    "\"instructor\": {" +
+                                                    "\"id\": 20 ," +
+                                                    "\"name\": \"string\", " +
+                                                    "\"email\": \"string\", " +
+                                                    "\"password\": \"string\" + }, " +
+                                                    "\"schedule\": {" +
+                                                    "\"openingHours\": \"09:00:00\" , "+
+                                                    "\"closingHours\": \"23:00:00\" , }, "+
+                                                    "\"id\": 30 }")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Not Found: invalid start time.",
+                            description = "Forbidden: invalid start time.",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
@@ -481,7 +485,7 @@ public class EventController {
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Not Found: invalid date.",
+                            description = "Forbidden: invalid date.",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
@@ -499,9 +503,12 @@ public class EventController {
                             schema = @Schema(implementation = SessionRequestDto.class),
                             examples = {
                                     @ExampleObject(value = "{" +
-                                            "\"startTime\" : \"2024-03-22T03:03:06.561Z\", " +
-                                            "\"endTime\" : \"2024-03-22T03:03:06.561Z\", " +
-                                            "\"date\" : \"updatedDate\" }")
+                                            "\"startTime\": \"14:00:00\", " +
+                                            "\"endTime\": \"15:00:00\", " +
+                                            "\"date\": \"2024-05-06\", " +
+                                            "\"courseId\": 14, " +
+                                            "\"instructorId\": 43" +
+                                            "}")
                             }
                     )
             )
@@ -519,31 +526,44 @@ public class EventController {
                                     schema = @Schema(implementation = SessionResponseDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" +
-                                                    "\"startTime\" : \"2024-03-22T03:03:06.561Z\", " +
-                                                    "\"endTime\" : \"2024-03-22T03:03:06.561Z\", " +
-                                                    "\"date\" : \"Date\", " +
-                                                    "\"instructorId\": 14, "+
-                                                    "\"courseId\": 43}")
+                                                    "\"startTime\": \"14:00:00\", " +
+                                                    "\"endTime\": \"15:00:00\", " +
+                                                    "\"date\":\"2024-05-06\", " +
+                                                    "\"course\": {" +
+                                                    "\"name\": \"string\", " +
+                                                    "\"description\": \"string\", " +
+                                                    "\"costPerSession\": 10, " +
+                                                    "\"isApproved\": true, " +
+                                                    "\"id\": 14 }," +
+                                                    "\"instructor\": {" +
+                                                    "\"id\": 43 ," +
+                                                    "\"name\": \"string\", " +
+                                                    "\"email\": \"string\", " +
+                                                    "\"password\": \"string\" + }, " +
+                                                    "\"schedule\": {" +
+                                                    "\"openingHours\": \"09:00:00\" , "+
+                                                    "\"closingHours\": \"23:00:00\" , }, "+
+                                                    "\"id\": 30 }")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Not Found: invalid start time",
+                            description = "Forbidden: invalid start time",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"The start time must be before the end time.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"End time must be be after the start time.\"}")
                                     }
                             )
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Not Found: invalid date.",
+                            description = "Forbidden: invalid date.",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
-                                            @ExampleObject(value = "{\"message\" : \"Cannot create session for a date that has passed.\"}")
+                                            @ExampleObject(value = "{\"message\" : \"Cannot create a session on date that has passed.\"}")
                                     }
                             )
                     )
@@ -557,11 +577,11 @@ public class EventController {
                             schema = @Schema(implementation = SessionRequestDto.class),
                             examples = {
                                     @ExampleObject(value = "{" +
-                                            "\"startTime\" : \"2024-03-22T03:03:06.561Z\", " +
-                                            "\"endTime\" : \"2024-03-22T03:03:06.561Z\", " +
-                                            "\"date\" : \"Date\", " +
-                                            "\"instructorId\" : \"14\", " +
-                                            "\"courseId\" : \"43\"}")
+                                            "\"startTime\" : \"20:00:00\", " +
+                                            "\"endTime\" : \"21:00:00\", " +
+                                            "\"date\" : \"2024-05-05\", " +
+                                            "\"courseId\" : \"14\", " +
+                                            "\"instructorId\" : \"43\"}")
                             }
                     )
             )
@@ -580,14 +600,30 @@ public class EventController {
                                     schema = @Schema(implementation = SessionResponseDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" +
-                                                    "\"instructorId\" : 134, " +
-                                                    "\"sessionId\" : 34}")
+                                                    "\"startTime\": \"14:00:00\", " +
+                                                    "\"endTime\": \"15:00:00\", " +
+                                                    "\"date\":\"2024-05-06\", " +
+                                                    "\"course\": {" +
+                                                    "\"name\": \"string\", " +
+                                                    "\"description\": \"string\", " +
+                                                    "\"costPerSession\": 10, " +
+                                                    "\"isApproved\": true, " +
+                                                    "\"id\": 14 }," +
+                                                    "\"instructor\": {" +
+                                                    "\"id\": 43 ," +
+                                                    "\"name\": \"string\", " +
+                                                    "\"email\": \"string\", " +
+                                                    "\"password\": \"string\" + }, " +
+                                                    "\"schedule\": {" +
+                                                    "\"openingHours\": \"09:00:00\" , "+
+                                                    "\"closingHours\": \"23:00:00\" , }, "+
+                                                    "\"id\": 30 }")
                                     }
                             )
                     ),
                     @ApiResponse(
-                            responseCode = "403",
-                            description = "Not Found: An instructor is already supervising this session",
+                            responseCode = "409",
+                            description = "Conflict: An instructor is already supervising this session",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {
@@ -597,7 +633,7 @@ public class EventController {
                     ),
                     @ApiResponse(
                             responseCode = "403",
-                            description = "Not Found: Session overlaps with another that is already supervised by the instructor!.",
+                            description = "Forbidden: Session overlaps with another that is already supervised by the instructor!.",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {

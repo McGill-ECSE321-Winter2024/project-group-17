@@ -25,7 +25,7 @@ public class LogInAndOutController {
 
     @PostMapping("/login")
     @Operation(
-            summary = "Create the Owner Account",
+            summary = "Login",
             responses = {
                     @ApiResponse(
                             responseCode = "200",
@@ -50,7 +50,16 @@ public class LogInAndOutController {
                     )
             }
     )
-    public ResponseEntity<CustomerResponseDto> login(@RequestBody LoginDto client) {
+    public ResponseEntity<CustomerResponseDto> login(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            schema = @Schema(implementation = CustomerResponseDto.class),
+                            examples = {
+                                    @ExampleObject(value = "{" + "\"name\" : \"Bob\"," + "\"email\" : \"bob@gmail.com\", " + "\"password\" : \"Password321\"}")
+                            }
+                    )
+            )
+            @RequestBody LoginDto client) {
         CustomerAccount customer = customerService.login(client.getEmail(), client.getPassword());
         return ResponseEntity.ok(new CustomerResponseDto(customer));
     }
@@ -63,7 +72,7 @@ public class LogInAndOutController {
                             responseCode = "200",
                             description = "OK: Successfully logged out",
                             content = @Content(
-                                    schema = @Schema(implementation = CustomerResponseDto.class),
+                                    schema = @Schema(implementation = String.class),
                                     examples = {
                                             @ExampleObject(value = "{" + "\"message\" : \"\"Logged out\"\"," + "}")
                                     }

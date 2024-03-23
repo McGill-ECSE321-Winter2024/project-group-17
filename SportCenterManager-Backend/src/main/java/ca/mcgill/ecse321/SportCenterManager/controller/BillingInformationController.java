@@ -19,9 +19,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PutMapping;
 
-import java.sql.Date;
-import java.time.LocalDate;
-
 @RestController
 @RequestMapping("/customerAccounts/{customerAccount_id}/billingInformation")
 public class BillingInformationController {
@@ -45,7 +42,7 @@ public class BillingInformationController {
                                                     "\"name\" : \"postalCode\", " +
                                                     "\"cardNumber\" : \"cardNumber\", " +
                                                     "\"cvc\" : 123, " +
-                                                    "\"expirationDate\" : \"2024-03-21T03:30:07.329Z\"}")
+                                                    "\"expirationDate\" : \"2024-05-05\"}")
                                     }
                             )
                     ),
@@ -84,7 +81,7 @@ public class BillingInformationController {
                                                     "\"name\" : \"updatedPostalCode\", " +
                                                     "\"cardNumber\" : \"updatedCardNumber\", " +
                                                     "\"cvc\" : 456, " +
-                                                    "\"expirationDate\" : \"2024-03-21T03:30:07.329Z\"}")
+                                                    "\"expirationDate\" : \"2024-05-05\"}")
                                     }
                             )
                     ),
@@ -132,7 +129,7 @@ public class BillingInformationController {
                                             "\"name\" : \"updatedPostalCode\", " +
                                             "\"cardNumber\" : \"updatedCardNumber\", " +
                                             "\"cvc\" : 456, " +
-                                            "\"expirationDate\" : \"2024-03-21T03:30:07.329Z\"}"
+                                            "\"expirationDate\" : \"2024-05-05\"}"
                                     )
                             }
                     )
