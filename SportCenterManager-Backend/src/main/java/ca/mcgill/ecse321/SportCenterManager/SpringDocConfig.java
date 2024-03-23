@@ -16,15 +16,6 @@ import org.springframework.http.MediaType;
 public class SpringDocConfig {
   @Bean
   public OpenAPI baseOpenAPI(){
-    ApiResponse okApi = new ApiResponse().content(
-            new Content().addMediaType(MediaType.APPLICATION_JSON_VALUE,
-                    new io.swagger.v3.oas.models.media.MediaType().addExamples("default",
-                            new Example().value("{\"code\" : 200, \"Status\" : \"OK\"}")))
-    ).description("OK");
-
-    Components components = new Components();
-    components.addResponses("okApi", okApi);
-
     return new OpenAPI().info(new Info().title("Sport Center Manager").version("1.0.0").description("API Documentation"));
   }
 }
