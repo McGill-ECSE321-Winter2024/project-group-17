@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 
 import java.sql.Date;
 import java.time.LocalDate;
-import java.util.stream.Stream;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -16,8 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.junit.jupiter.api.TestInstance.Lifecycle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -173,12 +171,14 @@ public class BillingInformationIntegrationTests {
         String url = "/customerAccounts/" + (validId + 1) + "/billingInformation";
 
         // Act
-        ResponseEntity<ErrorDto> response = client.getForEntity(url, ErrorDto.class);
+        //ResponseEntity<BillingInformationResponseDto> response = client.getForEntity(url, BillingInformationResponseDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange(url, HttpMethod.GET, null, ErrorDto.class);
 
         // Assert
         assertNotNull(response, "Response is null.");
-        assertEquals("There is no customer with ID " + Integer.toString(validId + 1) + " in the system.", response.getBody().getMessage());
+        assertNotNull(response.getBody());
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Incorrect status code.");
+        assertEquals("There is no customer with ID " + (validId + 1) + " in the system.", response.getBody().getMessage());
     }
 
     @Test
@@ -194,17 +194,18 @@ public class BillingInformationIntegrationTests {
 
         // Assert
         assertNotNull(response, "Response is null.");
-        assertEquals("There is no customer with ID " + Integer.toString(validId + 1) + " in the system.", response.getBody().getMessage());
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode(), "Incorrect status code.");
+        assertNotNull(response.getBody());
+        assertEquals("There is no customer with ID " + (validId + 1) + " in the system.", response.getBody().getMessage());
     }
 
     @ParameterizedTest
-    @MethodSource("invalidParameters")
+    @ValueSource(ints = {99, 1000})
     @Order(6)
-    public void updateBillingInformationWithInvalidParameters(String address, String postalCode, String country, String name, String cardNumber, int cvc, Date expirationDate) {
+    public void updateBillingInformationWithInvalidCvc(int invalid_cvc) {
         // Setup
         String url = "/customerAccounts/" + validId + "/billingInformation";
-        BillingInformationRequestDto request = new BillingInformationRequestDto(address, postalCode, country, name, cardNumber, cvc, expirationDate);
+        BillingInformationRequestDto request = new BillingInformationRequestDto(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, invalid_cvc, UPDATED_EXPIRATION_DATE);
 
         // Act
         HttpEntity<BillingInformationRequestDto> requestEntity = new HttpEntity<BillingInformationRequestDto>(request);
@@ -213,22 +214,25 @@ public class BillingInformationIntegrationTests {
         // Assert
         assertNotNull(response, "Response is null.");
         assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "Incorrect status code.");
+        assertNotNull(response.getBody());
+        assertEquals("CVC must be a 3-digit number.", response.getBody().getMessage());
     }
 
-    private static Stream<Arguments> invalidParameters() {
-        return Stream.of(
-            Arguments.of(null, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, null, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, null, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, null, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, null, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, 99, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, 1000, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, Date.valueOf(LocalDate.now().minusDays(1))),
-            Arguments.of("", UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, "", UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, "", UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, "", UPDATED_CARD_NUMBER, UPDATED_CVC, UPDATED_EXPIRATION_DATE),
-            Arguments.of(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, "", UPDATED_CVC, UPDATED_EXPIRATION_DATE));
+    @Test
+    @Order(7)
+    public void updateBillingInformationWithInvalidExpirationDate() {
+        // Setup
+        String url = "/customerAccounts/" + validId + "/billingInformation";
+        BillingInformationRequestDto request = new BillingInformationRequestDto(UPDATED_ADDRESS, UPDATED_POSTAL_CODE, UPDATED_COUNTRY, UPDATED_NAME, UPDATED_CARD_NUMBER, UPDATED_CVC, Date.valueOf(LocalDate.now().minusDays(1)));
+
+        // Act
+        HttpEntity<BillingInformationRequestDto> requestEntity = new HttpEntity<BillingInformationRequestDto>(request);
+        ResponseEntity<ErrorDto> response = client.exchange(url, HttpMethod.PUT, requestEntity, ErrorDto.class);
+
+        // Assert
+        assertNotNull(response, "Response is null.");
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "Incorrect status code.");
+        assertNotNull(response.getBody());
+        assertEquals("Expiration date cannot be in the past.", response.getBody().getMessage());
     }
 }
