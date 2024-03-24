@@ -2,11 +2,11 @@ package ca.mcgill.ecse321.SportCenterManager.integration;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
 import ca.mcgill.ecse321.SportCenterManager.dto.*;
-import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -83,13 +83,13 @@ public class InstructorAccountIntegrationTests {
     @Order(3)
     public void testFindInstructorByInvalidId() {
         // act
-        ResponseEntity<IllegalArgumentException> response = client.getForEntity("/instructorAccounts/"+ this.invalidId, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.getForEntity("/instructorAccounts/"+ this.invalidId, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("There is no course with ID" + invalidId, response.getBody().getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("There is no instructor with ID" + invalidId, response.getBody().getMessage());
     }
 
     @Test
@@ -107,150 +107,166 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(5)
+    public void testCreateInstructorWithEmptyName() {
+        // setup
+        InstructorRequestDto requestDto = new InstructorRequestDto("", "m"+email, password);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Name is empty", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(6)
     public void testCreateInstructorWithEmptyEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Email is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email is empty", response.getBody().getMessage());
     }
 
     @Test
-    @Order(6)
+    @Order(7)
     public void testCreateInstructorWithSpace() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, email+" ", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Email cannot contain any space", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email cannot contain any space", response.getBody().getMessage());
     }
 
     @Test
-    @Order(7)
+    @Order(8)
     public void testCreateInstructorWithInvalidEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "Namir@gmail.co", password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Invalid Email", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Invalid Email", response.getBody().getMessage());
     }
 
     @Test
-    @Order(8)
+    @Order(9)
     public void testCreateInstructorWithEmptyPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password is empty", response.getBody().getMessage());
     }
 
     @Test
-    @Order(9)
+    @Order(10)
     public void testCreateInstructorWithShortPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "Pass$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must be at least four characters long", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must be at least eight characters long", response.getBody().getMessage());
     }
 
     @Test
-    @Order(10)
+    @Order(11)
     public void testCreateInstructorWithoutUppercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "password$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
     }
 
     @Test
-    @Order(11)
+    @Order(12)
     public void testCreateInstructorWithoutLowercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "PASSWORD$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
     }
 
     @Test
-    @Order(12)
+    @Order(13)
     public void testCreateInstructorWithoutSpecialCharPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "Passworddd");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Password must contain at least one special character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain at least one special character", response.getBody().getMessage());
     }
 
     @Test
-    @Order(13)
+    @Order(14)
     public void testCreateInstructorWithSameEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, email, password);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.postForEntity("/instructorAccounts", requestDto, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("Instructor with this email already exists", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Instructor with this email already exists", response.getBody().getMessage());
     }
 
     @Test
-    @Order(14)
+    @Order(15)
     public void testUpdateInstructorByValidId() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName, newEmail, newPassword);
@@ -271,180 +287,196 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(15)
+    @Order(16)
     public void testUpdateInstructorByInvalidId() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, newPassword1);
 
         //act
         client.put("/customerAccounts/" + this.invalidId, requestDto);
-        ResponseEntity<IllegalArgumentException> response = client.getForEntity("/instructorAccounts/" + this.invalidId, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.getForEntity("/instructorAccounts/" + this.invalidId, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
-        //assertEquals("The instructor account was not found", response.getBody().getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("There is no instructor with ID" + invalidId, response.getBody().getMessage());
     }
 
     @Test
-    @Order(16)
+    @Order(17)
+    public void testUpdateInstructorWithEmptyName() {
+        // setup
+        InstructorRequestDto requestDto = new InstructorRequestDto("", this.newEmail1, newPassword1);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Name is empty", response.getBody().getMessage());
+    }
+    @Test
+    @Order(18)
     public void testUpdateInstructorWithEmptyEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "", newPassword1);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Email is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email is empty", response.getBody().getMessage());
     }
 
     @Test
-    @Order(17)
+    @Order(19)
     public void testUpdateInstructorWithSpaceEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1+" ", newPassword1);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Email cannot contain any space", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email cannot contain any space", response.getBody().getMessage());
     }
 
     @Test
-    @Order(18)
+    @Order(20)
     public void testUpdateInstructorWithInvalidEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "Mahmoud@gmail", newPassword1);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Invalid Email", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Invalid Email", response.getBody().getMessage());
     }
 
     @Test
-    @Order(19)
+    @Order(21)
     public void testUpdateInstructorWithEmptyPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password is empty", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password is empty", response.getBody().getMessage());
     }
 
     @Test
-    @Order(20)
+    @Order(22)
     public void testUpdateInstructorWithShortPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "Pass$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must be at least four characters long", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must be at least eight characters long", response.getBody().getMessage());
     }
 
     @Test
-    @Order(21)
+    @Order(23)
     public void testUpdateInstructorWithoutUppercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "password$$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one upper-case character", response.getBody().getMessage());
     }
 
     @Test
-    @Order(22)
+    @Order(24)
     public void testUpdateInstructorWithoutLowercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "PASSWORD$$");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain one lower-case character", response.getBody().getMessage());
     }
 
     @Test
-    @Order(23)
+    @Order(25)
     public void testUpdateInstructorWithoutSpecialCharPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "Passworddddd");
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Password must contain at least one special character", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Password must contain at least one special character", response.getBody().getMessage());
     }
 
     @Test
-    @Order(24)
+    @Order(26)
     public void testUpdateInstructorWithSameEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName, newEmail, newPassword);
 
         //act
-        ResponseEntity<IllegalArgumentException> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, null, IllegalArgumentException.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        //assertEquals("Instructor with this email already exists", response.getBody().getMessage());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Instructor with this email already exists", response.getBody().getMessage());
     }
 
     @Test
-    @Order(25)
+    @Order(27)
     public void testDeleteInstructorByInvalidId() {
         // act
-        ResponseEntity<InstructorListDto> response = client.exchange("/instructorAccounts/" + this.invalidId, HttpMethod.DELETE, null, InstructorListDto.class);
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.invalidId, HttpMethod.DELETE, null, ErrorDto.class);
 
         // assertions
         assertNotNull(response);
         assertNotNull(response.getBody());
-        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("There is no instructor with ID" + invalidId, response.getBody().getMessage());
     }
 
     @Test
-    @Order(26)
+    @Order(28)
     public void testDeleteInstructorByValidId() {
         // act
         client.delete("/instructorAccounts/" + this.validId, InstructorResponseDto.class);

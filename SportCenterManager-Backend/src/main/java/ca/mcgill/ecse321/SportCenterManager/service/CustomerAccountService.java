@@ -1,9 +1,11 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import jakarta.transaction.Transactional;
 
@@ -23,7 +25,7 @@ public class CustomerAccountService {
    public CustomerAccount findCustomerById(int id) {
         CustomerAccount customerAccount = customerRepo.findCustomerAccountById(id);
         if (customerAccount == null) {
-            throw new IllegalArgumentException("There is no course with ID" + id);
+            throw new ServiceException(HttpStatus.NOT_FOUND, "There is no customer with ID" + id);
         }
         return customerAccount;
    }
@@ -34,19 +36,23 @@ public class CustomerAccountService {
        CustomerAccount customerToModify = customerRepo.findCustomerAccountById(id);
 
        if (customerToModify == null) {
-            throw new IllegalArgumentException("The customer account was not found");
+            throw new ServiceException(HttpStatus.NOT_FOUND, "The customer account was not found");
        }
        else {
-           // Check if email and password are invalid
+           // Check if name, email and password are invalid
+           String nameError = isNameEmpty(name);
            String emailError = isEmailValid(email);
            String passwordError = isPasswordValid(password);
 
-           // Error messages are thrown if email or password are invalid. If not update, save and return
+           // Error messages are thrown if name or email or password are invalid. If not update, save and return
+           if (!nameError.isEmpty()) {
+               throw new ServiceException(HttpStatus.FORBIDDEN, nameError);
+           }
            if (!emailError.isEmpty()) {
-                throw new IllegalArgumentException(emailError);
+                throw new ServiceException(HttpStatus.FORBIDDEN, emailError);
            }
            if (!passwordError.isEmpty()) {
-               throw new IllegalArgumentException(passwordError);
+               throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
            }
            else {
                customerToModify.setName(name);
@@ -59,16 +65,21 @@ public class CustomerAccountService {
 
    @Transactional
    public CustomerAccount createCustomer(String name, String email, String password) {
-        // Check if email and password are invalid
+
+        // Check if name, email and password are invalid
+        String nameError = isNameEmpty(name);
         String emailError = isEmailValid(email);
         String passwordError = isPasswordValid(password);
 
-        // Error messages are thrown if email or password are is invalid. If not create, save and return
+       // Error messages are thrown if name or email or password are invalid. If not create, save and return
+       if (!nameError.isEmpty()) {
+           throw new ServiceException(HttpStatus.FORBIDDEN, nameError);
+       }
         if (!emailError.isEmpty()) {
-            throw new IllegalArgumentException(emailError);
+            throw new ServiceException(HttpStatus.FORBIDDEN, emailError);
         }
         if (!passwordError.isEmpty()) {
-            throw new IllegalArgumentException(passwordError);
+            throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
         }
         else {
             CustomerAccount customerToCreate = new CustomerAccount(name, email, password);
@@ -81,8 +92,7 @@ public class CustomerAccountService {
    @Transactional
    public CustomerAccount login(String email, String password) {
       if (!customerRepo.existsCustomerAccountByEmailAndPassword(email, password)) {
-         //Throw 400 Status Code
-         throw new IllegalArgumentException("Invalid email or password");
+         throw new ServiceException(HttpStatus.FORBIDDEN, "Invalid email or password");
       }
       return customerRepo.findCustomerAccountByEmailAndPassword(email, password);
    }
@@ -179,6 +189,16 @@ public class CustomerAccountService {
                 error = "Password must contain at least one special character";
             }
         }
+        return error;
+    }
+    private String isNameEmpty(String name) {
+        String error = "";
+
+        // Check if name is empty
+        if (name == null || name.isEmpty()) {
+            error = "Name is empty";
+        }
+
         return error;
     }
 }

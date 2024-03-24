@@ -86,7 +86,7 @@ public class LoginLogoutIntegrationTests {
         ResponseEntity<ErrorDto> response = client.postForEntity("/login", request, ErrorDto.class);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Invalid email or password",response.getBody().getMessage());
     }
@@ -97,7 +97,7 @@ public class LoginLogoutIntegrationTests {
         ResponseEntity<ErrorDto> response = client.postForEntity("/login", request, ErrorDto.class);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Invalid email or password",response.getBody().getMessage());
 
@@ -109,7 +109,7 @@ public class LoginLogoutIntegrationTests {
         ResponseEntity<ErrorDto> response = client.postForEntity("/login", request, ErrorDto.class);
 
         assertNotNull(response);
-        assertEquals(HttpStatus.BAD_REQUEST,response.getStatusCode());
+        assertEquals(HttpStatus.FORBIDDEN,response.getStatusCode());
         assertNotNull(response.getBody());
         assertEquals("Invalid email or password",response.getBody().getMessage());
 

@@ -6,7 +6,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
 
 import java.sql.Time;
+
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
+
 import java.sql.Date;
+
 @Entity
 public class Session
 {
@@ -18,6 +23,7 @@ public class Session
   private Date date;
 
   @ManyToOne
+  @NotFound(action=NotFoundAction.IGNORE)
   private InstructorAccount instructorAccount;
 
   @ManyToOne
@@ -34,10 +40,7 @@ public class Session
     startTime = aStartTime;
     endTime = aEndTime;
     date = aDate;
-    if (!setInstructorAccount(aInstructorAccount))
-    {
-      throw new RuntimeException("Unable to create Session due to aInstructorAccount. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
-    }
+    setInstructorAccount(aInstructorAccount);
     if (!setCourse(aCourse))
     {
       throw new RuntimeException("Unable to create Session due to aCourse. See http://manual.umple.org?RE002ViolationofAssociationMultiplicity.html");
