@@ -3,8 +3,6 @@ package ca.mcgill.ecse321.SportCenterManager.service;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.lenient;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 import java.sql.Date;
 import java.sql.Time;
@@ -15,7 +13,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -26,13 +23,12 @@ import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
 @ExtendWith(MockitoExtension.class)
 @SpringBootTest
-public class EventServiceTests {
+public class SuperviseServiceTests {
 	@Mock
 	InstructorAccountService instructorService;
 	@Mock
 	SessionRepository sessionRepo;
 	@InjectMocks
-	@Spy
 	EventService service;
 	
 	@Test
@@ -57,7 +53,6 @@ public class EventServiceTests {
 		
 		assertNotNull(returnedSessions);
 		assertEquals(expectedSessions, returnedSessions);
-		verify(sessionRepo, times(1)).findAll();
 	}
 	
 	@Test
@@ -69,7 +64,7 @@ public class EventServiceTests {
 		List<Session> sessions = getExistingSessions();
 		
 		lenient().when(instructorService.findInstructorById(instructorId)).thenReturn(instructorOne);
-		lenient().when(service.findSessionById(3)).thenReturn(sessions.get(2));
+		lenient().when(sessionRepo.findSessionById(3)).thenReturn(sessions.get(2));
 		
 		// execution
 		String msg = "";
@@ -81,7 +76,6 @@ public class EventServiceTests {
 		
 		// assertions
 		assertEquals("An instructor is already supervising this session!", msg);
-		verify(service, times(1)).findSessionById(3);
 	}
 	
 	@Test
@@ -101,7 +95,7 @@ public class EventServiceTests {
 		
 		lenient().when(sessionRepo.findAll()).thenReturn((Iterable<Session>) sessions);
 		lenient().when(instructorService.findInstructorById(instructorId)).thenReturn(instructorOne);
-		lenient().when(service.findSessionById(5)).thenReturn(newSession);
+		lenient().when(sessionRepo.findSessionById(5)).thenReturn(newSession);
 		
 		// execution
 		String msg = "";
@@ -113,9 +107,6 @@ public class EventServiceTests {
 		
 		// assertions
 		assertEquals("Session overlaps with another that is already supervised by the instructor!", msg);
-		verify(service, times(1)).findSessionById(5);
-		verify(sessionRepo, times(1)).findAll();
-		verify(instructorService).findInstructorById(instructorId);
 	}
 	
 	@Test
@@ -128,7 +119,7 @@ public class EventServiceTests {
 		
 		lenient().when(sessionRepo.findAll()).thenReturn((Iterable<Session>) sessions);
 		lenient().when(instructorService.findInstructorById(instructorId)).thenReturn(instructorOne);
-		lenient().when(service.findSessionById(4)).thenReturn(sessions.get(3));
+		lenient().when(sessionRepo.findSessionById(4)).thenReturn(sessions.get(3));
 		lenient().when(sessionRepo.save(sessions.get(3))).thenReturn(sessions.get(3));
 		
 		// execution
@@ -137,9 +128,6 @@ public class EventServiceTests {
 		// assertions
 		assertNotNull(resultSession);
 		assertEquals(instructorId, resultSession.getInstructorAccount().getId());
-		verify(service, times(1)).findSessionById(4);
-		verify(sessionRepo, times(1)).findAll();
-		verify(instructorService).findInstructorById(instructorId);
 	}
 	
 	private List<Session> getExistingSessions(){

@@ -19,11 +19,11 @@ import ca.mcgill.ecse321.SportCenterManager.model.Session;
 public class RegistrationService {
     
 	@Autowired
-	RegistrationRepository registrationRepository;
+	private RegistrationRepository registrationRepository;
 	@Autowired
-	EventService eventService = new EventService();
+	private EventService eventService = new EventService();
 	@Autowired
-	CustomerAccountService customerService = new CustomerAccountService();
+	private CustomerAccountService customerService = new CustomerAccountService();
 
 	/*------------ CRUD WRAPPERS -----------*/
 	@Transactional
@@ -72,13 +72,13 @@ public class RegistrationService {
 		// Check if registration already exists
 		Registration existingRegistration = findRegistration(customerId, sessionId);
 		if (existingRegistration != null) {
-			throw new ServiceException(HttpStatus.BAD_REQUEST, "Failed to Register: You are already registered to this session!");
+			throw new ServiceException(HttpStatus.CONFLICT, "Failed to Register: You are already registered to this session!");
 		}
 		
 		// Set fields and check if there are registration conflicts
 		registration.setKey(key);
 		if (hasConflict(registration)) {
-			throw new ServiceException(HttpStatus.BAD_REQUEST, "Failed to Register: Session overlaps with an existing registration!");
+			throw new ServiceException(HttpStatus.CONFLICT, "Failed to Register: Session overlaps with an existing registration!");
 		}
 		
 		// Save and return registration
@@ -142,7 +142,9 @@ public class RegistrationService {
 				newRegSession.getEndTime().before(existingRegSession.getEndTime()) &&
 				newRegSession.getEndTime().after(existingRegSession.getStartTime()) ||
 				newRegSession.getStartTime().equals(existingRegSession.getStartTime()) &&
-				newRegSession.getEndTime().equals(existingRegSession.getEndTime()))) {
+				newRegSession.getEndTime().equals(existingRegSession.getEndTime()) ||
+				newRegSession.getStartTime().before(existingRegSession.getStartTime()) &&
+				newRegSession.getEndTime().after(existingRegSession.getEndTime()))) {
 				return true;
 			}
 		}

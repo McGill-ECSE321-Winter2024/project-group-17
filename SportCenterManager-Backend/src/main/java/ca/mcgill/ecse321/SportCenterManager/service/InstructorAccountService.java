@@ -1,10 +1,11 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
-import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import jakarta.transaction.Transactional;
 
@@ -22,7 +23,7 @@ public class InstructorAccountService {
     public InstructorAccount findInstructorById(int id) {
         InstructorAccount instructorAccount = instructorRepo.findInstructorAccountById(id);
         if (instructorAccount == null) {
-            throw new IllegalArgumentException("There is no course with ID" + id);
+            throw new ServiceException(HttpStatus.NOT_FOUND, "There is no instructor with ID" + id);
         }
         return instructorAccount;
     }
@@ -33,19 +34,23 @@ public class InstructorAccountService {
         InstructorAccount instructorToModify = instructorRepo.findInstructorAccountById(id);
 
         if (instructorToModify == null) {
-            throw new IllegalArgumentException("The instructor account was not found");
+            throw new ServiceException(HttpStatus.NOT_FOUND, "The instructor account was not found");
         }
         else {
-            // Check if email and password are invalid
+            // Check if name, email and password are invalid
+            String nameError = isNameEmpty(name);
             String emailError = isEmailValid(email);
             String passwordError = isPasswordValid(password);
 
-            // Error messages are thrown if email or password are invalid. If not update, save and return
+            // Error messages are thrown if name or email or password are invalid. If not update, save and return
+            if (!nameError.isEmpty()) {
+                throw new ServiceException(HttpStatus.FORBIDDEN, nameError);
+            }
             if (!emailError.isEmpty()) {
-                throw new IllegalArgumentException(emailError);
+                throw new ServiceException(HttpStatus.FORBIDDEN, emailError);
             }
             if (!passwordError.isEmpty()) {
-                throw new IllegalArgumentException(passwordError);
+                throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
             }
             else {
                 instructorToModify.setName(name);
@@ -58,16 +63,20 @@ public class InstructorAccountService {
 
     @Transactional
     public InstructorAccount createInstructor(String name, String email, String password) {
-        // Check if email and password are invalid
+        // Check if name, email and password are invalid
+        String nameError = isNameEmpty(name);
         String emailError = isEmailValid(email);
         String passwordError = isPasswordValid(password);
 
-        // Error messages are thrown if email or password are is invalid. If not create, save and return
+        // Error messages are thrown if name or email or password are invalid. If not create, save and return
+        if (!nameError.isEmpty()) {
+            throw new ServiceException(HttpStatus.FORBIDDEN, nameError);
+        }
         if (!emailError.isEmpty()) {
-            throw new IllegalArgumentException(emailError);
+            throw new ServiceException(HttpStatus.FORBIDDEN, emailError);
         }
         if (!passwordError.isEmpty()) {
-            throw new IllegalArgumentException(passwordError);
+            throw new ServiceException(HttpStatus.FORBIDDEN, passwordError);
         }
         else {
             InstructorAccount instructorToCreate = new InstructorAccount(name, email, password);
@@ -139,7 +148,7 @@ public class InstructorAccountService {
         else {
             // Check if password is at least 8 character long
             if (password.length() < 8) {
-                error = "Password must be at least four characters long";
+                error = "Password must be at least eight characters long";
                 return error;
             }
 
@@ -168,6 +177,15 @@ public class InstructorAccountService {
         }
         return error;
     }
+    private String isNameEmpty(String name) {
+        String error = "";
 
+        // Check if name is empty
+        if (name == null || name.isEmpty()) {
+            error = "Name is empty";
+        }
+
+        return error;
+    }
 
 }

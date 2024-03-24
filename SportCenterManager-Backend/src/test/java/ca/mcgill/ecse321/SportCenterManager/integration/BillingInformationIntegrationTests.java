@@ -213,7 +213,7 @@ public class BillingInformationIntegrationTests {
 
         // Assert
         assertNotNull(response, "Response is null.");
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(), "Incorrect status code.");
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "Incorrect status code.");
         assertNotNull(response.getBody());
         assertEquals("CVC must be a 3-digit number.", response.getBody().getMessage());
     }
@@ -231,7 +231,7 @@ public class BillingInformationIntegrationTests {
 
         // Assert
         assertNotNull(response, "Response is null.");
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(), "Incorrect status code.");
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode(), "Incorrect status code.");
         assertNotNull(response.getBody());
         assertEquals("Expiration date cannot be in the past.", response.getBody().getMessage());
     }
