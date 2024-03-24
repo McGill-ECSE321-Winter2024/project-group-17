@@ -8,7 +8,7 @@ class Account{
 
 class StaffAccount{
   abstract;
-	isA Account;
+  isA Account;
 }
 
 class OwnerAccount{
@@ -30,7 +30,7 @@ class Schedule{
 }
 
 class Session{
-  * -> 1 InstructorAccount;
+  * -> 0..1 InstructorAccount;
   * -> 1 Course;
   * -> 1 Schedule;
   Time startTime;
@@ -44,6 +44,7 @@ class Course{
   String description;
   Double costPerSession;
   Integer id;
+  Boolean isApproved;
 }
 
 class Registration{
