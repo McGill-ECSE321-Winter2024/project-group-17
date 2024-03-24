@@ -6,6 +6,7 @@ public class CourseListDto {
 
     private List<CourseResponseDto> courses;
 
+    @SuppressWarnings("unused")
     private CourseListDto(){
     }
 

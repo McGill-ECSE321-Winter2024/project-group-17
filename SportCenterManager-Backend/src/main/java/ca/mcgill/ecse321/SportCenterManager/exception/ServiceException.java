@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 
 import io.micrometer.common.lang.NonNull;
 
+@SuppressWarnings("serial")
 public class ServiceException extends RuntimeException {
 	@NonNull
 	private HttpStatus httpStatus;

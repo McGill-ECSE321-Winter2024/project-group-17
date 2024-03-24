@@ -90,8 +90,7 @@ public class OwnerAccountServiceTests {
     @Test
     public void testCreateOwnerByEmptyName() {
         // setup
-        String name = "";
-        String email = "owner@sportcenter.com";
+        String name = "";;
         String password = "validPassword$6";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
@@ -111,7 +110,6 @@ public class OwnerAccountServiceTests {
     public void testCreateOwnerByEmptyPassword() {
         // setup
         String name = "validName6";
-        String email = "owner@sportcenter.com";
         String password = "";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
@@ -132,7 +130,6 @@ public class OwnerAccountServiceTests {
     public void testCreateOwnerByShortPassword() {
         // setup
         String name = "validName6";
-        String email = "owner@sportcenter.com";
         String password = "P$6";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
@@ -153,7 +150,6 @@ public class OwnerAccountServiceTests {
     public void testCreateOwnerByPasswordWithoutUppercaseChar() {
         // setup
         String name = "validName6";
-        String email = "owner@sportcenter.com";
         String password = "invalidpassword$6";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
@@ -174,7 +170,6 @@ public class OwnerAccountServiceTests {
     public void testCreateOwnerByPasswordWithoutLowercaseChar() {
         // setup
         String name = "validName6";
-        String email = "owner@sportcenter.com";
         String password = "PASSWORD$";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";
@@ -195,7 +190,6 @@ public class OwnerAccountServiceTests {
     public void testCreateOwnerByPasswordWithoutSpecialChar() {
         // setup
         String name = "validName6";
-        String email = "owner@sportcenter.com";
         String password = "invalidPassword6";
         lenient().when(ownerRepo.save(any(OwnerAccount.class))).thenReturn(null);
         String error = "";

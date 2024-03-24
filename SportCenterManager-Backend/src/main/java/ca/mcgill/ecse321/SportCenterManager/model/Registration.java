@@ -32,6 +32,7 @@ public class Registration
 	  this.key = aKey;
   }
   
+  @SuppressWarnings("serial")
   @Embeddable
   public static class Key implements Serializable {
 	  @ManyToOne
@@ -39,6 +40,7 @@ public class Registration
 	  @ManyToOne
 	  private CustomerAccount customerAccount;
 	  
+	  @SuppressWarnings("unused")
 	  private Key() {
 		  
 	  }

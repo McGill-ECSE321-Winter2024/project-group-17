@@ -9,6 +9,7 @@ public class CourseResponseDto {
     private boolean isApproved;
     private int id;
 
+    @SuppressWarnings("unused")
     private CourseResponseDto(){
     }
 

@@ -125,6 +125,7 @@ public class BillingInformation {
   }
   /* Code from template association_GetOne */
 
+  @SuppressWarnings("serial")
   @Embeddable
   public static class Key implements Serializable {
     @OneToOne

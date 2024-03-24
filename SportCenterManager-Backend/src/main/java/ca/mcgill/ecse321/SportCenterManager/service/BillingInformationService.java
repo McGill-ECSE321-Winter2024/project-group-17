@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.dao.BillingInformationRepository;
 import ca.mcgill.ecse321.SportCenterManager.dao.CustomerAccountRepository;
-import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import jakarta.transaction.Transactional;
