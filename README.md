@@ -29,7 +29,7 @@ The wiki for Sprint 1 can be found [here](https://github.com/McGill-ECSE321-Wint
 | Eric Zhu | 261116298    | Use Case Diagram, Testing |12.5|
 
 ## Sprint 2
-The wiki for Sprint 1 can be found [here](https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Sprint-2:-Report).
+The wiki for Sprint 2 can be found [here](https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Sprint-2:-Report).
 
 | Name          | ID            | Deliverable 2 Role | Deliverable 2 Hours 
 | ------------- |:-------------:| :-----:|:-----------------|
