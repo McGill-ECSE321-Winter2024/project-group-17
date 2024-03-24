@@ -6,7 +6,7 @@ import jakarta.persistence.Entity;
 public class InstructorAccount extends StaffAccount
 {
   // Default constructor for Hibernate
-  private InstructorAccount(){
+  public InstructorAccount(){
   }
   public InstructorAccount(String aName, String aEmail, String aPassword)
   {
