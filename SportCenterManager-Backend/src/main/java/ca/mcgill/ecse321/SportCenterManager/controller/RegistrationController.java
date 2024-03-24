@@ -65,7 +65,7 @@ public class RegistrationController {
                     ),
                     @ApiResponse(
                             responseCode = "409",
-                            description = "CONFLICT: The owner account was not found.",
+                            description = "CONFLICT: You are already registered to this session",
                             content = @Content(
                                     schema = @Schema(implementation = ErrorDto.class),
                                     examples = {

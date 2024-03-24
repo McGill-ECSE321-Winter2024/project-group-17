@@ -128,6 +128,4 @@ public class LoginLogoutIntegrationTests {
         assertNotNull(logged_out_account);
         assertEquals("Logged out",logged_out_account);
     }
-
-    //no invalid logout => if not logged in, frontend won't display logout button
 }

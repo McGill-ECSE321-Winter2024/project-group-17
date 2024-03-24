@@ -171,7 +171,6 @@ public class BillingInformationIntegrationTests {
         String url = "/customerAccounts/" + (validId + 1) + "/billingInformation";
 
         // Act
-        //ResponseEntity<BillingInformationResponseDto> response = client.getForEntity(url, BillingInformationResponseDto.class);
         ResponseEntity<ErrorDto> response = client.exchange(url, HttpMethod.GET, null, ErrorDto.class);
 
         // Assert
