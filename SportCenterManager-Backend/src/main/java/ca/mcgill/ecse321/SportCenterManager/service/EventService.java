@@ -36,8 +36,6 @@ public class EventService {
     private RegistrationRepository registrationRepo;
     @Autowired
     private ScheduleService scheduleService;
-    //@Autowired
-    //private RegistrationService registrationService;
 
     @Transactional 
     public Iterable<Course> findAllCourses(){
@@ -139,7 +137,6 @@ public class EventService {
             throw new ServiceException(HttpStatus.NOT_FOUND, "There is no course with ID " + course_id + ".");
         }
 
-        //List<Registration> registrations = registrationService.findAllRegistrations();
         Iterable<Registration> registrations = registrationRepo.findAll();
         List<Session> sessionsToDelete = findAllSessionsOfCourse(course_id);
 
@@ -147,7 +144,6 @@ public class EventService {
             for (Session session : sessionsToDelete){
                 if (registration.getKey().getSession().getId() == session.getId()){
                     registrationRepo.delete(registration);
-                    //registrationService.cancelRegistration(registration.getKey().getCustomerAccount().getId(), session.getId());
                 }
             }
         }

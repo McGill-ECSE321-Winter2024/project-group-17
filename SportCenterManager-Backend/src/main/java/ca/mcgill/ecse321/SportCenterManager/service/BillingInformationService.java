@@ -49,11 +49,9 @@ public class BillingInformationService {
             throw new ServiceException(HttpStatus.NOT_FOUND, "There is no billing information for customer with ID " + customerId + " in the system.");
         }
         if (cvc < 100 || cvc > 999) {
-            //throw new IllegalArgumentException("CVC must be a 3-digit number.");
             throw new ServiceException(HttpStatus.FORBIDDEN, "CVC must be a 3-digit number.");
         }
         if (expirationDate.before(Date.valueOf(java.time.LocalDate.now()))) {
-            //throw new IllegalArgumentException("Expiration date cannot be in the past.");
             throw new ServiceException(HttpStatus.FORBIDDEN, "Expiration date cannot be in the past.");
         }
         BillingInformation billingToModify = billingRepo.findBillingInformationByKeyCustomerAccount(customer);

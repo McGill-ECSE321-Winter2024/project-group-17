@@ -16,7 +16,6 @@ public class SessionResponseDto {
     private InstructorResponseDto instructor;
     private ScheduleResponseDto schedule;
     private int id;
-    //recurring dates? can date just be a string?
     
     public SessionResponseDto() {
     	
