@@ -28,7 +28,7 @@ export default {
 }
 
 #customer-account-body {
-    padding-top: 5%;
+    padding-top: 3%;
     display: grid;
     grid-template-columns: 25% 75%;
     grid-template-areas: "nav body";
