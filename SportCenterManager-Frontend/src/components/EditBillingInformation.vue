@@ -2,32 +2,26 @@
     <div id="customer-billing-component">
         <p style="font-weight: bold; font-size: 25px;">PAYMENT INFORMATION</p>
         <div id="billing-information-box">
-            <table>
-                <tr>
-                    <td class="item">Name:</td>
-                    <td><input type="text" v-model="name"></td>
-                </tr>
-                <tr>
-                    <td class="item">Address:</td>
-                    <td><input type="text" v-model="address"></td>
-                </tr>
-                <tr>
-                    <td class="item">Country:</td>
-                    <td><input type="text" v-model="country"></td>
-                </tr>
-                <tr>
-                    <td class="item">Card Number:</td>
-                    <td><input type="text" v-model="cardNumber"></td>
-                </tr>
-                <tr>
-                    <td class="item">CVC:</td>
-                    <td><input type="number" v-model="cvc"></td>
-                </tr>
-                <tr>
-                    <td class="item">Expiration Date:</td>
-                    <td><input type="date" v-model="expirationDate"></td>
-                </tr>
-            </table>
+            <div id="billing-table">
+                <p class="item" style="grid-area: name;">Name:</p>
+                <input type="text" v-model="name" :disabled="disabled" style="grid-area: name-input;">
+
+                <p class="item" style="grid-area: address;">Address:</p>
+                <input type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
+
+                <p class="item" style="grid-area: country;">Country:</p>
+                <input type="text" v-model="country" :disabled="disabled" style="grid-area: country-input;">
+
+                <p class="item" style="grid-area: cardNumber;">Card Number:</p>
+                <input type="text" v-model="cardNumber" :disabled="disabled" style="grid-area: cardNumber-input;">
+
+                <p class="item" style="grid-area: cvc;">CVC:</p>
+                <input type="number" v-model="cvc" :disabled="disabled" style="grid-area: cvc-input;">
+
+                <p class="item" style="grid-area: expirationDate;">Expiration Date:</p>
+                <input type="date" v-model="expirationDate" :disabled="disabled"
+                    style="grid-area: expirationDate-input;">
+            </div>
             <div id="billing-information-edit">
                 <button id="submit-btn" @click="editBillingInformation">Submit</button>
                 <button id="clear-btn" @click="clearBillingInformation">Clear</button>
@@ -106,35 +100,19 @@ export default {
 </script>
 
 <style>
-#billing-information-heading {
-    padding: 0 0 10px 0;
-}
-
-h1 {
-    text-align: left;
-    margin: 10% 30% 0%;
-}
 
 #billing-information-box {
-    border: 1px solid black;
-    margin: 0% 30% 0% 30%;
-    width: flex;
+    border: 0px;
+    margin: 0% 30% 0% 0%;
 }
 
-table {
+.item {
     width: 100%;
-}
-
-td {
     text-align: right;
     padding: 10px;
 }
 
-.item {
-    width: 20%;
-}
-
-td>input {
+input {
     width: 100%;
     padding: 5px;
     border-radius: 5px;
@@ -147,7 +125,8 @@ td>input {
     padding: 10px 0px 10px 0px;
 }
 
-#submit-btn, #clear-btn {
+#submit-btn,
+#clear-btn {
     margin: 0% 5% 0% 5%;
     padding: 5px;
     background-color: #4CAF50;

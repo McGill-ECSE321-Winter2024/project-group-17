@@ -1,9 +1,9 @@
 <template>
     <div id="customer-billing-component">
         <div id="customer-billing-body">
-            <p style="font-weight: bold; font-size: 25px;">PAYMENT INFORMATION</p>
+            <p style="font-weight: bold; font-size: 25px; text-align: left;">PAYMENT INFORMATION</p>
             <div id="billing-information-box">
-                <table>
+                <!-- <table>
                     <tr>
                         <td class="item">Name:</td>
                         <td><input type="text" v-model="name" :disabled="disabled"></td>
@@ -28,7 +28,26 @@
                         <td class="item">Expiration Date:</td>
                         <td><input type="date" v-model="expirationDate" :disabled="disabled"></td>
                     </tr>
-                </table>
+                </table> -->
+                <div id="billing-table">
+                    <p class="item" style="grid-area: name;">Name:</p>
+                    <input type="text" v-model="name" :disabled="disabled" style="grid-area: name-input;">
+                    
+                    <p class="item" style="grid-area: address;">Address:</p>
+                    <input type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
+
+                    <p class="item" style="grid-area: country;">Country:</p>
+                    <input type="text" v-model="country" :disabled="disabled" style="grid-area: country-input;">
+
+                    <p class="item" style="grid-area: cardNumber;">Card Number:</p>
+                    <input type="text" v-model="cardNumber" :disabled="disabled" style="grid-area: cardNumber-input;">
+
+                    <p class="item" style="grid-area: cvc;">CVC:</p>
+                    <input type="number" v-model="cvc" :disabled="disabled" style="grid-area: cvc-input;">
+
+                    <p class="item" style="grid-area: expirationDate;">Expiration Date:</p>
+                    <input type="date" v-model="expirationDate" :disabled="disabled" style="grid-area: expirationDate-input;">
+                </div>
                 <div id="billing-information-edit">
                     <button id='edit-btn' @click="editBillingInformation">Edit</button>
                 </div>
@@ -89,38 +108,25 @@ export default {
     height: 100%;
 }
 
-#billing-information-heading {
-    padding: 0 0 10px 0;
-}
-
-h1 {
-    text-align: left;
-    margin: 10% 30% 0%;
-}
-
 #billing-information-box {
-    border: 0px;
     margin: 0% 30% 0% 0%;
 }
 
-p {
-    text-align: left;
+#billing-table {
+    display: grid;
+    grid-template-columns: 25% 75%;
+    grid-row-gap: 10px;
+    grid-column-gap: 10px;
+    grid-template-areas: "name name-input" "address address-input" "country country-input" "cardNumber cardNumber-input" "cvc cvc-input" "expirationDate expirationDate-input";
 }
 
-table {
+.item {
     width: 100%;
-}
-
-td {
     text-align: right;
     padding: 10px;
 }
 
-.item {
-    width: 20%;
-}
-
-td>input {
+input {
     width: 100%;
     padding: 5px;
     border-radius: 5px;
