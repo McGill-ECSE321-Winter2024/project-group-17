@@ -21,10 +21,6 @@ export default {
 </script>
 
 <style>
-#acc-info-btn {
-    background-color: black;
-    color: white;
-}
 
 #body {
     grid-area: body;

@@ -1,8 +1,8 @@
 <template>
     <div id="customer-account-navigation-bar">
         <router-link to="/customerAccount">
-            <button class="acc-nav-btn state-btn" v-bind:disabled="infoState" style="margin-bottom: 2%;"
-                type="button" @click="toggleInfo">Account Information</button>
+            <button class="acc-nav-btn state-btn" v-bind:disabled="infoState" style="margin-bottom: 2%;" type="button"
+                @click="toggleInfo">Account Information</button>
         </router-link>
 
         <router-link to="/customerAccount/billing">
@@ -11,8 +11,9 @@
         </router-link>
 
         <router-link to="/customerAccount/registrations">
-            <button class="acc-nav-btn state-btn" v-bind:disabled="registrationState" style="margin-bottom: 2%; text-align: left;"
-                type="button" @click="toggleRegistration">Registrations</button>
+            <button class="acc-nav-btn state-btn" v-bind:disabled="registrationState"
+                style="margin-bottom: 2%; text-align: left;" type="button"
+                @click="toggleRegistration">Registrations</button>
         </router-link>
     </div>
 </template>
@@ -20,10 +21,25 @@
 <script>
 export default {
     data() {
-        return {
-            infoState: true,
-            billingState: false,
-            registrationState: false
+        // Update state based on route
+        if (this.$route.path === '/customerAccount') {
+            return {
+                infoState: true,
+                billingState: false,
+                registrationState: false
+            }
+        } else if (this.$route.path === '/customerAccount/billing') {
+            return {
+                infoState: false,
+                billingState: true,
+                registrationState: false
+            }
+        } else if (this.$route.path === '/customerAccount/registrations') {
+            return {
+                infoState: false,
+                billingState: false,
+                registrationState: true
+            }
         }
     },
     methods: {
