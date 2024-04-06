@@ -25,6 +25,7 @@ const client = axios.create({
 });
 
 export default {
+    name: 'CreateCourse',
     data() {
         return {
             name: null,
@@ -40,8 +41,9 @@ export default {
                 costPerSession: this.costPerSession
             };
             try {
-                await client.post("/courses", courseToCreate);
+                await client.post('/courses', courseToCreate);
                 this.clearInputs();
+                this.navigateToCourses();
             }
             catch (e) {
                 console.log(e);
@@ -51,6 +53,9 @@ export default {
             this.name = null;
             this.description = null;
             this.costPerSession = null;
+        },
+        navigateToCourses() {
+            this.$router.push('/courses')
         }
     },
     computed: {
