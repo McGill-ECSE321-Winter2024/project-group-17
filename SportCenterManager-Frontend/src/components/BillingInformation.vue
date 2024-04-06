@@ -1,38 +1,37 @@
 <template>
-    <div>
-        <div id="billing-information-heading">
-            <h1>Payment Information</h1>
-        </div>
-
-        <div id="billing-information-box">
-            <table>
-                <tr>
-                    <td class="item">Name:</td>
-                    <td><input type="text" v-model="name" :disabled="disabled"></td>
-                </tr>
-                <tr>
-                    <td class="item">Address:</td>
-                    <td><input type="text" v-model="address" :disabled="disabled"></td>
-                </tr>
-                <tr>
-                    <td class="item">Country:</td>
-                    <td><input type="text" v-model="country" :disabled="disabled"></td>
-                </tr>
-                <tr>
-                    <td class="item">Card Number:</td>
-                    <td><input type="text" v-model="cardNumber" :disabled="disabled"></td>
-                </tr>
-                <tr>
-                    <td class="item">CVC:</td>
-                    <td><input type="number" v-model="cvc" :disabled="disabled"></td>
-                </tr>
-                <tr>
-                    <td class="item">Expiration Date:</td>
-                    <td><input type="date" v-model="expirationDate" :disabled="disabled"></td>
-                </tr>
-            </table>
-            <div id="billing-information-edit">
-                <button @click="editBillingInformation">Edit</button>
+    <div id="customer-billing-component">
+        <div id="customer-billing-body">
+            <p style="font-weight: bold; font-size: 25px;">PAYMENT INFORMATION</p>
+            <div id="billing-information-box">
+                <table>
+                    <tr>
+                        <td class="item">Name:</td>
+                        <td><input type="text" v-model="name" :disabled="disabled"></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Address:</td>
+                        <td><input type="text" v-model="address" :disabled="disabled"></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Country:</td>
+                        <td><input type="text" v-model="country" :disabled="disabled"></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Card Number:</td>
+                        <td><input type="text" v-model="cardNumber" :disabled="disabled"></td>
+                    </tr>
+                    <tr>
+                        <td class="item">CVC:</td>
+                        <td><input type="number" v-model="cvc" :disabled="disabled"></td>
+                    </tr>
+                    <tr>
+                        <td class="item">Expiration Date:</td>
+                        <td><input type="date" v-model="expirationDate" :disabled="disabled"></td>
+                    </tr>
+                </table>
+                <div id="billing-information-edit">
+                    <button id='edit-btn' @click="editBillingInformation">Edit</button>
+                </div>
             </div>
         </div>
     </div>
@@ -51,7 +50,6 @@ const client = axios.create({
 })
 
 export default {
-    name: 'BillingInformation',
     data() {
         return {
             name: null,
@@ -79,13 +77,18 @@ export default {
     },
     methods: {
         editBillingInformation() {
-            this.$router.push({ name: 'EditBillingInformation' });
+            this.$router.push('/customerAccount/billing/edit');
         }
     }
 }
 </script>
 
 <style>
+#customer-billing-component {
+    width: 100%;
+    height: 100%;
+}
+
 #billing-information-heading {
     padding: 0 0 10px 0;
 }
@@ -96,9 +99,12 @@ h1 {
 }
 
 #billing-information-box {
-    border: 1px solid black;
-    margin: 0% 30% 0% 30%;
-    width: flex;
+    border: 0px;
+    margin: 0% 30% 0% 0%;
+}
+
+p {
+    text-align: left;
 }
 
 table {
@@ -127,7 +133,7 @@ td>input {
     padding: 10px 0px 10px 0px;
 }
 
-button {
+#edit-btn {
     margin: 0% 5% 0% 5%;
     padding: 5px;
     background-color: #4CAF50;

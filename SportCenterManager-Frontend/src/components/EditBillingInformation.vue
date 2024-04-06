@@ -1,9 +1,6 @@
 <template>
-    <div>
-        <div id="billing-information-heading">
-            <h1>Payment Information</h1>
-        </div>
-
+    <div id="customer-billing-component">
+        <p style="font-weight: bold; font-size: 25px;">PAYMENT INFORMATION</p>
         <div id="billing-information-box">
             <table>
                 <tr>
@@ -32,8 +29,8 @@
                 </tr>
             </table>
             <div id="billing-information-edit">
-                <button @click="editBillingInformation">Submit</button>
-                <button @click="clearBillingInformation">Clear</button>
+                <button id="submit-btn" @click="editBillingInformation">Submit</button>
+                <button id="clear-btn" @click="clearBillingInformation">Clear</button>
             </div>
         </div>
     </div>
@@ -89,7 +86,7 @@ export default {
             };
             try {
                 await client.put("/customerAccounts/15752/billingInformation", billingInformation);
-                this.$router.push("/billingInformation");
+                this.$router.push("/customerAccount/billing");
             }
             catch (e) {
                 console.log(e);
@@ -150,7 +147,7 @@ td>input {
     padding: 10px 0px 10px 0px;
 }
 
-button {
+#submit-btn, #clear-btn {
     margin: 0% 5% 0% 5%;
     padding: 5px;
     background-color: #4CAF50;
