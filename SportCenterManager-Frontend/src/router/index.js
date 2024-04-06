@@ -5,6 +5,7 @@ import BillingInformation from '@/components/BillingInformation'
 import EditBillingInformation from '@/components/EditBillingInformation'
 import Courses from '@/components/Courses'
 import CreateCourse from '@/components/CreateCourse'
+import ViewCustomerRegistrations from "@/components/ViewCustomerRegistrations"
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path: '/courses/create',
       name: 'CreateCourse',
       component: CreateCourse
+    },
+    {
+      path: "/customerAccount/registrations",
+      name: "UserRegistrations",
+      component: ViewCustomerRegistrations
     }
   ]
 })
