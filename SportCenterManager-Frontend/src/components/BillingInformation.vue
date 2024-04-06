@@ -8,32 +8,31 @@
             <table>
                 <tr>
                     <td class="item">Name:</td>
-                    <td><input type="text" v-model="name"></td>
+                    <td><input type="text" v-model="name" :disabled="disabled"></td>
                 </tr>
                 <tr>
                     <td class="item">Address:</td>
-                    <td><input type="text"></td>
+                    <td><input type="text" v-model="address" :disabled="disabled"></td>
                 </tr>
                 <tr>
                     <td class="item">Country:</td>
-                    <td><input type="text"></td>
+                    <td><input type="text" v-model="country" :disabled="disabled"></td>
                 </tr>
                 <tr>
                     <td class="item">Card Number:</td>
-                    <td><input type="text"></td>
+                    <td><input type="text" v-model="cardNumber" :disabled="disabled"></td>
                 </tr>
                 <tr>
                     <td class="item">CVC:</td>
-                    <td><input type="number"></td>
+                    <td><input type="number" v-model="cvc" :disabled="disabled"></td>
                 </tr>
                 <tr>
                     <td class="item">Expiration Date:</td>
-                    <td><input type="date" name="expiration"></td>
+                    <td><input type="date" v-model="expirationDate" :disabled="disabled"></td>
                 </tr>
             </table>
             <div id="billing-information-edit">
-                <button>Edit</button>
-                <button>Clear</button>
+                <button @click="editBillingInformation">Edit</button>
             </div>
         </div>
     </div>
@@ -43,29 +42,45 @@
 import axios from 'axios'
 import config from '../../config'
 
+const frontendUrl = 'http://' + config.dev.host + ':' + config.dev.port;
+const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backendPort;
+
 const client = axios.create({
-    baseURL: config.dev.backendUrl
+    baseURL: backendUrl,
+    headers: { 'Access-Control-Allow-Origin': frontendUrl }
 })
 
 export default {
     name: 'BillingInformation',
     data() {
         return {
-            billingInformation: {
-                name: 'John Doe',
-                address: '',
-                country: '',
-                cardNumber: '',
-                cvc: '',
-                expirationDate: ''
-            }
+            name: null,
+            address: null,
+            country: null,
+            cardNumber: null,
+            cvc: null,
+            expirationDate: null,
+            disabled: true
         }
     },
     async created() {
-        name: this.billingInformation.name
+        try {
+            const response = await client.get("/customerAccounts/15752/billingInformation");
+            this.name = response.data.name;
+            this.address = response.data.address;
+            this.country = response.data.country;
+            this.cardNumber = response.data.cardNumber;
+            this.cvc = response.data.cvc;
+            this.expirationDate = response.data.expirationDate;
+        }
+        catch (e) {
+            console.log(e);
+        }
     },
     methods: {
-        async 
+        editBillingInformation() {
+            this.$router.push({ name: 'EditBillingInformation' });
+        }
     }
 }
 </script>

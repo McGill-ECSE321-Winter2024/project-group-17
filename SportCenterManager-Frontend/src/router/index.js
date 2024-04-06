@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Hello from '@/components/Hello'
 import BillingInformation from '@/components/BillingInformation'
+import EditBillingInformation from '@/components/EditBillingInformation'
 import Courses from '@/components/Courses'
 import CreateCourse from '@/components/CreateCourse'
 
@@ -18,7 +19,13 @@ export default new Router({
       path: '/billinginformation',
       name: 'BillingInformation',
       component: BillingInformation
-    },{
+    },
+    {
+      path: '/billinginformation/edit',
+      name: 'EditBillingInformation',
+      component: EditBillingInformation
+    },
+    {
       path: '/courses',
       name: 'Courses',
       component: Courses
