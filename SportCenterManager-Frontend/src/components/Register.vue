@@ -12,7 +12,7 @@
                 <p class="register-course-desc-text" id="course-cost" style="margin-top: 1%;">Cost: {{ this.session.course.costPerSession }}$/Session</p>
                 
                 <p class="register-session-desc-text" id="course-name" style="margin-top: 3%;">You are about to register to a session for the <b> {{ this.session.course.name }} </b> course</p> 
-                <p class="register-session-desc-text" id="session-date-time" > <b>Date/Time:</b> {{ this.session.date }} -- {{ this.session.startTime }} To {{ this.session.endTime }}</p> 
+                <p class="register-session-desc-text" id="session-date-time" > <b>Date/Time:</b> {{ this.session.date }} -- {{ this.session.startTime }} to {{ this.session.endTime }}</p> 
                 <p class="register-session-desc-text" id="session-instructor-contact"> <b>Instructor:</b> {{ this.session.instructor.name }} - {{ this.session.instructor.email }}</p>
             </div>
             <div id="register-buttons">
@@ -121,10 +121,13 @@ export default {
 
 .register-course-desc-text{
     font-size: 17px;
+    text-align: left;
 }
 
 .register-session-desc-text{
     font-size: 17px;
+    text-align: left;
+    margin: 0%;
 }
 
 #register-buttons {
