@@ -1,8 +1,18 @@
 <script>
 import NavBar from './components/NavBar.vue';
+import Header from './components/Header.vue';
+
 export default {
   name: 'app',
-  components: {NavBar}
+  components: {
+    NavBar,
+    Header
+  },
+  computed: {
+    isAccountView() {
+      return this.$route.path.includes('/customerAccount');
+    }
+  }
 }
 
 </script>
@@ -10,11 +20,12 @@ export default {
 <template>
   <div id="app">
     <NavBar />
-    <img src="./assets/logo.png" v-if="$route.path === '/hello'">
+    <Header />
+
     <router-view></router-view>
-    
+
   </div>
-  
+
 </template>
 
 
