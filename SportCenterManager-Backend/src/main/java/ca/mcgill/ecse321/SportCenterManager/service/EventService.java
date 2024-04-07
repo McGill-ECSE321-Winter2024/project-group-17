@@ -23,6 +23,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 
 import jakarta.transaction.Transactional;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Service
 public class EventService {
