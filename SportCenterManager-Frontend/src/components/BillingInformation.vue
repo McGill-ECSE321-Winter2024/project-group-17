@@ -17,7 +17,7 @@
                     <input type="text" v-model="cardNumber" :disabled="disabled" style="grid-area: cardNumber-input;">
 
                     <p class="item" style="grid-area: cvc;">CVC:</p>
-                    <input type="number" v-model="cvc" :disabled="disabled" style="grid-area: cvc-input;">
+                    <input type="text" maxlength="3" v-model="cvc" :disabled="disabled" style="grid-area: cvc-input;">
 
                     <p class="item" style="grid-area: expirationDate;">Expiration Date:</p>
                     <input type="date" v-model="expirationDate" :disabled="disabled"
