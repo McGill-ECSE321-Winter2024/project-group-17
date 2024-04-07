@@ -29,14 +29,15 @@
                     <p class="item" style="grid-area: cardNumber;">Card Number:<span class="error"
                             :class="{ 'state-el': isCardValid, 'disabled': disabled }">*</span></p>
                     <input type="text" maxlength="19" :disabled="disabled" style="grid-area: cardNumber-input;"
-                        :value="formatCardNumber" @input="updateValue">
+                        :value="formatCardNumber" @input="updateCard">
                     <p class="error" style="grid-area: card-error;"
                         :class="{ 'state-el': isCardValid, 'disabled': disabled }"> {{ cardError
                         }} </p>
 
                     <p class="item" style="grid-area: cvc;">CVC:<span class="error"
                             :class="{ 'state-el': isCvcValid, 'disabled': disabled }">*</span></p>
-                    <input type="text" maxlength="3" v-model="cvc" :disabled="disabled" style="grid-area: cvc-input;">
+                    <input type="text" maxlength="3" :value="formatCvc" @input="updateCvc" :disabled="disabled"
+                        style="grid-area: cvc-input;">
                     <p class="error" style="grid-area: cvc-error;"
                         :class="{ 'state-el': isCvcValid, 'disabled': disabled }"> {{ cvcError
                         }} </p>
@@ -50,9 +51,9 @@
                                 expirationDateError }}</p>
                 </div>
                 <div id="billing-information-edit">
-                    <button id="submit-btn" :class="{ 'state-el': disabled, 'disabled': disabled }"
+                    <button id="submit-btn" :class="{ 'state-el': disabled }"
                         @click="submitBillingInformation">Submit</button>
-                    <button id="clear-btn" :class="{ 'state-el': disabled, 'disabled': disabled }"
+                    <button id="clear-btn" :class="{ 'state-el': disabled }"
                         @click="clearBillingInformation">Clear</button>
                     <button id='edit-btn' @click="editBillingInformation">Edit</button>
                 </div>
@@ -140,8 +141,11 @@ export default {
             const editBtn = document.getElementById("edit-btn");
             editBtn.innerHTML = this.disabled ? "Edit" : "Cancel";
         },
-        updateValue(event) {
+        updateCard(event) {
             this.cardNumber = event.target.value.replace(/ /g, '');
+        },
+        updateCvc(event) {
+            this.cvc = event.target.value;
         },
         checkInput() {
             if (this.isEmpty()) {
@@ -160,7 +164,16 @@ export default {
     },
     computed: {
         formatCardNumber() {
+            if (this.disabled) {
+                return this.cardNumber ? "**** **** **** " + this.cardNumber.slice(-4) : '';
+            }
             return this.cardNumber ? this.cardNumber.match(/.{1,4}/g).join(' ') : '';
+        },
+        formatCvc() {
+            if (this.disabled) {
+                return this.cvc ? "***" : '';
+            }
+            return this.cvc;
         },
         isNameEmpty() {
             return this.name === null || this.name === "";
