@@ -7,28 +7,41 @@
                     <p class="item" style="grid-area: name;">Name:<span class="error"
                             :class="{ 'state-el': !isNameEmpty }">*</span></p>
                     <input type="text" v-model="name" :disabled="disabled" style="grid-area: name-input;">
+                    <p class="error" style="grid-area: name-error;" :class="{ 'state-el': isNameValid }"> {{ nameError
+                        }}
+                    </p>
 
                     <p class="item" style="grid-area: address;">Address:<span class="error"
                             :class="{ 'state-el': !isAddressEmpty }">*</span></p>
                     <input type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
+                    <p class="error" style="grid-area: address-error;" :class="{ 'state-el': isAddressValid }"> {{
+                                addressError }}</p>
 
                     <p class="item" style="grid-area: country;">Country:<span class="error"
                             :class="{ 'state-el': !isCountryEmpty }">*</span></p>
                     <input type="text" v-model="country" :disabled="disabled" style="grid-area: country-input;">
+                    <p class="error" style="grid-area: country-error;" :class="{ 'state-el': isCountryValid }"> {{
+                                countryError }}</p>
 
                     <p class="item" style="grid-area: cardNumber;">Card Number:<span class="error"
-                            :class="{ 'state-el': !isCardEmpty }">*</span></p>
+                            :class="{ 'state-el': isCardValid }">*</span></p>
                     <input type="text" maxlength="16" v-model="cardNumber" :disabled="disabled"
                         style="grid-area: cardNumber-input;">
+                    <p class="error" style="grid-area: card-error;" :class="{ 'state-el': isCardValid }"> {{ cardError
+                        }} </p>
 
                     <p class="item" style="grid-area: cvc;">CVC:<span class="error"
-                            :class="{ 'state-el': !isCvcEmpty }">*</span></p>
+                            :class="{ 'state-el': isCvcValid }">*</span></p>
                     <input type="text" maxlength="3" v-model="cvc" :disabled="disabled" style="grid-area: cvc-input;">
+                    <p class="error" style="grid-area: cvc-error;" :class="{ 'state-el': isCvcValid }"> {{ cvcError
+                        }} </p>
 
                     <p class="item" style="grid-area: expirationDate;">Expiration Date:<span class="error"
                             :class="{ 'state-el': !isExpirationDateEmpty }">*</span></p>
                     <input type="date" v-model="expirationDate" :disabled="disabled"
                         style="grid-area: expirationDate-input;">
+                    <p class="error" style="grid-area: date-error;" :class="{ 'state-el': isExpirationDateValid }"> {{
+                                expirationDateError }}</p>
                 </div>
                 <div id="billing-information-edit">
                     <button id="submit-btn" :class="{ 'state-el': disabled }"
@@ -126,6 +139,10 @@ export default {
                 alert("Please fill in all required fields.");
                 return false;
             }
+            if (!this.isNameValid || !this.isAddressValid || !this.isCountryValid || !this.isCardValid || !this.isCvcValid || !this.isExpirationDateValid) {
+                alert("Please correct the errors in the form.");
+                return false;
+            }
             return true;
         },
         isEmpty() {
@@ -150,6 +167,70 @@ export default {
         },
         isExpirationDateEmpty() {
             return this.expirationDate === null || this.expirationDate === "";
+        },
+        isNameValid() {
+            if (this.isNameEmpty) {
+                this.nameError = "Name is required.";
+                return false;
+            }
+            this.nameError = "";
+            return true;
+        },
+        isAddressValid() {
+            if (this.isAddressEmpty) {
+                this.addressError = "Address is required.";
+                return false;
+            }
+            this.addressError = "";
+            return true;
+        },
+        isCountryValid() {
+            if (this.isCountryEmpty) {
+                this.countryError = "Country is required.";
+                return false;
+            }
+            this.countryError = "";
+            return true;
+        },
+        isCardValid() {
+            if (this.isCardEmpty) {
+                this.cardError = "Card number is required.";
+                return false;
+            }
+            if (isNaN(this.cardNumber) || this.cardNumber.includes("e")) {
+                this.cardError = "Card number must be a number.";
+                return false;
+            }
+            if (this.cardNumber.length !== 16) {
+                this.cardError = "Card number must be 16 digits.";
+                return false;
+            }
+            this.cardError = "";
+            return true;
+        },
+        isCvcValid() {
+            if (this.isCvcEmpty) {
+                this.cvcError = "CVC is required.";
+                return false;
+            }
+            if (isNaN(this.cvc)) {
+                this.cvcError = "CVC must be a number.";
+                return false;
+            }
+            if (this.cvc < 100) {
+                this.cvcError = "CVC must be 3 digits.";
+                return false;
+            }
+            this.cvcError = "";
+            return true;
+        },
+        isExpirationDateValid() {
+            if (this.isExpirationDateEmpty) {
+                this.expirationDateError = "Expiration date is required.";
+                return false;
+            }
+            this.expirationDateError = "";
+            return true;
         }
     }
 }
@@ -170,7 +251,7 @@ export default {
     grid-template-columns: 25% 75%;
     grid-row-gap: 10px;
     grid-column-gap: 10px;
-    grid-template-areas: "name name-input" "address address-input" "country country-input" "cardNumber cardNumber-input" "cvc cvc-input" "expirationDate expirationDate-input";
+    grid-template-areas: "name name-input" ". name-error" "address address-input" ". address-error" "country country-input" ". country-error" "cardNumber cardNumber-input" ". card-error" "cvc cvc-input" ". cvc-error" "expirationDate expirationDate-input" ". date-error";
 }
 
 .item {
@@ -207,9 +288,10 @@ input {
 
 .error {
     color: red;
+    text-align: left;
 }
 
 .state-el {
-    visibility: hidden;
+    display: none;
 }
 </style>
