@@ -51,7 +51,12 @@ export default {
     data () {
         return {
             customer: undefined,
-            session: undefined,
+            session: {
+                course: undefined,
+                instructor: undefined,
+                startTime: undefined,
+                endTime: undefined,
+            },
             confirmEnabled: true
         };
     }, 
