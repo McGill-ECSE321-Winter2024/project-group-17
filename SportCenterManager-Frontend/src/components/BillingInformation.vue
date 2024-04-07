@@ -5,48 +5,54 @@
             <div id="billing-information-box">
                 <div id="billing-table">
                     <p class="item" style="grid-area: name;">Name:<span class="error"
-                            :class="{ 'state-el': !isNameEmpty }">*</span></p>
+                            :class="{ 'state-el': !isNameEmpty, 'disabled': disabled }">*</span></p>
                     <input type="text" v-model="name" :disabled="disabled" style="grid-area: name-input;">
-                    <p class="error" style="grid-area: name-error;" :class="{ 'state-el': isNameValid }"> {{ nameError
+                    <p class="error" style="grid-area: name-error;"
+                        :class="{ 'state-el': isNameValid, 'disabled': disabled }"> {{ nameError
                         }}
                     </p>
 
                     <p class="item" style="grid-area: address;">Address:<span class="error"
-                            :class="{ 'state-el': !isAddressEmpty }">*</span></p>
+                            :class="{ 'state-el': !isAddressEmpty, 'disabled': disabled }">*</span></p>
                     <input type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
-                    <p class="error" style="grid-area: address-error;" :class="{ 'state-el': isAddressValid }"> {{
+                    <p class="error" style="grid-area: address-error;"
+                        :class="{ 'state-el': isAddressValid, 'disabled': disabled }"> {{
                                 addressError }}</p>
 
                     <p class="item" style="grid-area: country;">Country:<span class="error"
-                            :class="{ 'state-el': !isCountryEmpty }">*</span></p>
+                            :class="{ 'state-el': !isCountryEmpty, 'disabled': disabled }">*</span></p>
                     <input type="text" v-model="country" :disabled="disabled" style="grid-area: country-input;">
-                    <p class="error" style="grid-area: country-error;" :class="{ 'state-el': isCountryValid }"> {{
+                    <p class="error" style="grid-area: country-error;"
+                        :class="{ 'state-el': isCountryValid, 'disabled': disabled }"> {{
                                 countryError }}</p>
 
                     <p class="item" style="grid-area: cardNumber;">Card Number:<span class="error"
-                            :class="{ 'state-el': isCardValid }">*</span></p>
+                            :class="{ 'state-el': isCardValid, 'disabled': disabled }">*</span></p>
                     <input type="text" maxlength="19" :disabled="disabled" style="grid-area: cardNumber-input;"
                         :value="formatCardNumber" @input="updateValue">
-                    <p class="error" style="grid-area: card-error;" :class="{ 'state-el': isCardValid }"> {{ cardError
+                    <p class="error" style="grid-area: card-error;"
+                        :class="{ 'state-el': isCardValid, 'disabled': disabled }"> {{ cardError
                         }} </p>
 
                     <p class="item" style="grid-area: cvc;">CVC:<span class="error"
-                            :class="{ 'state-el': isCvcValid }">*</span></p>
+                            :class="{ 'state-el': isCvcValid, 'disabled': disabled }">*</span></p>
                     <input type="text" maxlength="3" v-model="cvc" :disabled="disabled" style="grid-area: cvc-input;">
-                    <p class="error" style="grid-area: cvc-error;" :class="{ 'state-el': isCvcValid }"> {{ cvcError
+                    <p class="error" style="grid-area: cvc-error;"
+                        :class="{ 'state-el': isCvcValid, 'disabled': disabled }"> {{ cvcError
                         }} </p>
 
                     <p class="item" style="grid-area: expirationDate;">Expiration Date:<span class="error"
-                            :class="{ 'state-el': !isExpirationDateEmpty }">*</span></p>
+                            :class="{ 'state-el': !isExpirationDateEmpty, 'disabled': disabled }">*</span></p>
                     <input type="date" v-model="expirationDate" :disabled="disabled"
                         style="grid-area: expirationDate-input;">
-                    <p class="error" style="grid-area: date-error;" :class="{ 'state-el': isExpirationDateValid }"> {{
+                    <p class="error" style="grid-area: date-error;"
+                        :class="{ 'state-el': isExpirationDateValid, 'disabled': disabled }"> {{
                                 expirationDateError }}</p>
                 </div>
                 <div id="billing-information-edit">
-                    <button id="submit-btn" :class="{ 'state-el': disabled }"
+                    <button id="submit-btn" :class="{ 'state-el': disabled, 'disabled': disabled }"
                         @click="submitBillingInformation">Submit</button>
-                    <button id="clear-btn" :class="{ 'state-el': disabled }"
+                    <button id="clear-btn" :class="{ 'state-el': disabled, 'disabled': disabled }"
                         @click="clearBillingInformation">Clear</button>
                     <button id='edit-btn' @click="editBillingInformation">Edit</button>
                 </div>
@@ -295,6 +301,11 @@ input {
 .error {
     color: red;
     text-align: left;
+}
+
+.error.disabled {
+    display: none;
+
 }
 
 .state-el {
