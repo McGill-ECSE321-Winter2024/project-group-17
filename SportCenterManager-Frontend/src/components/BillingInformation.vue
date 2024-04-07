@@ -14,7 +14,8 @@
                     <input type="text" v-model="country" :disabled="disabled" style="grid-area: country-input;">
 
                     <p class="item" style="grid-area: cardNumber;">Card Number:</p>
-                    <input type="text" v-model="cardNumber" :disabled="disabled" style="grid-area: cardNumber-input;">
+                    <input type="text" maxlength="16" v-model="cardNumber" :disabled="disabled"
+                        style="grid-area: cardNumber-input;">
 
                     <p class="item" style="grid-area: cvc;">CVC:</p>
                     <input type="text" maxlength="3" v-model="cvc" :disabled="disabled" style="grid-area: cvc-input;">
@@ -24,8 +25,10 @@
                         style="grid-area: expirationDate-input;">
                 </div>
                 <div id="billing-information-edit">
-                    <button id="submit-btn" class="form-btn" @click="submitBillingInformation">Submit</button>
-                    <button id="clear-btn" class="form-btn" @click="clearBillingInformation">Clear</button>
+                    <button id="submit-btn" :class="{ 'form-btn': disabled }"
+                        @click="submitBillingInformation">Submit</button>
+                    <button id="clear-btn" :class="{ 'form-btn': disabled }"
+                        @click="clearBillingInformation">Clear</button>
                     <button id='edit-btn' @click="editBillingInformation">Edit</button>
                 </div>
             </div>
@@ -107,12 +110,8 @@ export default {
         },
         swapButtons() {
             this.disabled = !this.disabled;
-            const formBtns = document.getElementsByClassName("form-btn");
             const editBtn = document.getElementById("edit-btn");
             editBtn.innerHTML = this.disabled ? "Edit" : "Cancel";
-            for (let i = 0; i < formBtns.length; i++) {
-                formBtns[i].style.visibility = this.disabled ? "hidden" : "visible";
-            }
         }
     }
 }
