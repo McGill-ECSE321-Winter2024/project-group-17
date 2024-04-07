@@ -2,7 +2,7 @@
     <div id="register-components">
         <div id="register-header">
             <div class="background" style="position: relative; width: 100%; height: 30vh; overflow: hidden;">
-                <img src="../assets/placeholder.png" style="position: absolute; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                <img src="../assets/registration-bg.png" style="position: absolute; left: 0; width: 100%; height: 100%; object-fit: cover;">
                 <p class="text-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">REGISTRATION</p>
             </div>
         </div>
