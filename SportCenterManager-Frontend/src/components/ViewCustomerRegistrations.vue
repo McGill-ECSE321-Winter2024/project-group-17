@@ -1,17 +1,7 @@
 <template>
     <div id="customer-registrations-component">
-        <div id="customer-registrations-header">
-            <figure class="image">
-                <p style="margin-top: 20%; margin-bottom: 20%;">MY ACCOUNT</p>
-            </figure>
-        </div>
         <div id="customer-registrations-body">
-            <div id="customer-account-navigation-bar">
-                <button class="acc-nav-btn" style="margin-bottom: 2%;" type="button">Account Information</button>
-                <button class="acc-nav-btn" style="margin-bottom: 2%;" type="button">Payment Information</button>
-                <button class="state-btn" v-bind:disabled="true" style="margin-bottom: 2%; text-align: left;" type="button">Registrations</button>
-            </div>
-            <div style="padding-right: 8%; width: 70%; margin-top: 5%;" id="customer-registrations-main-body">
+            <div style="padding-right: 8%; width: 70%;" id="customer-registrations-main-body">
                     <p style="font-weight: bold; font-size: 25px;">REGISTRATIONS</p>
                 <div style="margin-top: 3%;" id="customer-registrations-filter-btns">
                     <button class="state-btn" id="past-registrations-btn" @click="filterPastRegistrations()" v-bind:disabled="buttonState" style="margin-right: 2%;" type="button">Past</button>
@@ -62,7 +52,7 @@ export default {
 
         async filterPastRegistrations(){
             try {
-                await AXIOS.get("/customerAccounts/1/registrations").then(response => {
+                await AXIOS.get("/customerAccounts/15752/registrations").then(response => {
                     this.registrations = [];
                     let regs = response.data.registrations;
                     let currentDate = new Date();
@@ -82,7 +72,7 @@ export default {
 
         async filterUpcomingRegistrations(){
             try {
-                await AXIOS.get("/customerAccounts/1/registrations").then(response => {
+                await AXIOS.get("/customerAccounts/15752/registrations").then(response => {
                     this.registrations = [];
                     let regs = response.data.registrations;
                     let currentDate = new Date();
@@ -102,7 +92,7 @@ export default {
 
         async getRegistrations(){
             try {
-                await AXIOS.get("/customerAccounts/1/registrations").then(response => {
+                await AXIOS.get("/customerAccounts/15752/registrations").then(response => {
                     this.registrations = response.data.registrations;
                 });
             } catch (e) {
@@ -139,38 +129,12 @@ export default {
   height: 100%;
 }
 
-#customer-registrations-header {
-  background-color: #000000;
-  width: 100%;
-  padding: 0%;
-  height: 100%;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  color: white;
-  font-weight: bold;
-  font-size: 50px;
-}
-
 #customer-registrations-body {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   align-items: top center;
   width: 100%;
-}
-
-#customer-account-navigation-bar {
-    display: flex;
-    flex-direction: column;
-    justify-content: left;
-    align-items: left;
-    text-align: left;
-    width: 25%;
-    height: 20%;
-    padding-left: 3%;
-    padding-top: 6%;
 }
 
 #customer-registrations-list {
@@ -217,15 +181,6 @@ export default {
     justify-content: left baseline;
     flex-direction: row;
     align-items: left baseline;
-}
-
-.acc-nav-btn {
-    background-color: white;
-    color: #000000;
-    border-top: none;
-    border-left: none;
-    border-right: none;
-    text-align: left;
 }
 
 .state-btn:enabled {
