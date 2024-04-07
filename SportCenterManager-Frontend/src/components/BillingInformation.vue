@@ -25,8 +25,8 @@
 
                     <p class="item" style="grid-area: cardNumber;">Card Number:<span class="error"
                             :class="{ 'state-el': isCardValid }">*</span></p>
-                    <input type="text" maxlength="16" v-model="cardNumber" :disabled="disabled"
-                        style="grid-area: cardNumber-input;">
+                    <input type="text" maxlength="19" :disabled="disabled" style="grid-area: cardNumber-input;"
+                        :value="formatCardNumber" @input="updateValue">
                     <p class="error" style="grid-area: card-error;" :class="{ 'state-el': isCardValid }"> {{ cardError
                         }} </p>
 
@@ -134,6 +134,9 @@ export default {
             const editBtn = document.getElementById("edit-btn");
             editBtn.innerHTML = this.disabled ? "Edit" : "Cancel";
         },
+        updateValue(event) {
+            this.cardNumber = event.target.value.replace(/ /g, '');
+        },
         checkInput() {
             if (this.isEmpty()) {
                 alert("Please fill in all required fields.");
@@ -150,6 +153,9 @@ export default {
         }
     },
     computed: {
+        formatCardNumber() {
+            return this.cardNumber ? this.cardNumber.match(/.{1,4}/g).join(' ') : '';
+        },
         isNameEmpty() {
             return this.name === null || this.name === "";
         },
