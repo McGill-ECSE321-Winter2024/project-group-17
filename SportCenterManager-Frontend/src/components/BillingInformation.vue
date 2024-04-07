@@ -4,30 +4,36 @@
             <p style="font-weight: bold; font-size: 25px; text-align: left;">PAYMENT INFORMATION</p>
             <div id="billing-information-box">
                 <div id="billing-table">
-                    <p class="item" style="grid-area: name;">Name:</p>
+                    <p class="item" style="grid-area: name;">Name:<span class="error"
+                            :class="{ 'state-el': !isNameEmpty }">*</span></p>
                     <input type="text" v-model="name" :disabled="disabled" style="grid-area: name-input;">
 
-                    <p class="item" style="grid-area: address;">Address:</p>
+                    <p class="item" style="grid-area: address;">Address:<span class="error"
+                            :class="{ 'state-el': !isAddressEmpty }">*</span></p>
                     <input type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
 
-                    <p class="item" style="grid-area: country;">Country:</p>
+                    <p class="item" style="grid-area: country;">Country:<span class="error"
+                            :class="{ 'state-el': !isCountryEmpty }">*</span></p>
                     <input type="text" v-model="country" :disabled="disabled" style="grid-area: country-input;">
 
-                    <p class="item" style="grid-area: cardNumber;">Card Number:</p>
+                    <p class="item" style="grid-area: cardNumber;">Card Number:<span class="error"
+                            :class="{ 'state-el': !isCardEmpty }">*</span></p>
                     <input type="text" maxlength="16" v-model="cardNumber" :disabled="disabled"
                         style="grid-area: cardNumber-input;">
 
-                    <p class="item" style="grid-area: cvc;">CVC:</p>
+                    <p class="item" style="grid-area: cvc;">CVC:<span class="error"
+                            :class="{ 'state-el': !isCvcEmpty }">*</span></p>
                     <input type="text" maxlength="3" v-model="cvc" :disabled="disabled" style="grid-area: cvc-input;">
 
-                    <p class="item" style="grid-area: expirationDate;">Expiration Date:</p>
+                    <p class="item" style="grid-area: expirationDate;">Expiration Date:<span class="error"
+                            :class="{ 'state-el': !isExpirationDateEmpty }">*</span></p>
                     <input type="date" v-model="expirationDate" :disabled="disabled"
                         style="grid-area: expirationDate-input;">
                 </div>
                 <div id="billing-information-edit">
-                    <button id="submit-btn" :class="{ 'form-btn': disabled }"
+                    <button id="submit-btn" :class="{ 'state-el': disabled }"
                         @click="submitBillingInformation">Submit</button>
-                    <button id="clear-btn" :class="{ 'form-btn': disabled }"
+                    <button id="clear-btn" :class="{ 'state-el': disabled }"
                         @click="clearBillingInformation">Clear</button>
                     <button id='edit-btn' @click="editBillingInformation">Edit</button>
                 </div>
@@ -91,12 +97,14 @@ export default {
                 cvc: this.cvc,
                 expirationDate: this.expirationDate
             };
-            try {
-                await client.put("/customerAccounts/15752/billingInformation", billingInformation);
-                this.swapButtons();
-            }
-            catch (e) {
-                console.log(e);
+            if (this.checkInput()) {
+                try {
+                    await client.put("/customerAccounts/15752/billingInformation", billingInformation);
+                    this.swapButtons();
+                }
+                catch (e) {
+                    console.log(e);
+                }
             }
         },
         async clearBillingInformation() {
@@ -112,6 +120,36 @@ export default {
             this.disabled = !this.disabled;
             const editBtn = document.getElementById("edit-btn");
             editBtn.innerHTML = this.disabled ? "Edit" : "Cancel";
+        },
+        checkInput() {
+            if (this.isEmpty()) {
+                alert("Please fill in all required fields.");
+                return false;
+            }
+            return true;
+        },
+        isEmpty() {
+            return this.isNameEmpty || this.isAddressEmpty || this.isCountryEmpty || this.isCardEmpty || this.isCvcEmpty || this.isExpirationDateEmpty;
+        }
+    },
+    computed: {
+        isNameEmpty() {
+            return this.name === null || this.name === "";
+        },
+        isAddressEmpty() {
+            return this.address === null || this.address === "";
+        },
+        isCountryEmpty() {
+            return this.country === null || this.country === "";
+        },
+        isCardEmpty() {
+            return this.cardNumber === null || this.cardNumber === "";
+        },
+        isCvcEmpty() {
+            return this.cvc === null || this.cvc === "";
+        },
+        isExpirationDateEmpty() {
+            return this.expirationDate === null || this.expirationDate === "";
         }
     }
 }
@@ -167,7 +205,11 @@ input {
     cursor: pointer;
 }
 
-.form-btn {
+.error {
+    color: red;
+}
+
+.state-el {
     visibility: hidden;
 }
 </style>
