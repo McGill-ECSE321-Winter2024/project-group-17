@@ -13,6 +13,8 @@ import ca.mcgill.ecse321.SportCenterManager.dto.BillingInformationRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.BillingInformationResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.model.BillingInformation;
 import ca.mcgill.ecse321.SportCenterManager.service.BillingInformationService;
+
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 
 @RestController
 @RequestMapping("/customerAccounts/{customerAccount_id}/billingInformation")
+@CrossOrigin(origins = "*")
 public class BillingInformationController {
     @Autowired
     private BillingInformationService billingService;

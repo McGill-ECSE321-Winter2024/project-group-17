@@ -3,7 +3,10 @@ import Router from 'vue-router'
 import Hello from '@/components/Hello'
 import Courses from '@/components/Courses'
 import CreateCourse from '@/components/CreateCourse'
+import AccountView from '@/components/AccountView'
 import ViewCustomerRegistrations from "@/components/ViewCustomerRegistrations"
+import BillingInformation from '@/components/BillingInformation'
+import EditBillingInformation from '@/components/EditBillingInformation'
 
 Vue.use(Router)
 
@@ -25,9 +28,23 @@ export default new Router({
       component: CreateCourse
     },
     {
-      path: "/customerAccount/registrations",
-      name: "UserRegistrations",
-      component: ViewCustomerRegistrations
+      path: '/customerAccount',
+      name: "AccountView",
+      component: AccountView,
+      children: [
+        {
+          path: 'billing',
+          component: BillingInformation
+        },
+        {
+          path: 'billing/edit',
+          component: EditBillingInformation
+        },
+        {
+          path: 'registrations',
+          component: ViewCustomerRegistrations
+        }
+      ]
     }
   ]
 })
