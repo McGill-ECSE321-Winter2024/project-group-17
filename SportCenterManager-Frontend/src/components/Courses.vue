@@ -60,6 +60,7 @@ h3 {
 }
 p {
   font-size: 18px;
+  text-align: center;
   color: black;
 }
 .grid-container {

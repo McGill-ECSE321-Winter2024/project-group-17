@@ -22,19 +22,19 @@
 export default {
     data() {
         // Update state based on route
-        if (this.$route.path === '/customerAccount') {
+        if (this.$route.path === '/customerAccount' || this.$route.path === '/customerAccount/') {
             return {
                 infoState: true,
                 billingState: false,
                 registrationState: false
             }
-        } else if (this.$route.path === '/customerAccount/billing') {
+        } else if (this.$route.path === '/customerAccount/billing' || this.$route.path === '/customerAccount/billing/') {
             return {
                 infoState: false,
                 billingState: true,
                 registrationState: false
             }
-        } else if (this.$route.path === '/customerAccount/registrations') {
+        } else if (this.$route.path === '/customerAccount/registrations' || this.$route.path === '/customerAccount/registrations/') {
             return {
                 infoState: false,
                 billingState: false,
