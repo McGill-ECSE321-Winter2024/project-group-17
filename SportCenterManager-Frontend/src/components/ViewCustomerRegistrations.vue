@@ -1,24 +1,20 @@
 <template>
-    <div id="customer-registrations-component">
-        <div id="customer-registrations-body">
-            <div style="padding-right: 8%; width: 70%;" id="customer-registrations-main-body">
-                    <p style="font-weight: bold; font-size: 25px;">REGISTRATIONS</p>
-                <div style="margin-top: 3%;" id="customer-registrations-filter-btns">
-                    <button class="state-btn" id="past-registrations-btn" @click="filterPastRegistrations()" v-bind:disabled="buttonState" style="margin-right: 2%;" type="button">Past</button>
-                    <button class="state-btn" id="upcoming-registrations-btn" @click="filterUpcomingRegistrations()" v-bind:disabled="!buttonState" style="margin-right: 2%;" type="button">Upcoming</button>
+    <div style="padding-right: 7%; width: 70%;" id="customer-registrations-main-body">
+            <p style="font-weight: bold; font-size: 25px;">REGISTRATIONS</p>
+        <div style="margin-top: 3%;" id="customer-registrations-filter-btns">
+            <button class="state-btn" id="upcoming-registrations-btn" @click="toggleRegistration()" v-bind:disabled="!buttonState" style="margin-right: 2%;" type="button">Upcoming</button>
+            <button class="state-btn" id="past-registrations-btn" @click="toggleRegistration()" v-bind:disabled="buttonState" style="margin-right: 2%;" type="button">Past</button>
+        </div>
+        <div id="customer-registrations-list">
+            <div class="customer-registration-entry" v-for="registration in registrations">
+                <div :class="'customer-registration-entry-text'">
+                <p style="font-size: 18px; font-weight: bold;">
+                    <a style="color: black;">Course: {{ registration.session.course.name}}</a>
+                </p>
+                <p>Date/Time: {{ registration.session.date }} -- {{ registration.session.startTime }}</p>
+                <p>Instructor: {{ registration.session.instructor.name }}</p>
                 </div>
-                <div id="customer-registrations-list">
-                    <div class="customer-registration-entry" v-for="registration in registrations">
-                        <div :class="'customer-registration-entry-text'">
-                        <p style="font-size: 18px; font-weight: bold;">
-                            <a style="color: black;">Course: {{ registration.session.course.name}}</a>
-                        </p>
-                        <p>Date/Time: {{ registration.session.date }} -- {{ registration.session.startTime }}</p>
-                        <p>Instructor: {{ registration.session.instructor.name }}</p>
-                        </div>
-                        <button type="button" @click="cancelRegistration(registration)">CANCEL</button>
-                    </div>
-                </div>
+                <button type="button" @click="cancelRegistration(registration)" v-if="!buttonState">CANCEL</button>
             </div>
         </div>
     </div>
@@ -40,19 +36,24 @@ export default {
     data(){
         return {
             registrations: [],
-            buttonState: true
+            // if buttonState is false, then filtering by past registrations, else filtering upcoming registrations 
+            buttonState: false
         };
     },
     
     methods: {
 
         toggleRegistration(){
-            this.buttonState = !this.buttonState;
+            if (this.buttonState) {
+                this.filterUpcomingRegistrations().then(this.buttonState = !this.buttonState);
+            } else {
+                this.filterPastRegistrations().then(this.buttonState = !this.buttonState);
+            }
         },
 
         async filterPastRegistrations(){
             try {
-                await AXIOS.get("/customerAccounts/15752/registrations").then(response => {
+                await AXIOS.get("/customerAccounts/1/registrations").then(response => {
                     this.registrations = [];
                     let regs = response.data.registrations;
                     let currentDate = new Date();
@@ -62,17 +63,16 @@ export default {
                         }
 
                     }
-                    this.toggleRegistration();
                 });
             } catch (e) {
-                alert("Failed to filter" + e);
+                alert("Failed to get registrations!" + e);
                 return;
             }
         },
 
         async filterUpcomingRegistrations(){
             try {
-                await AXIOS.get("/customerAccounts/15752/registrations").then(response => {
+                await AXIOS.get("/customerAccounts/1/registrations").then(response => {
                     this.registrations = [];
                     let regs = response.data.registrations;
                     let currentDate = new Date();
@@ -82,24 +82,13 @@ export default {
                         }
 
                     }
-                    this.toggleRegistration();
                 });
             } catch (e) {
-                alert("Failed to filter" + e);
+                alert("Failed to get registrations!" + e);
                 return;
             }
         },
 
-        async getRegistrations(){
-            try {
-                await AXIOS.get("/customerAccounts/15752/registrations").then(response => {
-                    this.registrations = response.data.registrations;
-                });
-            } catch (e) {
-                alert("Failed to get registrations" + e);
-                return;
-            }
-        },
         async cancelRegistration(registration){
             try {
                 await AXIOS.delete("/courses/" + registration.session.course.id + "/sessions/" + registration.session.id + "/registrations/" + registration.customer.id).then(response => {
@@ -113,31 +102,24 @@ export default {
     },
 
     beforeMount(){
-        this.getRegistrations();
+        this.filterUpcomingRegistrations();
     }
 }
 </script>
 
 <style>
 
-#customer-registrations-component {
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-}
-
-#customer-registrations-body {
+#customer-registrations-main-body {
   display: flex;
   justify-content: space-between;
   flex-direction: row;
   align-items: top center;
   width: 100%;
+  height: 100%;
 }
 
 #customer-registrations-list {
+    margin-top: 2%;
     display: flex;
     justify-content: left baseline;
     align-items: left baseline;
@@ -147,9 +129,9 @@ export default {
 .customer-registration-entry {
     border-radius: 25px;
     border: 2px solid #000000;
-    margin-top: 20px;
-    padding-top: 2%;
-    padding-bottom: 2%;
+    margin-top: 1%;
+    padding-top: 1.5%;
+    padding-bottom: 1.5%;
     padding-left: 5%;
     padding-right: 5%;
     width: 100%;
@@ -174,13 +156,6 @@ export default {
     flex-direction: row;
     align-items: left baseline;
     width: 70%;
-}
-
-#customer-registrations-top-btns {
-    display: flex;
-    justify-content: left baseline;
-    flex-direction: row;
-    align-items: left baseline;
 }
 
 .state-btn:enabled {
