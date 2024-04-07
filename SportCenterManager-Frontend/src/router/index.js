@@ -6,7 +6,6 @@ import CreateCourse from '@/components/CreateCourse'
 import AccountView from '@/components/AccountView'
 import ViewCustomerRegistrations from "@/components/ViewCustomerRegistrations"
 import BillingInformation from '@/components/BillingInformation'
-import EditBillingInformation from '@/components/EditBillingInformation'
 
 Vue.use(Router)
 
@@ -35,10 +34,6 @@ export default new Router({
         {
           path: 'billing',
           component: BillingInformation
-        },
-        {
-          path: 'billing/edit',
-          component: EditBillingInformation
         },
         {
           path: 'registrations',

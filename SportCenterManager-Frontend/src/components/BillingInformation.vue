@@ -3,36 +3,10 @@
         <div id="customer-billing-body">
             <p style="font-weight: bold; font-size: 25px; text-align: left;">PAYMENT INFORMATION</p>
             <div id="billing-information-box">
-                <!-- <table>
-                    <tr>
-                        <td class="item">Name:</td>
-                        <td><input type="text" v-model="name" :disabled="disabled"></td>
-                    </tr>
-                    <tr>
-                        <td class="item">Address:</td>
-                        <td><input type="text" v-model="address" :disabled="disabled"></td>
-                    </tr>
-                    <tr>
-                        <td class="item">Country:</td>
-                        <td><input type="text" v-model="country" :disabled="disabled"></td>
-                    </tr>
-                    <tr>
-                        <td class="item">Card Number:</td>
-                        <td><input type="text" v-model="cardNumber" :disabled="disabled"></td>
-                    </tr>
-                    <tr>
-                        <td class="item">CVC:</td>
-                        <td><input type="number" v-model="cvc" :disabled="disabled"></td>
-                    </tr>
-                    <tr>
-                        <td class="item">Expiration Date:</td>
-                        <td><input type="date" v-model="expirationDate" :disabled="disabled"></td>
-                    </tr>
-                </table> -->
                 <div id="billing-table">
                     <p class="item" style="grid-area: name;">Name:</p>
                     <input type="text" v-model="name" :disabled="disabled" style="grid-area: name-input;">
-                    
+
                     <p class="item" style="grid-area: address;">Address:</p>
                     <input type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
 
@@ -46,9 +20,12 @@
                     <input type="number" v-model="cvc" :disabled="disabled" style="grid-area: cvc-input;">
 
                     <p class="item" style="grid-area: expirationDate;">Expiration Date:</p>
-                    <input type="date" v-model="expirationDate" :disabled="disabled" style="grid-area: expirationDate-input;">
+                    <input type="date" v-model="expirationDate" :disabled="disabled"
+                        style="grid-area: expirationDate-input;">
                 </div>
                 <div id="billing-information-edit">
+                    <button id="submit-btn" class="form-btn" @click="submitBillingInformation">Submit</button>
+                    <button id="clear-btn" class="form-btn" @click="clearBillingInformation">Clear</button>
                     <button id='edit-btn' @click="editBillingInformation">Edit</button>
                 </div>
             </div>
@@ -96,7 +73,46 @@ export default {
     },
     methods: {
         editBillingInformation() {
-            this.$router.push('/customerAccount/billing/edit');
+            const btn = document.getElementById("edit-btn");
+            if (btn.innerHTML === "Cancel") {
+                this.clearBillingInformation();
+            }
+            this.swapButtons();
+        },
+        async submitBillingInformation() {
+            const billingInformation = {
+                name: this.name,
+                address: this.address,
+                country: this.country,
+                cardNumber: this.cardNumber,
+                cvc: this.cvc,
+                expirationDate: this.expirationDate
+            };
+            try {
+                await client.put("/customerAccounts/15752/billingInformation", billingInformation);
+                this.swapButtons();
+            }
+            catch (e) {
+                console.log(e);
+            }
+        },
+        async clearBillingInformation() {
+            const response = await client.get("/customerAccounts/15752/billingInformation");
+            this.name = response.data.name;
+            this.address = response.data.address;
+            this.country = response.data.country;
+            this.cardNumber = response.data.cardNumber;
+            this.cvc = response.data.cvc;
+            this.expirationDate = response.data.expirationDate;
+        },
+        swapButtons() {
+            this.disabled = !this.disabled;
+            const formBtns = document.getElementsByClassName("form-btn");
+            const editBtn = document.getElementById("edit-btn");
+            editBtn.innerHTML = this.disabled ? "Edit" : "Cancel";
+            for (let i = 0; i < formBtns.length; i++) {
+                formBtns[i].style.visibility = this.disabled ? "hidden" : "visible";
+            }
         }
     }
 }
@@ -139,7 +155,9 @@ input {
     padding: 10px 0px 10px 0px;
 }
 
-#edit-btn {
+#edit-btn,
+#submit-btn,
+#clear-btn {
     margin: 0% 5% 0% 5%;
     padding: 5px;
     background-color: #4CAF50;
@@ -148,5 +166,9 @@ input {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+}
+
+.form-btn {
+    visibility: hidden;
 }
 </style>
