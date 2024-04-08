@@ -1,17 +1,31 @@
 <template>
   <div id="app">
-    <img src="./assets/logo.png" v-if="$route.path === '/hello'">
     <router-view></router-view>
   </div>
 </template>
 
 <script>
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import Login from './components/ViewLogin.vue';
+
+Vue.use(VueRouter);
+const routes = [
+  { path: '/login', component: Login },
+];
+
+const router = new VueRouter({
+  routes
+});
+
 export default {
-  name: 'app'
-}
+  name: 'App',
+  router
+};
+
 </script>
 
-<style>
+<style> 
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
