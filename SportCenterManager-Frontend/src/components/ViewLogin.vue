@@ -35,7 +35,7 @@ export default {
     methods: {
         async login() {
             try {
-                // Implement login logic here (e.g., send login request to server)
+                const response = await client.post("/login")
                 console.log('Login clicked');
             } catch (error) {
                 console.error('Failed to login:', error);
