@@ -52,15 +52,6 @@ public class EventService {
     }
 
     @Transactional
-    public Course findCourseByName(String name){
-        Course course = courseRepo.findCourseByName(name);
-        if (course == null){
-            throw new ServiceException(HttpStatus.NOT_FOUND, "There is no course with name " + name + ".");
-        }
-        return course;
-    }
-
-    @Transactional
     public List<Course> findAllApprovedCourses(){
         Iterable<Course> courses = findAllCourses();
         List<Course> approvedCourses = new ArrayList<>();

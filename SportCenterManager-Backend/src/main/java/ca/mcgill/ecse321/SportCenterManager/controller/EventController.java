@@ -91,12 +91,6 @@ public class EventController {
         return new CourseResponseDto(foundCourse);
     }
 
-    @GetMapping("/courses/{name}")
-    public CourseResponseDto findCourseByName(@PathVariable String name){
-        Course foundCourse = eventService.findCourseByName(name);
-        return new CourseResponseDto(foundCourse);
-    }
-
     @GetMapping("/courses/approved")
     public CourseListDto findAllApprovedCourses(){
         List<CourseResponseDto> courses = new ArrayList<CourseResponseDto>();

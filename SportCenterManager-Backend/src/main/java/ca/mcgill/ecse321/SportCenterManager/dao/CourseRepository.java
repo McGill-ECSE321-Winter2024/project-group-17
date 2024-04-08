@@ -5,5 +5,4 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface CourseRepository extends CrudRepository<Course, Integer> {
     public Course findCourseById(int id);
-    public Course findCourseByName(String name);
 }
