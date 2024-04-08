@@ -1,14 +1,11 @@
 <template>
     <div>
-        <h1>Create Session</h1>
+        <h1>Find a Session</h1>
         <div class="input-container">
-            <input type="text" class="input-style" placeholder="Start time" v-model="start" />
-            <input type="text" class="input-style" placeholder="End time" v-model="end" />
-            <input type="text" class="input-style" placeholder="Date" v-model="date" />
-            <input type="text" class="input-style" placeholder="Instructor Id" v-model="instructor" />
+            <input type="text" class="input-style" placeholder="Session Id" v-model="id" />
             <input type="text" class="input-style" placeholder="Course Id" v-model="course" />
         </div>
-        <button class ="create-btn" @click="createSession()" v-bind:disabled="isCreateButtonDisabled">Create</button>
+        <button class ="find-btn" @click="findSession()" v-bind:disabled="isFindButtonDisabled">Find Session</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
     </div>
 </template>
@@ -26,61 +23,43 @@ const client = axios.create({
 });
 
 export default {
-    name: 'CreateSession',
+    name: 'FindSession',
     data() {
         return {
             sessions: [],
-            start: null,
-            end: null,
-            date: null,
-            instructor: null,
+            id: null,
             course: null
         };
     },
 
-    /*async created() {
-            try {
-                const response = await client.get("/courses/{course_id}/sessions");
-                this.sessions = response.data.sessions
-            }
-            catch (e) {
-                alert("Failed to create session. " + e);
-            }
-    },*/
 
     methods: {
-        async createSession() {
-            const sessionToCreate = {
-                start: this.start,
-                end: this.end,
-                date: this.date,
-                instructor: this.instructor,
+        async findSession() {
+            const sessionToFind = {
+                id: this.id,
                 course: this.course
             };
             try {
-                await client.post('/courses/{course_id}/sessions', sessionToCreate);
+                await client.get('/courses/{course_id}/sessions/{session_id}', sessionToFind);
                 this.clearInputs();
                 this.navigateToSessions();
             }
             catch (e) {
-                alert("Failed to create session. " + e);
+                alert("Failed to find session. " + e);
             }
         },
         clearInputs() {
-            this.start= null,
-            this.end= null,
-            this.date= null,
-            this.instructor= null,
+            this.id= null,
             this.course= null
         },
         navigateToSessions() {
-            this.$router.push('/courses/{course_id}/sessions')
+            this.$router.get('/courses/{course_id}/sessions/{session_id}')
         }
     },
     computed: {
-        isCreateButtonDisabled() {
+        isFindButtonDisabled() {
             return (
-                !this.start || !this.end || !this.date || !this.instructor || !this.course
+                !this.id || !this.course
             );
         }
     }
@@ -90,7 +69,7 @@ export default {
 h1 {
     position: relative;
 }
-.create-btn {
+.find-btn {
     border: none;
     color: white;
     background-color: black;

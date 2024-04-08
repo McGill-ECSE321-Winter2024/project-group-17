@@ -566,7 +566,6 @@ public class EventController {
             }
     )
     //TODO
-    @CrossOrigin(origins = "*")
     @PostMapping("/courses/{course_id}/sessions")
     public SessionResponseDto createSession(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
