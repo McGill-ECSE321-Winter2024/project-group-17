@@ -29,7 +29,7 @@ public class SessionResponseDto {
         if (model.getInstructorAccount() != null) {
         	this.instructor= new InstructorResponseDto(model.getInstructorAccount());
         } else {
-        	this.instructor = new InstructorResponseDto(new InstructorAccount("DummyAccount", "DummyAccount", "DummyAccount"));
+        	this.instructor = new InstructorResponseDto(new InstructorAccount("TBD", "N/A", "N/A"));
         }
         this.schedule= new ScheduleResponseDto(model.getSchedule());
         this.id= model.getId();
