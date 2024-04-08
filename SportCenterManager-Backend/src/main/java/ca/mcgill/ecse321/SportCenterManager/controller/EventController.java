@@ -91,8 +91,24 @@ public class EventController {
         return new CourseResponseDto(foundCourse);
     }
 
+    @GetMapping("/courses/approved")
+    public CourseListDto findAllApprovedCourses(){
+        List<CourseResponseDto> courses = new ArrayList<CourseResponseDto>();
+        for (Course model : eventService.findAllApprovedCourses()){
+            courses.add(new CourseResponseDto(model));
+        }
+        return new CourseListDto(courses);
+    }
 
-
+    @GetMapping("/courses/nonApproved")
+    public CourseListDto findAllNonApprovedCourses(){
+        List<CourseResponseDto> courses = new ArrayList<CourseResponseDto>();
+        for (Course model : eventService.findAllNonApprovedCourses()){
+            courses.add(new CourseResponseDto(model));
+        }
+        return new CourseListDto(courses);
+    }
+    
     @Operation(
             summary = "Delete course by id",
             responses = {
