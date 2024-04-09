@@ -64,7 +64,7 @@ export default {
                 !this.name || !this.description || !this.costPerSession
             );
         }
-    }   
+    }
 };
 </script>
 
@@ -94,11 +94,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 50vh; 
+  height: 50vh;
 }
 
 .input-style {
-  margin-bottom: 10px; 
+  margin-bottom: 10px;
   padding: 10px;
   width: 200px;
   border: 1px solid #ccc;
