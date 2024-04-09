@@ -17,6 +17,9 @@
         </div>
         <div style="margin-bottom: 10px; font-size: 14px;">
           Don't have an account? <a href="#" @click="goToCreateAccount" style="font-weight: bold;">Register</a>
+          <div v-if="showCreateAccount">
+            <createAccount />
+          </div>
         </div>
         <button class="btn btn-login" @click="login">Login</button>
       </div>
@@ -24,35 +27,54 @@
   </div>
 </template>
   
-  <script>
+<script>
+import axios from 'axios';
+import config from '../../config';
+import createAccount from '@/components/ViewCreateAccount.vue'
+
+const frontendUrl = 'http://' + config.dev.host + ':' + config.dev.port;
+const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backendPort;
+
+const client = axios.create({
+  baseURL: backendUrl,
+  headers: { 'Access-Control-Allow-Origin': frontendUrl }
+});
+
 export default {
-    data() {
-        return {
-            email: '',
-            password: '',
-        };
+  components: {createAccount}, 
+  data() {
+    return {
+      email: '',
+      password: '',
+      showCreateAccount: false
+    };
+  },
+  methods: {
+    async login() {
+      const login = {
+        email: this.email,
+        password: this.password
+      };
+      try {
+        const response = await client.post('/login', login);
+        this.$router.push('/homepage')
+      } 
+      catch (error) {
+        console.log(error);
+        alert(error.response.data.message);
+      }
     },
-    methods: {
-        async login() {
-            try {
-                const response = await client.post("/login")
-                console.log('Login clicked');
-            } catch (error) {
-                console.error('Failed to login:', error);
-                alert('Failed to login. Please try again.');
-            }
-        },
-        goToCreateAccount() {
-      this.$router.push('/login/customerAccount');
-      },
+    goToCreateAccount() {
+      this.showCreateAccount = !this.showCreateAccount;
     },
+  },
 };
 </script>
   
   
 
 
-  <style>
+  <style scoped>
   #login-component {
     display: flex;
     justify-content: center;
@@ -83,10 +105,16 @@ export default {
     height: 100%;
   }
   #login-form {
-    width: 300px;
+    width: 400px;
   }
   .form-group {
     margin-bottom: 20px;
+    width: 100%;
+    height: 70px;
+    border-bottom: 2px solid #162938;
+    margin: 30px 0;
+    text-align: left;
+
   }
   label {
     display: block;
@@ -94,19 +122,18 @@ export default {
     font-size: 16px;
     font-weight: bold;
   }
+
   input {
     width: 100%;
-    padding: 8px;
+    top: 8%;
     font-size: 14px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
+    background: transparent; 
+    border: none;
+    outline: none;
     box-sizing: border-box;
     transition: border-color 0.3s ease;
   }
-  input:focus {
-    outline: none;
-    border-color: #6a5acd;
-  }
+
   .btn-login {
     width: 100%;
     height: 40px;
@@ -114,11 +141,15 @@ export default {
     font-size: 16px;
     border: none; 
     outline: none; 
-    background-color: #ffffff; 
+    background-color: #162938; 
     transition: background-color 0.3s ease; 
+    color: #fff;
+    cursor: pointer;
+
   }
 
   .btn-login:hover {
-    background-color: #e0e0e0; 
+    background-color: #e0e0e0;
+    color: #162938;
   }
   </style>

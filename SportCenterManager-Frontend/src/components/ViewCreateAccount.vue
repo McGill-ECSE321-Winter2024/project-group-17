@@ -1,6 +1,7 @@
 <template>
-  <div class="backdrop">
+  <div v-if="showCreateAccount" class="backdrop">
     <div class="signin">
+      <span class="close-icon" @click="cancelSignin">&#10006;</span>
       <h1> SIGN IN </h1>
       <div class="form-group">
         <label for="name">Name:</label>
@@ -14,10 +15,9 @@
         <label for="password">Password:</label>
         <input type="password" id="password" v-model="password" placeholder="Enter your password">
       </div>
-
       <div class="button-group">
         <button class="btn btn-cancel" @click="cancelSignin"> Cancel </button>
-        <button class="btn btn-sign" @click="toggleSignin"> Sign In </button>
+        <button class="btn btn-sign" @click="createAccount"> Sign In </button>
       </div>
     </div>
   </div>
@@ -28,19 +28,17 @@
 export default {
   data(){
     return {
-      toggleSignin: false,
       name: '',
       email: '',
       password: '',
+      showCreateAccount: true
     };
   },
 
     methods: {
-    toggleSignin() {
-      this.toggleSignin == !this.toggleSignin
-    },
+
     cancelSignin() {
-      this.toggleSignin = false;
+      this.showCreateAccount = !this.showCreateAccount;
     },
 
     async createAccount() {
@@ -62,7 +60,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
   .signin {
     width: 500px;
     height: 500px;
@@ -73,14 +71,17 @@ export default {
     font-weight: bold;
     font-size: 25px;
     position: relative;
+    z-index: 9999;
   }
 
   .backdrop {
-    top: 0;
+    top: 0px;
+    left: 0px;
     position: fixed;
     background: rgba(0,0,0,0.5);
     width: 100%;
     height: 100%;
+    z-index: 999;
   }
 
   h1 {
@@ -108,25 +109,43 @@ export default {
     font-weight: bold;
     font-size: 16px;
     margin: 0 5px;
+    border: none; 
+    outline: none; 
+    background-color: #162938; 
+    color: #fff;
+    cursor: pointer;
+  }
+
+  .btn-cancel:hover {
+    background-color: #e0e0e0;
+    color: #162938;
+  }
+  .btn-sign:hover {
+    background-color: #e0e0e0;
+    color: #162938;
   }
 
   .form-group {
     margin-top: 30px;
     margin-bottom: 15px;
+    border-bottom: 1px solid #162938;
+    text-align: left;
   }
 
   label {
     display: block;
-    margin-bottom: 5px;
     font-size: 16px;
+    margin-top: 4%;
+
   }
 
   input {
-    width: calc(100% - 24px);
-    padding: 8px;
+    width: calc(100% - 10px);
+    padding: 5px;
     font-size: 14px;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: none;
+    outline: none;
     box-sizing: border-box;
     transition: border-color 0.3s ease;
   }
@@ -135,5 +154,14 @@ export default {
     outline: none;
     border-color: #6a5acd;
   }
+  
+  .close-icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 20px;
+    cursor: pointer;
+  }
 
 </style>
+
