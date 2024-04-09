@@ -17,9 +17,6 @@ export default {
             if (this.$route.path.includes('/customerAccount')) {
                 return "MY ACCOUNT";
             }
-            if (this.$route.path.includes('/register')) {
-                return "REGISTRATION";
-            }
             if (this.$route.path.includes('/courses')) {
                 return "COURSES";
             }
@@ -30,9 +27,6 @@ export default {
             }
             if (this.$route.path.includes('/customerAccount')) {
                 return require("@/assets/my-account-bg.jpg");
-            }
-            if (this.$route.path.includes('/register')) {
-                return require("@/assets/registration-bg.png");
             }
             if (this.$route.path.includes('/courses')) {
                 return require("@/assets/courses-bg.jpg");
