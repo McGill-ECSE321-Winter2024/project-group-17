@@ -51,6 +51,32 @@ public class EventService {
         return course;
     }
 
+    @Transactional
+    public List<Course> findAllApprovedCourses(){
+        Iterable<Course> courses = findAllCourses();
+        List<Course> approvedCourses = new ArrayList<>();
+
+        for (Course course : courses){
+            if (course.getIsApproved()){
+                approvedCourses.add(course);
+            }
+        }
+        return approvedCourses;
+    }
+
+    @Transactional
+    public List<Course> findAllNonApprovedCourses(){
+        Iterable<Course> courses = findAllCourses();
+        List<Course> nonApprovedCourses = new ArrayList<>();
+
+        for (Course course : courses){
+            if (!course.getIsApproved()){
+                nonApprovedCourses.add(course);
+            }
+        }
+        return nonApprovedCourses;
+    }
+
     @Transactional 
     public boolean deleteCourseById(int course_id){
         if (courseRepo.findCourseById(course_id) == null){

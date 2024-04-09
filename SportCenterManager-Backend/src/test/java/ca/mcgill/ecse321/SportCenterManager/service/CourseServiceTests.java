@@ -17,10 +17,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -84,6 +81,42 @@ public class CourseServiceTests {
     // assertions
     assertNotNull(result);
     assertEquals(4, result.size());
+    verify(courseRepo, times(1)).findAll();
+  }
+
+  @Test
+  public void testFindAllApprovedCourses(){
+    // setup
+    Iterable<Course> courses = getExistingCourses();
+    lenient().when(courseRepo.findAll()).thenReturn(courses);
+
+    // execution
+    List<Course> result = service.findAllApprovedCourses();
+
+    // assertions
+    assertNotNull(result);
+    assertEquals(2, result.size());
+    for (Course course : result){
+      assertTrue(course.getIsApproved());
+    }
+    verify(courseRepo, times(1)).findAll();
+  }
+
+  @Test
+  public void testFindNonAllApprovedCourses(){
+    // setup
+    Iterable<Course> courses = getExistingCourses();
+    lenient().when(courseRepo.findAll()).thenReturn(courses);
+
+    // execution
+    List<Course> result = service.findAllNonApprovedCourses();
+
+    // assertions
+    assertNotNull(result);
+    assertEquals(2, result.size());
+    for (Course course : result){
+      assertFalse(course.getIsApproved());
+    }
     verify(courseRepo, times(1)).findAll();
   }
 
@@ -368,6 +401,9 @@ public class CourseServiceTests {
     Course courseTwo = new Course("name2", "description2", 20);
     Course courseThree = new Course("name3", "description3", 30);
     Course courseFour = new Course("name4", "description4", 40);
+
+    courseOne.setIsApproved(true);
+    courseTwo.setIsApproved(true);
 
     courses.add(courseOne);
     courses.add(courseTwo);

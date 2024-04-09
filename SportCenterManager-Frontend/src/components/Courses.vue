@@ -1,9 +1,5 @@
 <template>
    <div>
-    <div class="background" style="position: relative; width: 100%; height: 50vh; overflow: hidden;">
-      <img src="../assets/courses-bg.jpg" style="position: absolute; left: 0; width: 100%; height: 100%; object-fit: cover;">
-      <div div class="text-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">COURSES</div>
-    </div>
     <div class="grid-container">
       <div v-for="course in courses" class="grid-item">
         <h3>{{ course.name }}</h3>
@@ -44,22 +40,12 @@ export default {
 </script>
 
 <style scoped>
-.background {
-  position: relative;
-  display: inline-block;
-}
-
-.text-overlay {
-  font-size: 96px;
-  color: white;
-  font-weight: bold;
-}
-
 h3 {
   font-weight: bold;
 }
 p {
   font-size: 18px;
+  text-align: center;
   color: black;
 }
 .grid-container {
