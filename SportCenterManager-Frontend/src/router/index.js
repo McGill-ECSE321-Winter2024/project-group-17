@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Hello from '@/components/Hello'
 import Courses from '@/components/Courses'
 import CreateCourse from '@/components/CreateCourse'
+import ModifyCourse from '@/components/ModifyCourse'
 import AccountView from '@/components/AccountView'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
 import BillingInformation from '@/components/BillingInformation'
@@ -26,6 +27,11 @@ export default new Router({
       path: '/courses/create',
       name: 'CreateCourse',
       component: CreateCourse
+    },
+    {
+      path: '/courses/modify/:courseId',
+      name: 'ModifyCourse',
+      component: ModifyCourse
     },
     {
       path: '/courses/sessions/register',

@@ -8,6 +8,7 @@
         </div>
         <button class ="create-btn" @click="createCourse()" v-bind:disabled="isCreateButtonDisabled">Create</button>
         <button class ="clear-btn" @click="clearInputs()">Clear</button>
+        <button class ="create-btn" @click="navigateToCourses()">Cancel</button>
     </div>
 
 </template>
@@ -46,7 +47,12 @@ export default {
                 this.navigateToCourses();
             }
             catch (e) {
-                console.log(e);
+                if (e.response && e.response.data) {
+                    alert(e.response.data.message); 
+                } 
+                else {
+                    alert('An error occurred while creating the course.'); 
+                }
             }
         },
         clearInputs() {
@@ -55,7 +61,7 @@ export default {
             this.costPerSession = null;
         },
         navigateToCourses() {
-            this.$router.push('/courses')
+            this.$router.push('/courses');
         }
     },
     computed: {
@@ -94,7 +100,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 50vh; 
+  height: 30vh; 
 }
 
 .input-style {

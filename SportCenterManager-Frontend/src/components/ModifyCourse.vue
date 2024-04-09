@@ -1,6 +1,7 @@
 <template>
     <div>
-        <h1>Modify Course: {{ course.name }}</h1>
+        <h1>Modify Course</h1>
+        <h2>{{ this.name }}</h2>
         <div class="input-container">
             <input type="text" class="input-style" placeholder="Description" v-model="description" />
             <input type="text" class="input-style" placeholder="Cost Per Session" v-model="costPerSession" />
@@ -34,7 +35,6 @@ export default {
     },
     async created() {
         try {
-            console.log("happened");
             const response = await client.get('/courses/' + this.$route.params.courseId);
             this.name = response.data.name;
             this.description = response.data.description;
@@ -57,7 +57,7 @@ export default {
                 costPerSession: this.costPerSession
             };
             try {
-                await client.put('/courses' + this.$route.params.courseId, courseToModify);
+                await client.put('/courses/' + this.$route.params.courseId, courseToModify);
                 this.clearInputs();
                 this.navigateToCourses();
             }
@@ -65,12 +65,11 @@ export default {
                 if (e.response && e.response.data) {
                     alert(e.response.data.message); 
                 } else {
-                    alert('An error occurred while creating the course.'); 
+                    alert('An error occurred while modifying the course.'); 
                 }
             }
         },
         clearInputs() {
-            this.name = null;
             this.description = null;
             this.costPerSession = null;
         },
@@ -114,7 +113,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 50vh; 
+  height: 20vh; 
 }
 
 .input-style {
