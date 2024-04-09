@@ -11,7 +11,7 @@
                 <p style="font-size: 18px; font-weight: bold;">
                     <a style="color: black;">Course: {{ registration.session.course.name}}</a>
                 </p>
-                <p>Date/Time: {{ registration.session.date }} -- {{ registration.session.startTime }}</p>
+                <p>Date/Time: {{ registration.session.date }} -- {{ registration.session.startTime }} to {{ registration.session.endTime }}</p>
                 <p>Instructor: {{ registration.session.instructor.name }}</p>
                 </div>
                 <button type="button" @click="cancelRegistration(registration)" v-if="!buttonState">CANCEL</button>

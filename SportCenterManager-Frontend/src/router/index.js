@@ -7,6 +7,7 @@ import AccountView from '@/components/AccountView'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
 import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
+import RegistrationConfirmation from '@/components/RegisterConfirmation'
 
 Vue.use(Router)
 
@@ -30,7 +31,14 @@ export default new Router({
     {
       path: '/courses/sessions/register',
       name: 'Register',
-      component: Register
+      component: Register,
+      props: true
+    },
+    {
+      path: '/courses/sessions/register/confirmation',
+      name: 'RegistrationConfirmation',
+      component: RegistrationConfirmation,
+      props: true
     },
     {
       path: '/customerAccount',
