@@ -29,14 +29,7 @@ export default new Router({
     {
       path: '/courses/sessions/register',
       name: 'Register',
-      component: Register,
-      props: true
-    },
-    {
-      path: '/courses/sessions/register/confirmation',
-      name: 'RegistrationConfirmation',
-      component: RegistrationConfirmation,
-      props: true
+      component: Register
     },
     {
       path: '/customerAccount',

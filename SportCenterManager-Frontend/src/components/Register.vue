@@ -1,5 +1,11 @@
 <template>
     <div id="register-components">
+        <div id="register-header">
+            <div class="background" style="position: relative; width: 100%; height: 30vh; overflow: hidden;">
+                <img src="../assets/registration-bg.png" style="position: absolute; left: 0; width: 100%; height: 100%; object-fit: cover;">
+                <p class="text-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">REGISTRATION</p>
+            </div>
+        </div>
         <div id="register-body" style="padding-top: 3%; padding-left: 5%;">
             <div id="register-text">
                 <p class="register-course-desc-text" id="course-desc" >Course Description: <br> {{ this.session.course.description }}</p>
@@ -50,7 +56,6 @@ export default {
                 instructor: undefined,
                 startTime: undefined,
                 endTime: undefined,
-                date: undefined
             },
             confirmEnabled: true
         };
@@ -81,7 +86,7 @@ export default {
 
         async register(){
                 await AXIOS.put("/courses/" + this.session.course.id + "/sessions/" + this.session.id + "/registrations/" + this.customer.id).then(response => {
-                    this.$router.push({name: "RegistrationConfirmation", params: {courseId : this.session.course.id, sessionId: this.session.id}});
+                    alert("Registration Successful");
                 }).catch(response => {
                     alert(response.response.data.message)
                 })
