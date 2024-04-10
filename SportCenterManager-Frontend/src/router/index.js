@@ -31,14 +31,20 @@ export default new Router({
     {
       path: '/courses/sessions/register',
       name: 'Register',
-      component: Register,
-      props: true
+      component: Register
     },
     {
       path: '/courses/sessions/register/confirmation',
       name: 'RegistrationConfirmation',
       component: RegistrationConfirmation,
-      props: true
+      beforeEnter: (to, from, next) => {
+        if (localStorage.registerAuthenticated) {
+          localStorage.registerAuthenticated = undefined;
+          next();
+        } else {
+          next({path: "/home"});
+        }
+    }
     },
     {
       path: '/customerAccount',
