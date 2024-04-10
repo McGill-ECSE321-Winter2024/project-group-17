@@ -8,7 +8,7 @@
             </div>
             <div style="margin-top: 3%; display:inline-block; width: 55%">
                 <span style="white-space: nowrap;"> Sort By: </span>
-                <select @change="sortRegistrations()" v-model="sortState">
+                <select @change="sortRegistrations()" v-model="sortState" style="border-top: none; border-left: none; border-right: none; border-color: black;">
                     <option value="1" sortState >Ascending Date</option>
                     <option value="2">Descending Date</option>
                     <option value="3">Ascending Course Name</option>
