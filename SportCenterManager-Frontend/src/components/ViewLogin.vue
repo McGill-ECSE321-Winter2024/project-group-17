@@ -51,7 +51,6 @@ export default {
   },
   methods: {
     async login() {
-      console.log("login method called");
       const login = {
         email: this.email,
         password: this.password
