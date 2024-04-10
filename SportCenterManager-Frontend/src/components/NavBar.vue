@@ -28,7 +28,7 @@
             this.status = localStorage.getItem("Status")
         }
     }
-    localStorage.clear()
+  
     
 </script>
 <style>
