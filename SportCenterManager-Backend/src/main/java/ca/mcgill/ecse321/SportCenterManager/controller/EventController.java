@@ -277,6 +277,7 @@ public class EventController {
                     )
             }
     )
+    @CrossOrigin(origins = "*")
     @PostMapping("/courses")
     public CourseResponseDto createCourse(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
