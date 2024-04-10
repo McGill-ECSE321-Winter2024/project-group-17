@@ -6,6 +6,7 @@ import CreateCourse from '@/components/CreateCourse'
 import AccountView from '@/components/AccountView'
 import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
+import ViewLogin from '@/components/ViewLogin.vue'
 
 Vue.use(Router)
 
