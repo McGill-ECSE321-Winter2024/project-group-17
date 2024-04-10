@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import ca.mcgill.ecse321.SportCenterManager.service.CustomerAccountService;
 
+@CrossOrigin(origins = "*")
 @RestController
 @RequestMapping("/customerAccounts")
 public class CustomerAccountController {

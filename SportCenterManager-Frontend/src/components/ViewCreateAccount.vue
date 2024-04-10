@@ -2,29 +2,38 @@
   <div v-if="showCreateAccount" class="backdrop">
     <div class="signin">
       <span class="close-icon" @click="cancelSignin">&#10006;</span>
-      <h1> SIGN IN </h1>
+      <h1> SIGN UP </h1>
       <div class="form-group">
         <label for="name">Name:</label>
-        <input type="text" id="name" v-model="name" placeholder="Enter your name">
+        <input type="text" v-model="name" placeholder="Enter your name">
       </div>
       <div class="form-group">
         <label for="email">Email:</label>
-        <input type="email" id="email" v-model="email" placeholder="Enter your email">
+        <input type="email" v-model="email" placeholder="Enter your email">
       </div>
       <div class="form-group">
         <label for="password">Password:</label>
-        <input type="password" id="password" v-model="password" placeholder="Enter your password">
+        <input type="password" v-model="password" placeholder="Enter your password">
       </div>
       <div class="button-group">
         <button class="btn btn-cancel" @click="cancelSignin"> Cancel </button>
-        <button class="btn btn-sign" @click="createAccount"> Sign In </button>
+        <button class="btn btn-sign" @click="createAccount"> Sign Up </button>
       </div>
     </div>
   </div>
 </template>
 
 <script> 
+import axios from "axios";
+import config from "../../config";
 
+const frontendUrl = 'http://' + config.dev.host + ':' + config.dev.port;
+const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backendPort;
+
+const client = axios.create({
+  baseURL: backendUrl,
+  headers: { 'Access-Control-Allow-Origin': frontendUrl}
+});
 export default {
   data(){
     return {
@@ -35,24 +44,33 @@ export default {
     };
   },
 
-    methods: {
-
+  methods: {
     cancelSignin() {
       this.showCreateAccount = !this.showCreateAccount;
     },
-
     async createAccount() {
+      console.log("createAccount method called");
       const customerAccount = {
         name: this.name,
         email: this.email,
         password: this.password,
       };
       try {
-        const response = await client.post("/customerAccounts", customerAccount);
-        this.$router.push('/customerAccounts')
+        await client.post("/customerAccounts", customerAccount);
+
+        this.name = '';
+        this.email = '';
+        this.password = '';
+
+        this.$router.push('/homepage');
       }
-      catch (e) {
-        console.log(e);
+      catch (error) {
+        if (error.response && error.response.data) {
+          alert(error.response.data.message); 
+        } 
+        else {
+          alert('An error occurred while creating the account.'); 
+        }
       }
     },
 

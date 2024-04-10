@@ -9,11 +9,11 @@
       <div id="login-form">
         <div class="form-group">
           <label for="email">Email:</label>
-          <input type="email" id="email" v-model="email" placeholder="Enter your email">
+          <input type="email" v-model="email" placeholder="Enter your email">
         </div>
         <div class="form-group">
           <label for="password">Password:</label>
-          <input type="password" id="password" v-model="password" placeholder="Enter your password">
+          <input type="password" v-model="password" placeholder="Enter your password">
         </div>
         <div style="margin-bottom: 10px; font-size: 14px;">
           Don't have an account? <a href="#" @click="goToCreateAccount" style="font-weight: bold;">Register</a>
@@ -51,17 +51,26 @@ export default {
   },
   methods: {
     async login() {
+      console.log("login method called");
       const login = {
         email: this.email,
         password: this.password
       };
       try {
         const response = await client.post('/login', login);
-        this.$router.push('/homepage')
+ 
+        this.email = '';
+        this.password = '';
+
+        this.$router.push('/home')
       } 
       catch (error) {
-        console.log(error);
-        alert(error.response.data.message);
+        if (error.response && error.response.data) {
+          alert(error.response.data.message); 
+        } 
+        else {
+          alert('An error occurred while Login in.'); 
+        }
       }
     },
     goToCreateAccount() {
@@ -70,11 +79,8 @@ export default {
   },
 };
 </script>
-  
-  
 
-
-  <style scoped>
+<style scoped>
   #login-component {
     display: flex;
     justify-content: center;
@@ -152,4 +158,4 @@ export default {
     background-color: #e0e0e0;
     color: #162938;
   }
-  </style>
+</style>
