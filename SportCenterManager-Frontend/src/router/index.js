@@ -7,6 +7,11 @@ import CreateSession from '@/components/CreateSession'
 import ModifySession from '@/components/ModifySession'
 import DeleteSession from '@/components/DeleteSession'
 import GetSession from '@/components/GetSession'
+import ModifyCourse from '@/components/ModifyCourse'
+import AccountView from '@/components/AccountView'
+import BillingInformation from '@/components/BillingInformation'
+import Register from '@/components/Register'
+import ViewLogin from '@/components/ViewLogin.vue'
 
 Vue.use(Router)
 
@@ -47,6 +52,36 @@ export default new Router({
      path: '/session/find',
      name: 'FindSession',
      component: GetSession
-    }
+    },
+    {
+      path: '/courses/modify/:courseId',
+      name: 'ModifyCourse',
+      component: ModifyCourse
+    },
+    {
+      path: '/courses/sessions/register',
+      name: 'Register',
+      component: Register
+    },
+    {
+      path: '/customerAccount',
+      name: 'AccountView',
+      component: AccountView,
+      children: [
+        {
+          path: 'billing',
+          component: BillingInformation
+        },
+        {
+          path: 'registrations',
+          component: ViewCustomerRegistrations
+        }
+      ]
+    }, 
+    {
+      path: '/login',
+      name: 'Login',
+      component: ViewLogin
+    },
   ]
 })

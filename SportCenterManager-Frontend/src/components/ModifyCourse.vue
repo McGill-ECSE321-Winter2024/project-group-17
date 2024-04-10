@@ -1,14 +1,13 @@
 <template>
     <div>
-        <h1>Create Course</h1>
+        <h1>Modify Course</h1>
+        <h2>{{ this.name }}</h2>
         <div class="input-container">
-            <input type="text" class="input-style" placeholder="Name" v-model="name" />
             <input type="text" class="input-style" placeholder="Description" v-model="description" />
             <input type="text" class="input-style" placeholder="Cost Per Session" v-model="costPerSession" />
         </div>
-        <button class ="create-btn" @click="createCourse()" v-bind:disabled="isCreateButtonDisabled">Create</button>
+        <button class ="modify-btn" @click="modifyCourse()" v-bind:disabled="isModifyButtonDisabled">Modify</button>
         <button class ="clear-btn" @click="clearInputs()">Clear</button>
-        <button class ="create-btn" @click="navigateToCourses()">Cancel</button>
     </div>
 
 </template>
@@ -26,7 +25,7 @@ const client = axios.create({
 });
 
 export default {
-    name: 'CreateCourse',
+    name: 'ModifyCourse',
     data() {
         return {
             name: null,
@@ -34,43 +33,57 @@ export default {
             costPerSession: null
         };
     },
+    async created() {
+        try {
+            const response = await client.get('/courses/' + this.$route.params.courseId);
+            this.name = response.data.name;
+            this.description = response.data.description;
+            this.costPerSession = response.data.costPerSession;
+        }
+        catch (e) {
+            if (e.response && e.response.data) {
+                alert(e.response.data.message); 
+            } 
+            else {
+                alert('An error occurred while modifying the course.'); 
+            }
+        }
+    },
     methods: {
-        async createCourse() {
-            const courseToCreate = {
+        async modifyCourse() {
+            const courseToModify = {
                 name: this.name,
                 description: this.description,
                 costPerSession: this.costPerSession
             };
             try {
-                await client.post('/courses', courseToCreate);
+                await client.put('/courses/' + this.$route.params.courseId, courseToModify);
                 this.clearInputs();
                 this.navigateToCourses();
             }
             catch (e) {
                 if (e.response && e.response.data) {
                     alert(e.response.data.message); 
-                } 
-                else {
-                    alert('An error occurred while creating the course.'); 
+                } else {
+                    alert('An error occurred while modifying the course.'); 
                 }
             }
         },
         clearInputs() {
-            this.name = null;
             this.description = null;
             this.costPerSession = null;
         },
         navigateToCourses() {
-            this.$router.push('/courses');
+            this.$router.push('/courses')
         }
     },
     computed: {
-        isCreateButtonDisabled() {
+        isModifyButtonDisabled() {
             return (
-                !this.name || !this.description || !this.costPerSession
+                !this.description && !this.costPerSession
             );
         }
-    }
+    }   
 };
 </script>
 
@@ -79,7 +92,7 @@ h1 {
     position: relative;
 }
 
-.create-btn {
+.modify-btn {
     border: none;
     color: white;
     background-color: black;
@@ -100,11 +113,11 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 30vh; 
+  height: 20vh; 
 }
 
 .input-style {
-  margin-bottom: 10px;
+  margin-bottom: 10px; 
   padding: 10px;
   width: 200px;
   border: 1px solid #ccc;

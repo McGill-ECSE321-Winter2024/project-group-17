@@ -15,9 +15,9 @@ import ca.mcgill.ecse321.SportCenterManager.service.CustomerAccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 
+@CrossOrigin(origins = "*")
 @RestController
 public class LogInAndOutController {
     @Autowired
