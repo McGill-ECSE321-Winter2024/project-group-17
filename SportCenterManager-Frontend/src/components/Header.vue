@@ -1,5 +1,5 @@
 <template>
-    <div class="background" style="position: relative; width: 100%; height: 30vh; overflow: hidden;">
+    <div v-if="pageAsset!=null" class="background" style="position: relative; width: 100%; height: 30vh; overflow: hidden;">
         <img :src="pageAsset" style="position: absolute; left: 0; width: 100%; height: 100%; object-fit: cover;">
         <div div class="text-overlay"
             style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">{{ pageName }}</div>
@@ -12,7 +12,7 @@ export default {
     computed: {
         pageName() {
             if (this.$route.path === '/home') {
-                return "HOME";
+                return "";
             }
             if (this.$route.path.includes('/customerAccount')) {
                 return "MY ACCOUNT";
@@ -23,7 +23,7 @@ export default {
         },
         pageAsset() {
             if (this.$route.path === '/home') {
-                return require("@/assets/placeholder.png");
+                return null;
             }
             if (this.$route.path.includes('/customerAccount')) {
                 return require("@/assets/my-account-bg.jpg");
