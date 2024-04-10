@@ -46,13 +46,18 @@ export default {
         return {
             customer: undefined,
             session: {
-                course: undefined,
-                instructor: undefined,
+                course: {
+                    name: undefined
+                },
+                instructor: {
+                    name: undefined,
+                    email: undefined
+                },
                 startTime: undefined,
                 endTime: undefined,
                 date: undefined
             },
-            confirmEnabled: true
+            confirmEnabled: true,
         };
     }, 
 
@@ -81,7 +86,10 @@ export default {
 
         async register(){
                 await AXIOS.put("/courses/" + this.session.course.id + "/sessions/" + this.session.id + "/registrations/" + this.customer.id).then(response => {
-                    this.$router.push({name: "RegistrationConfirmation", params: {courseId : this.session.course.id, sessionId: this.session.id}});
+                    localStorage.sessionId = this.session.id;
+                    localStorage.courseId = this.session.course.id;
+                    localStorage.registerAuthenticated = true;
+                    this.$router.push({name: "RegistrationConfirmation"});
                 }).catch(response => {
                     alert(response.response.data.message)
                 })
@@ -99,7 +107,6 @@ export default {
         };
     }
 }
-
 
 </script>
 <style>
