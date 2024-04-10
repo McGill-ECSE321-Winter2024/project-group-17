@@ -14,7 +14,7 @@
                     <b-form-timepicker  v-model="ClosingHour" locale="en"></b-form-timepicker>
                 </div>
             </div>
-            <button class = "update-btn" @click ="modifySchedule()"> Update Schedule </button>
+            <button class = "update-btn" @click ="modifySchedule()" v-bind:disabled="isUpdateButtonDisabled"> Update Schedule </button>
         </div> 
     </div>
 </template>
@@ -69,7 +69,7 @@ export default {
     computed: {
         isUpdateButtonDisabled() {
             return (
-                !this.openingHour && !this.closingHour
+                !this.OpeningHour || !this.ClosingHour
             );
         }
     }   
@@ -99,5 +99,9 @@ export default {
     .update-btn:hover{
         background-color:black;
         color:white;
+    }
+    .update-btn:disabled,update-btn[disabled]{
+        color:grey;
+        background-color: white;
     }
 </style>
