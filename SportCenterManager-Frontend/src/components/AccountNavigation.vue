@@ -21,6 +21,12 @@
                 style="margin-bottom: 2%; text-align: left;" type="button"
                 @click="toggleRequestedCourses">Requested Courses</button>
         </router-link>
+
+        <router-link to = "/customerAccount/manageAccounts">
+            <button class = "acc-nav-btn state-btn" v-bind:disabled="manageAccounts"
+                style="margin-bottom: 2%; text-align: left;" type="button"
+                @click="toggleManageAccounts">Manage Accounts</button>
+        </router-link>
     </div>
 </template>
 
@@ -33,28 +39,41 @@ export default {
                 infoState: true,
                 billingState: false,
                 registrationState: false,
-                approveState: false
+                approveState: false,
+                manageAccounts: false
             }
         } else if (this.$route.path === '/customerAccount/billing' || this.$route.path === '/customerAccount/billing/') {
             return {
                 infoState: false,
                 billingState: true,
                 registrationState: false,
-                approveState: false
+                approveState: false,
+                manageAccounts: false
             }
         } else if (this.$route.path === '/customerAccount/registrations' || this.$route.path === '/customerAccount/registrations/') {
             return {
                 infoState: false,
                 billingState: false,
                 registrationState: true,
-                approveState: false
+                approveState: false,
+                manageAccounts: false
             }
         } else if (this.$route.path === '/customerAccount/approve' || this.$route.path === '/customerAccount/approve/') {
             return {
                 infoState: false,
                 billingState: false,
                 registrationState: false,
-                approveState: true
+                approveState: true,
+                manageAccounts: true
+            }
+        }
+        else if (this.$route.path ==='/customerAccount/manageAccounts'|| this.$route.path === '/customerAccount/manageAccounts'){
+            return{
+                infoState: false,
+                billingState: false,
+                registrationState: false,
+                approveState: true,
+                manageAccounts: true
             }
         }   
     },
@@ -63,26 +82,38 @@ export default {
             this.infoState = true;
             this.billingState = false;
             this.registrationState = false;
+            this.manageAccounts = false;
             this.approveState = false;
         },
         toggleBilling() {
             this.infoState = false;
             this.billingState = true;
             this.registrationState = false;
+            this.manageAccounts = false;
             this.approveState = false;
         },
         toggleRegistration() {
             this.infoState = false;
             this.billingState = false;
             this.registrationState = true;
+            this.manageAccounts = false;
             this.approveState = false;
         },
         toggleRequestedCourses() {
             this.infoState = false;
             this.billingState = false;
             this.registrationState = false;
+            this.manageAccounts = false;
             this.approveState = true;
+        },
+        toggleManageAccounts(){
+            this.infoState = false;
+            this.billingState = false;
+            this.registrationState = false;
+            this.approveState = false;
+            this.manageAccounts = true
         }
+
     }
 }
 </script>

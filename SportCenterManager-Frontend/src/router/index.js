@@ -86,6 +86,10 @@ export default new Router({
         {
           path: 'approve',
           component: ApproveCourse
+        },
+        {
+          path:'manageAccounts',
+          component: ManageAccounts
         }
       ]
     }, 
@@ -94,10 +98,6 @@ export default new Router({
       name: 'Login',
       component: ViewLogin
     },
-    {
-      path:'/customerAccount/manageAccounts',
-      name:'manageAccounts',
-      component:ManageAccounts
-    },
+    
   ]
 })
