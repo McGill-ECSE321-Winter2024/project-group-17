@@ -4,7 +4,7 @@
             <div id = "left">
                 <h1> Welcome. </h1>
                 <div id = "buttons">
-                    <a class = "home_button" href="#/courses"> Explore Courses </a>
+                    <a class = "home_button" href="#/courses"> Courses </a>
                     <a class = "home_button" href="#/registration"> Register </a>
                 </div>
             </div>
@@ -34,18 +34,14 @@
         </div>
     </div>
 </template> 
-<script>
-    
-</script>
+
 <style>
     a:hover{
         background-color: #ffffff;
         color:black;
         text-decoration: none;
     }
-    
-   
-   
+
     #banner{
         color:white;
         background-image: url("../assets/basketball-933173_1280.jpg");
@@ -57,17 +53,19 @@
         display:flex;
         justify-content:flex-end;
         margin-top:-10vw;
+        box-shadow: 0px 2px 5px -1px gray;
+        overflow:hidden;
     }
     #left{
         text-align: center;
         position:absolute;
         top: 47%;
-        left:80%;
+        left: 80%;
         transform: translate(-50%,-50%);
         display:flex;
         flex-direction:column;
         justify-content: center;
-        width: 40vw;
+        width: 18%;
     }
     #buttons{
         display:flex;
@@ -76,9 +74,10 @@
         width:100%;
     }
     .home_button{
-        padding:8px;
+        padding:2vw;
         padding-top:4px;
-        margin: 2%;
+        padding-bottom:4px;
+        margin:5%;
         border-color: white;
         border-style: solid;
     }
