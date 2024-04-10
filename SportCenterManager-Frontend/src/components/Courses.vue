@@ -4,16 +4,16 @@
       <button @click="navigateToCreateCourse" class="createbtn">Create Course</button>
     </div>
     <div class="grid-container">
-      <div v-for="course in courses" class="grid-item">
+      <div v-for="course in courses" :key="course.id" class="grid-item">
         <h3>{{ course.name }}</h3>
         <h4>${{ course.costPerSession }}/session</h4>
         <p>{{ course.description }}</p>
         <div class="dropdown-container">
           <div class="dropdown">
-            <button @click="toggleDropdown" class="dropbtn">&#8942;</button>
-            <div v-if="isOpen" class="dropdown-content">
-              <a :href="'#/courses/modify/' + course.id">Modify Course</a>
-              <button @click="confirmDeletion(course.id)" class="deletebtn">Delete Course</button>
+            <button @click="toggleDropdown(course.id)" class="dropbtn">&#8942;</button>
+            <div v-if="isOpen[course.id]" class="dropdown-content">
+              <a :href="'#/courses/modify/' + course.id" class="dropdown-item">Modify</a>
+              <button @click="confirmDeletion(course.id)" class="dropdown-item deletebtn">Delete</button>
             </div>
           </div>
         </div>
@@ -37,7 +37,7 @@ export default {
   data() {
     return {
       courses: [],
-      isOpen: false,
+      isOpen: {},
     };
   },
   async created() {
@@ -53,12 +53,17 @@ export default {
     navigateToCreateCourse(){
       this.$router.push('/courses/create');
     },
-    toggleDropdown() {
-      this.isOpen = !this.isOpen;
+    toggleDropdown(courseId) {
+      this.$set(this.isOpen, courseId, !this.isOpen[courseId]);
+      if (this.isOpen[courseId]) {
+        document.addEventListener('click', (event) => this.closeDropdown(event, courseId));
+      }
     },
-    closeDropdown(event) {
-      if (!event.target.closest('.dropdown')) {
-        this.isOpen = false;
+    closeDropdown(event, courseId) {
+      const dropdown = document.querySelector(`#dropdown-${courseId}`);
+      if (!dropdown.contains(event.target)) {
+        this.isOpen[courseId] = false;
+        document.removeEventListener('click', this.closeDropdown);
       }
     },
     async confirmDeletion(courseId){
@@ -75,14 +80,9 @@ export default {
         alert(e.response.data.message);
       }
     }
-  },
-  mounted() {
-    document.addEventListener('click', this.closeDropdown);
-  },
-  beforeDestroy() {
-    document.removeEventListener('click', this.closeDropdown);
   }
 };
+
 </script>
 
 <style scoped>
@@ -150,7 +150,7 @@ p {
   display: block;
 }
 
-.dropdown:hover .dropdown-content {
+.dropdown .dropdown-content {
   display: block;
 }
 
@@ -169,5 +169,15 @@ p {
 .createbth-container{
   text-align: right;
   margin-right: 20px;
+}
+
+.dropdown-item {
+  display: block;
+  padding: 10px;
+  transition: background-color 0.3s; 
+}
+
+.dropdown-item:hover {
+  background-color: #bebebe; 
 }
 </style>
