@@ -12,6 +12,8 @@ import AccountView from '@/components/AccountView'
 import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
 import ViewLogin from '@/components/ViewLogin.vue'
+import RegistrationConfirmation from '@/components/RegisterConfirmation'
+import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
 
 Vue.use(Router)
 
@@ -62,6 +64,19 @@ export default new Router({
       path: '/courses/sessions/register',
       name: 'Register',
       component: Register
+    },
+    {
+      path: '/courses/sessions/register/confirmation',
+      name: 'RegistrationConfirmation',
+      component: RegistrationConfirmation,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.registerAuthenticated) {
+          localStorage.registerAuthenticated = undefined;
+          next();
+        } else {
+          next({path: "/home"});
+        }
+      }
     },
     {
       path: '/customerAccount',
