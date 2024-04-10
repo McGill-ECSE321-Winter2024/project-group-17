@@ -7,6 +7,7 @@
         </div>
         <button class ="delete-btn" @click="deleteSession()" v-bind:disabled="isDeleteButtonDisabled">Delete</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
+        <button class ="cancel-btn" @click="navigateToSessions()">Cancel</button>
     </div>
 </template>
 
@@ -36,16 +37,16 @@ export default {
     methods: {
         async deleteSession() {
             const sessionToDelete = {
-                id: this.id,
-                course: this.course
+                session_id: this.id,
+                course_id: this.course
             };
             try {
-                await client.delete('/courses/{course_id}/sessions/{session_id}', sessionToDelete);
+                await client.delete(`/courses/${this.course}/sessions/${this.id}`, sessionToDelete);
                 this.clearInputs();
                 this.navigateToSessions();
             }
             catch (e) {
-                alert("Failed to delete session. " + e);
+                alert(e.response.data.message);
             }
         },
         clearInputs() {
@@ -53,7 +54,7 @@ export default {
             this.course= null
         },
         navigateToSessions() {
-            this.$router.delete('/courses/{course_id}/sessions/{session_id}')
+            this.$router.push('/session')
         }
     },
     computed: {
@@ -81,6 +82,13 @@ h1 {
     background-color: white;
     padding: 10px 20px;
     border-radius: 5px;
+}
+.cancel-btn{
+   border: none;
+   color: white;
+   background-color: black;
+   padding: 10px 20px;
+   border-radius: 5px;
 }
 .input-container {
   display: flex;

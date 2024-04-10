@@ -2,15 +2,17 @@
     <div>
         <h1>Modify Session</h1>
         <div class="input-container">
-            <input type="text" class="input-style" placeholder="Session Id" v-model="id" />
             <input type="text" class="input-style" placeholder="Start time" v-model="start" />
             <input type="text" class="input-style" placeholder="End time" v-model="end" />
-            <input type="text" class="input-style" placeholder="Date" v-model="date" />
+            <label for="datepicker">Select a date:</label>
+            <input type="date" id="datepicker" name="datepicker" v-model="date">
             <input type="text" class="input-style" placeholder="Instructor Id" v-model="instructor" />
             <input type="text" class="input-style" placeholder="Course Id" v-model="course" />
+            <input type="text" class="input-style" placeholder="Session id" v-model="session" />
         </div>
         <button class ="modify-btn" @click="modifySession()" v-bind:disabled="isModifyButtonDisabled">Modify</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
+        <button class ="cancel-btn" @click="navigateToSessions()">Cancel</button>
     </div>
 </template>
 
@@ -31,7 +33,7 @@ export default {
     data() {
         return {
             sessions: [],
-            id: null,
+            session: null,
             start: null,
             end: null,
             date: null,
@@ -44,24 +46,23 @@ export default {
     methods: {
         async modifySession() {
             const sessionToModify = {
-                id: this.id,
-                start: this.start,
-                end: this.end,
+                id: this.session,
+                startTime: this.start,
+                endTime: this.end,
                 date: this.date,
-                instructor: this.instructor,
-                course: this.course
+                instructorId: this.instructor,
+                courseId: this.course
             };
             try {
-                await client.put('/courses/{course_id}/sessions/{session_id}', sessionToModify);
+                await client.put(`/courses/${this.course}/sessions/${this.session}`, sessionToModify);
                 this.clearInputs();
                 this.navigateToSessions();
             }
-            catch (e) {
-                alert("Failed to modify session. " + e);
+            catch (e){
+                alert(e.response.data.message);
             }
         },
         clearInputs() {
-            this.id= null,
             this.start= null,
             this.end= null,
             this.date= null,
@@ -69,13 +70,13 @@ export default {
             this.course= null
         },
         navigateToSessions() {
-            this.$router.put('/courses/{course_id}/sessions/{session_id}')
+            this.$router.push(`/session`)
         }
     },
     computed: {
         isModifyButtonDisabled() {
             return (
-                !this.id || !this.start || !this.end || !this.date || !this.instructor || !this.course
+                !this.start || !this.end || !this.date || !this.instructor || !this.course || !this.session
             );
         }
     }
@@ -97,6 +98,13 @@ h1 {
     background-color: white;
     padding: 10px 20px;
     border-radius: 5px;
+}
+.cancel-btn{
+   border: none;
+   color: white;
+   background-color: black;
+   padding: 10px 20px;
+   border-radius: 5px;
 }
 .input-container {
   display: flex;

@@ -12,6 +12,7 @@ import AccountView from '@/components/AccountView'
 import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
 import ViewLogin from '@/components/ViewLogin.vue'
+import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations.vue'
 
 Vue.use(Router)
 
@@ -77,7 +78,7 @@ export default new Router({
           component: ViewCustomerRegistrations
         }
       ]
-    }, 
+    },
     {
       path: '/login',
       name: 'Login',

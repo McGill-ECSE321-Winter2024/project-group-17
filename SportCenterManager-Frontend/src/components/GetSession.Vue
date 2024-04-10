@@ -1,13 +1,31 @@
 <template>
-    <div>
-        <h1>Find a Session</h1>
-        <div class="input-container">
-            <input type="text" class="input-style" placeholder="Session Id" v-model="id" />
-            <input type="text" class="input-style" placeholder="Course Id" v-model="course" />
-        </div>
-        <button class ="find-btn" @click="findSession()" v-bind:disabled="isFindButtonDisabled">Find Session</button>
-        <button class ="clear-btn"  @click="clearInputs()">Clear</button>
+  <div>
+    <h1>Find Sessions for Course</h1>
+    <div class="input-container">
+      <input type="text" class="input-style" placeholder="Course Id" v-model="course" />
+      <button class="find-btn" @click="created()" :disabled="isFindButtonDisabled">Find Sessions</button>
     </div>
+    <h2>Sessions</h2>
+    <table v-if="sessions.length > 0">
+      <thead>
+        <tr>
+          <th>Start Time</th>
+          <th>End Time</th>
+          <th>Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr v-for="session in sessions" :key="session.id">
+          <td>{{ session.startTime }}</td>
+          <td>{{ session.endTime }}</td>
+          <td>{{ session.date }}</td>
+        </tr>
+      </tbody>
+    </table>
+    <div v-else>
+      No sessions found.
+    </div>
+  </div>
 </template>
 
 <script>
@@ -18,53 +36,35 @@ const frontendUrl = 'http://' + config.dev.host + ':' + config.dev.port;
 const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backendPort;
 
 const client = axios.create({
-    baseURL: backendUrl,
-    headers: { 'Access-Control-Allow-Origin': frontendUrl}
+  baseURL: backendUrl,
+  headers: { 'Access-Control-Allow-Origin': frontendUrl }
 });
 
 export default {
-    name: 'FindSession',
-    data() {
-        return {
-            sessions: [],
-            id: null,
-            course: null
-        };
+  name: 'FindSession',
+  data() {
+    return {
+      sessions: [],
+      course: null
+    };
+  },
+  methods: {
+    async created() {
+      try {
+        const response = await client.get(`/courses/${this.course}/sessions`);
+        this.sessions = response.data.sessions;
+      } catch (e) {
+        console.error("Failed to find sessions:", e);
+        alert("Failed to find sessions.");
+      }
     },
-
-
-    methods: {
-        async findSession() {
-            const sessionToFind = {
-                id: this.id,
-                course: this.course
-            };
-            try {
-                await client.get('/courses/{course_id}/sessions/{session_id}', sessionToFind);
-                this.clearInputs();
-                this.navigateToSessions();
-            }
-            catch (e) {
-                alert("Failed to find session. " + e);
-            }
-        },
-        clearInputs() {
-            this.id= null,
-            this.course= null
-        },
-        navigateToSessions() {
-            this.$router.get('/courses/{course_id}/sessions/{session_id}')
-        }
-    },
-    computed: {
-        isFindButtonDisabled() {
-            return (
-                !this.id || !this.course
-            );
-        }
+    isFindButtonDisabled() {
+      return !this.course;
     }
+  }
 };
 </script>
+
 <style>
 h1 {
     position: relative;
