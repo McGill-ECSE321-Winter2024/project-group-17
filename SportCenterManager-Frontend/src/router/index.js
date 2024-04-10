@@ -15,6 +15,7 @@ import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
+import ManageAccounts from '@/components/manageAccounts'
 
 Vue.use(Router)
 
@@ -37,20 +38,20 @@ export default new Router({
     }
     ,
     {
-     path: '/session/modify',
-     name: 'ModifySession',
-     component: ModifySession
+      path: '/session/modify',
+      name: 'ModifySession',
+      component: ModifySession
+      },
+      {
+       path: '/session/delete',
+       name: 'DeleteSession',
+       component: DeleteSession
+      },
+      {
+      path: '/session/find',
+      name: 'FindSession',
+      component: GetSession
      },
-     {
-      path: '/session/delete',
-      name: 'DeleteSession',
-      component: DeleteSession
-     },
-     {
-     path: '/session/find',
-     name: 'FindSession',
-     component: GetSession
-    },
     {
       path: '/courses/sessions/register',
       name: 'Register',
@@ -92,6 +93,11 @@ export default new Router({
       path: '/login',
       name: 'Login',
       component: ViewLogin
+    },
+    {
+      path:'/customerAccount/manageAccounts',
+      name:'manageAccounts',
+      component:ManageAccounts
     },
   ]
 })
