@@ -8,7 +8,7 @@
         </div>
         <button class ="create-btn" @click="createCourse()" v-bind:disabled="isCreateButtonDisabled">Create</button>
         <button class ="clear-btn" @click="clearInputs()">Clear</button>
-        <button class ="create-btn" @click="navigateToCourses()">Cancel</button>
+        <button class ="create-btn" @click="closeModal()">Cancel</button>
     </div>
 
 </template>
@@ -44,7 +44,7 @@ export default {
             try {
                 await client.post('/courses', courseToCreate);
                 this.clearInputs();
-                this.navigateToCourses();
+                this.closeModal();
             }
             catch (e) {
                 if (e.response && e.response.data) {
@@ -60,8 +60,8 @@ export default {
             this.description = null;
             this.costPerSession = null;
         },
-        navigateToCourses() {
-            this.$router.push('/courses');
+        closeModal() {
+            this.$emit('close');
         }
     },
     computed: {

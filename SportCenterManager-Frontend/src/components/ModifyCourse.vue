@@ -26,6 +26,12 @@ const client = axios.create({
 
 export default {
     name: 'ModifyCourse',
+    props: {
+        courseId: {
+            type: Number,
+            required: true
+        }
+    },
     data() {
         return {
             name: null,
@@ -35,7 +41,7 @@ export default {
     },
     async created() {
         try {
-            const response = await client.get('/courses/' + this.$route.params.courseId);
+            const response = await client.get('/courses/' + this.courseId);
             this.name = response.data.name;
             this.description = response.data.description;
             this.costPerSession = response.data.costPerSession;
@@ -57,9 +63,10 @@ export default {
                 costPerSession: this.costPerSession
             };
             try {
-                await client.put('/courses/' + this.$route.params.courseId, courseToModify);
+                await client.put('/courses/' + this.courseId, courseToModify);
                 this.clearInputs();
-                this.navigateToCourses();
+                this.closeModal();
+                this.$router.push('/courses');
             }
             catch (e) {
                 if (e.response && e.response.data) {
@@ -73,8 +80,8 @@ export default {
             this.description = null;
             this.costPerSession = null;
         },
-        navigateToCourses() {
-            this.$router.push('/courses')
+        closeModal() {
+            this.$emit('close');
         }
     },
     computed: {

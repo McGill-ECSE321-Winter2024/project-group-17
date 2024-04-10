@@ -11,6 +11,7 @@ import ModifyCourse from '@/components/ModifyCourse'
 import AccountView from '@/components/AccountView'
 import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
+import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
@@ -28,11 +29,6 @@ export default new Router({
       path: '/courses',
       name: 'Courses',
       component: Courses
-    },
-    {
-      path: '/courses/create',
-      name: 'CreateCourse',
-      component: CreateCourse
     },
     {
       path: '/session',
@@ -54,11 +50,6 @@ export default new Router({
      path: '/session/find',
      name: 'FindSession',
      component: GetSession
-    },
-    {
-      path: '/courses/modify/:courseId',
-      name: 'ModifyCourse',
-      component: ModifyCourse
     },
     {
       path: '/courses/sessions/register',
@@ -90,6 +81,10 @@ export default new Router({
         {
           path: 'registrations',
           component: ViewCustomerRegistrations
+        },
+        {
+          path: 'approve',
+          component: ApproveCourse
         }
       ]
     }, 
