@@ -8,6 +8,7 @@ import AccountView from '@/components/AccountView'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
 import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
+import ApproveCourse from '@/components/ApproveCourse'
 
 Vue.use(Router)
 
@@ -22,16 +23,6 @@ export default new Router({
       path: '/courses',
       name: 'Courses',
       component: Courses
-    },
-    {
-      path: '/courses/create',
-      name: 'CreateCourse',
-      component: CreateCourse
-    },
-    {
-      path: '/courses/modify/:courseId',
-      name: 'ModifyCourse',
-      component: ModifyCourse
     },
     {
       path: '/courses/sessions/register',
@@ -50,6 +41,10 @@ export default new Router({
         {
           path: 'registrations',
           component: ViewCustomerRegistrations
+        },
+        {
+          path: 'approve',
+          component: ApproveCourse
         }
       ]
     }
