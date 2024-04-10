@@ -3,6 +3,10 @@ import Router from 'vue-router'
 import Hello from '@/components/Hello'
 import Courses from '@/components/Courses'
 import CreateCourse from '@/components/CreateCourse'
+import CreateSession from '@/components/CreateSession'
+import ModifySession from '@/components/ModifySession'
+import DeleteSession from '@/components/DeleteSession'
+import GetSession from '@/components/GetSession'
 import ModifyCourse from '@/components/ModifyCourse'
 import AccountView from '@/components/AccountView'
 import BillingInformation from '@/components/BillingInformation'
@@ -27,6 +31,27 @@ export default new Router({
       path: '/courses/create',
       name: 'CreateCourse',
       component: CreateCourse
+    },
+    {
+      path: '/session',
+      name: 'CreateSession',
+      component: CreateSession
+    }
+    ,
+    {
+     path: '/session/modify',
+     name: 'ModifySession',
+     component: ModifySession
+     },
+     {
+      path: '/session/delete',
+      name: 'DeleteSession',
+      component: DeleteSession
+     },
+     {
+     path: '/session/find',
+     name: 'FindSession',
+     component: GetSession
     },
     {
       path: '/courses/modify/:courseId',
@@ -58,6 +83,5 @@ export default new Router({
       name: 'Login',
       component: ViewLogin
     },
-
   ]
 })
