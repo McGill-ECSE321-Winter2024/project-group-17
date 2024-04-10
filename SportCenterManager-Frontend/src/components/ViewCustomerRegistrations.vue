@@ -1,9 +1,20 @@
 <template>
     <div style="padding-right: 7%; width: 70%;" id="customer-registrations-main-body">
-            <p style="font-weight: bold; font-size: 25px;">REGISTRATIONS</p>
-        <div style="margin-top: 3%;" id="customer-registrations-filter-btns">
-            <button class="state-btn" id="upcoming-registrations-btn" @click="toggleRegistration()" v-bind:disabled="!buttonState" style="margin-right: 2%;" type="button">Upcoming</button>
-            <button class="state-btn" id="past-registrations-btn" @click="toggleRegistration()" v-bind:disabled="buttonState" style="margin-right: 2%;" type="button">Past</button>
+        <p style="font-weight: bold; font-size: 25px;">REGISTRATIONS</p>
+        <div style="display: flex; justify-content: space-between; flex-direction: row;">
+            <div style="margin-top: 3%;" id="customer-registrations-filter-btns">
+                <button class="state-btn" id="upcoming-registrations-btn" @click="toggleRegistration()" v-bind:disabled="!buttonState" style="margin-right: 2%;" type="button">Upcoming</button>
+                <button class="state-btn" id="past-registrations-btn" @click="toggleRegistration()" v-bind:disabled="buttonState" style="margin-right: 2%;" type="button">Past</button>
+            </div>
+            <div style="margin-top: 3%; display:inline-block; width: 55%">
+                <span style="white-space: nowrap;"> Sort By: </span>
+                <select @change="sortRegistrations()" v-model="sortState">
+                    <option value="1" sortState >Ascending Date</option>
+                    <option value="2">Descending Date</option>
+                    <option value="3">Ascending Course Name</option>
+                    <option value="4">Descending Course Name</option>
+                </select>
+            </div>
         </div>
         <div id="customer-registrations-list">
             <div class="customer-registration-entry" v-for="registration in registrations">
@@ -23,7 +34,6 @@
 <script>
 import axios from "axios";
 import config from "../../config";
-
 const frontendUrl = 'http://' + config.dev.host + ':' + config.dev.port
 const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backendPort
 
@@ -37,7 +47,9 @@ export default {
         return {
             registrations: [],
             // if buttonState is false, then filtering by past registrations, else filtering upcoming registrations 
-            buttonState: false
+            buttonState: false,
+            // state 1 = ascending date, 2 = descending date, 3 = ascending name, 4 = descending name
+            sortState: "1"
         };
     },
     
@@ -52,6 +64,7 @@ export default {
         },
 
         async filterPastRegistrations(){
+            // Sets registrations to contain only past registrations
             try {
                 await AXIOS.get("/customerAccounts/1/registrations").then(response => {
                     this.registrations = [];
@@ -60,9 +73,13 @@ export default {
                     for (let i = 0; i < regs.length; i++){
                         if (Date.parse(regs[i].session.date) < currentDate) {
                             this.registrations.push(regs[i]);
+                        } else if (Date.parse(regs[i].session.date) == currentDate) {
+                            if (Date.parse(regs[i].session.endTime) < currentDate) {
+                                this.registrations.push(regs[i]);
+                            }
                         }
-
                     }
+                    this.sortRegistrations();
                 });
             } catch (e) {
                 alert("Failed to get registrations!" + e);
@@ -71,17 +88,23 @@ export default {
         },
 
         async filterUpcomingRegistrations(){
+            // Sets registration list to only contain upcoming sessions
             try {
                 await AXIOS.get("/customerAccounts/1/registrations").then(response => {
                     this.registrations = [];
                     let regs = response.data.registrations;
                     let currentDate = new Date();
                     for (let i = 0; i < regs.length; i++){
-                        if (Date.parse(regs[i].session.date) >= currentDate) {
+                        if (Date.parse(regs[i].session.date) > currentDate) {
                             this.registrations.push(regs[i]);
+                        } else if (Date.parse(regs[i].session.date) == currentDate.getDate()) {
+                            if (Date.parse(regs[i].session.endTime) >= currentDate) {
+                                this.registrations.push(regs[i]);
+                            }
                         }
 
                     }
+                    this.sortRegistrations();
                 });
             } catch (e) {
                 alert("Failed to get registrations!" + e);
@@ -97,12 +120,80 @@ export default {
             } catch (e){
                 alert("Failed to cancel registration" + e);
             }
-        }
+        },
 
+        sortRegistrations(){
+            this.registrations = this.sortRegistrationsHelper(this.registrations);
+        },
+
+        sortRegistrationsHelper(arr){
+    
+            if (arr.length <= 1) {
+                return arr;
+            }
+
+            let mid = Math.floor(arr.length / 2);
+
+            let left = this.sortRegistrationsHelper(arr.slice(0, mid));
+            let right = this.sortRegistrationsHelper(arr.slice(mid));
+
+            return this.merge(left, right);
+        },
+
+        merge(left, right){
+            // Merges elmts in left and right depending on current sort state
+            let sortedArr = [];
+            while (left.length && right.length){
+                if (this.sortState === "1") {
+                    if (Date.parse(left[0].session.date) < Date.parse(right[0].session.date)){
+                        sortedArr.push(left.shift());
+                    } else if (Date.parse(left[0].session.date) == Date.parse(right[0].session.date)) {
+                        if (Date.parse(left[0].session.startTime) < Date.parse(left[0].startTime)){
+                            sortedArr.push(left.shift());
+                        }
+                    } else {
+                        sortedArr.push(right.shift());
+                    }
+                } else if (this.sortState === "2") {
+                    if (Date.parse(left[0].session.date) > Date.parse(right[0].session.date)){
+                        sortedArr.push(left.shift());
+                    } else if (Date.parse(left[0].session.date) == Date.parse(right[0].session.date)) {
+                        if (Date.parse(left[0].session.startTime) > Date.parse(left[0].startTime)){
+                            sortedArr.push(left.shift());
+                        }
+                    } else {
+                        sortedArr.push(right.shift());
+                    }
+                } else if (this.sortState === "3") {
+                    if (left[0].session.course.name.localeCompare(right[0].session.course.name) <= 0){
+                        sortedArr.push(left.shift());
+                    } else {
+                        sortedArr.push(right.shift());
+                    }
+                } else {
+                    if (left[0].session.course.name.localeCompare(right[0].session.course.name) >= 0){
+                        sortedArr.push(left.shift());
+                    } else {
+                        sortedArr.push(right.shift());
+                    }
+                }
+            }
+
+            while (left.length) {
+                sortedArr.push(left.shift());
+            }
+
+            while (right.length) {
+                sortedArr.push(right.shift());
+            }
+            
+            return sortedArr;
+        }
     },
 
     beforeMount(){
         this.filterUpcomingRegistrations();
+        this.sortRegistrations();
     }
 }
 </script>
