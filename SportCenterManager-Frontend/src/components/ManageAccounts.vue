@@ -3,10 +3,16 @@
         <p style = "font-weight: bold; font-size:25px;">MANAGE ACCOUNTS</p>
 
         <div id = "create">
-            <p style = "font-weight:bold;font-size:20px;"> Create Instructor Account</p>
-            <p>Name: </p><input type="text" v-model="name">
-            <p>Email: </p><input type ="text" v-model="email">
-            <p>Password: </p><input type ="text" v-model="password">
+            <p style = "font-weight:bold;font-size:20px;text-align:left;margin-left:0;padding-left:0;"> Create Instructor Account</p>
+            <div class = "field">
+                <p>Name: </p><input type="text" v-model="name">
+            </div>
+            <div class ="field">
+                <p>Email: </p><input type ="text" v-model="email">
+            </div>
+            <div class ="field">
+                <p>Password: </p><input type ="text" v-model="password">
+            </div>
             <button type ="button" id="create-btn">Create</button>
         </div>
         <p style = "font-weight:bold; font-size:20px;"> Delete Accounts</p>
@@ -94,11 +100,35 @@ export default {
 }
 </script>
 <style>
+    p{
+        margin-top: 5px;
+    }
+    .field{
+        display:flex;
+        flex-direction: row;
+        justify-content:space-between;
+    }
+    input{
+        height: 2em;
+        margin: 5px;
+    }
     #create{
-        margin-bottom: 2vw;
+        margin-bottom: 5vw;
+        display:flex;
+        flex-direction: column;
+        justify-content:flex-start;
+        width:100%;
+        max-width:300px;
     }
     #create-btn{
         width:50%;
         background-color: white;
+        margin-top: 2vw;
+        color:black;
     }
+    #create-btn:hover{
+        background-color:black;
+        color:white;
+    }
+    
 </style>
