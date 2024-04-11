@@ -12,6 +12,7 @@ import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
+import ModifySchedule from '@/components/ModifySchedule'
 
 Vue.use(Router)
 
@@ -71,6 +72,10 @@ export default new Router({
         {
           path: 'approve',
           component: ApproveCourse
+        },
+        {
+          path:'modifySchedule',
+          component: ModifySchedule
         }
       ]
     }, 
