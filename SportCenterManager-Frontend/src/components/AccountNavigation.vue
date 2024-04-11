@@ -28,7 +28,7 @@
                 Schedule</button>
         </router-link>
 
-        <router-link to="/myAccount/manageAccounts">
+        <router-link v-if="isOwner" to="/myAccount/manageAccounts">
             <button class="acc-nav-btn state-btn" v-bind:disabled="manageAccounts"
                 style="margin-bottom: 2%; text-align: left;" type="button" @click="toggleManageAccounts">Manage
                 Accounts</button>
