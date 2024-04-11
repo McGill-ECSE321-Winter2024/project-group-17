@@ -10,6 +10,11 @@
             <input type="time" class="input-style" id="end-time" v-model="end" step="1" />
             <label for="end-time">Select a date:</label>
             <input type="date" class="input-style" id="date" v-model="date" />
+            
+            <label for="instructor">Select an instructor:</label>
+            <select class="input-style" id="instructor" v-model="instructor">
+                <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">{{ instructor.name }}</option>
+            </select>
         </div>
         <button class ="modify-btn" @click="modifySession()" v-bind:disabled="isModifyButtonDisabled">Modify</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
@@ -36,7 +41,9 @@ export default {
             end: null,
             date: null,
             courseName: null,
-            instructorName: null
+            instructorName: null,
+            instructor: null,
+            instructors: []
         };
     },
 
@@ -66,6 +73,13 @@ export default {
             catch (e) {
                 alert(e.response.data.message);
             }
+            try {
+                const response = await client.get("/instructorAccounts");
+                this.instructors = response.data.instructors;
+            }
+            catch (e) {
+                alert(e.response.data.message);
+            }
     },
 
     methods: {
@@ -74,7 +88,7 @@ export default {
                 startTime: this.start,
                 endTime: this.end,
                 date: this.date,
-                instructorId: this.$route.params.instructorId,
+                instructorId: this.instructor,
                 courseId: this.$route.params.courseId 
             };
             try {
@@ -126,7 +140,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 50vh;
+  height: 70vh;
 }
 td,
 th {
