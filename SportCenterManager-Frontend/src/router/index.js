@@ -4,7 +4,6 @@ import Hello from '@/components/Hello'
 import Courses from '@/components/Courses'
 import CreateSession from '@/components/CreateSession'
 import ModifySession from '@/components/ModifySession'
-import DeleteSession from '@/components/DeleteSession'
 import Sessions from '@/components/Sessions'
 import AccountView from '@/components/AccountView'
 import BillingInformation from '@/components/BillingInformation'
@@ -36,11 +35,6 @@ export default new Router({
      path: '/courses/sessions/modify/:courseId/:sessionId/:instructorId',
      name: 'ModifySession',
      component: ModifySession
-     },
-     {
-      path: '/session/delete',
-      name: 'DeleteSession',
-      component: DeleteSession
      },
      {
      path: '/courses/sessions/:courseId',
