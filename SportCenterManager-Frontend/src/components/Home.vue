@@ -127,8 +127,9 @@ a:hover {
     margin-right: 10vw;
     padding-bottom: 5vw;
     display: flex;
-    flex-direction: column;
-    row-gap: 5vw;
+    flex-direction: row-reverse;
+    width: 90vw;
+    column-gap: 8vw;
 }
 
 #first_block {
@@ -139,7 +140,7 @@ a:hover {
 }
 
 #content_left {
-    width: 45vw;
+    width: 100%;
     text-align: left;
 }
 
@@ -147,12 +148,11 @@ a:hover {
     display: flex;
     justify-content: flex-end;
     width: 100%;
-    text-align: right;
-    margin-top: 5vw;
+    text-align: left;
 }
 
 #content_right {
-    width: 45vw;
-    text-align: right;
+    width: 100%;
+    text-justify:inter-word;
 }
 </style>
