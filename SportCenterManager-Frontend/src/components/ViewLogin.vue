@@ -57,6 +57,16 @@ export default {
       };
       try {
         const response = await client.post('/login', login);
+        
+        if (login.email === "owner@sportcenter.com") {
+          localStorage.setItem('Status', 'Owner');
+        }
+        else if (login.email.endsWith("@sportcenter.com")) {
+          localStorage.setItem('Status', 'Instructor');
+        }
+        else {
+          localStorage.setItem('Status', 'Customer');
+        }
  
         this.email = '';
         this.password = '';
