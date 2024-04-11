@@ -5,28 +5,32 @@
                 @click="toggleInfo">Account Information</button>
         </router-link>
 
-        <router-link to="/customerAccount/billing">
-            <button class="acc-nav-btn state-btn" v-bind:disabled="billingState" style="margin-bottom: 2%;"
-                type="button" @click="toggleBilling">Payment Information</button>
-        </router-link>
+        <div v-if="isCustomer">
+            <router-link to="/customerAccount/billing">
+                <button class="acc-nav-btn state-btn" v-bind:disabled="billingState" style="margin-bottom: 2%;"
+                    type="button" @click="toggleBilling">Payment Information</button>
+            </router-link>
 
-        <router-link to="/customerAccount/registrations">
-            <button class="acc-nav-btn state-btn" v-bind:disabled="registrationState"
-                style="margin-bottom: 2%; text-align: left;" type="button"
-                @click="toggleRegistration">Registrations</button>
-        </router-link>
+            <router-link to="/customerAccount/registrations">
+                <button class="acc-nav-btn state-btn" v-bind:disabled="registrationState"
+                    style="margin-bottom: 2%; text-align: left;" type="button"
+                    @click="toggleRegistration">Registrations</button>
+            </router-link>
+        </div>
+        
+        <div v-if="isOwner">
+            <router-link to="/customerAccount/approve">
+                <button class="acc-nav-btn state-btn" v-bind:disabled="approveState"
+                    style="margin-bottom: 2%; text-align: left;" type="button"
+                    @click="toggleRequestedCourses">Requested Courses</button>
+            </router-link>
 
-        <router-link to="/customerAccount/approve">
-            <button class="acc-nav-btn state-btn" v-bind:disabled="approveState"
-                style="margin-bottom: 2%; text-align: left;" type="button"
-                @click="toggleRequestedCourses">Requested Courses</button>
-        </router-link>
-
-        <router-link to="/customerAccount/modifySchedule">
-            <button class="acc-nav-btn state-btn" v-bind:disabled="modifyScheduleState"
-                style="margin-bottom: 2%; text-align: left;" type="button"
-                @click="toggleModifySchedule">Modify Schedule</button>
-        </router-link>
+            <router-link to="/customerAccount/modifySchedule">
+                <button class="acc-nav-btn state-btn" v-bind:disabled="modifyScheduleState"
+                    style="margin-bottom: 2%; text-align: left;" type="button"
+                    @click="toggleModifySchedule">Modify Schedule</button>
+            </router-link>
+        </div>
     </div>
 </template>
 
@@ -112,6 +116,17 @@ export default {
             this.registrationState = false;
             this.approveState = false;
             this.modifyScheduleState = true;
+        }
+    },
+    computed: {
+        isOwner() {
+            return localStorage.getItem("Status") === 'Owner';
+        },
+        isInstructor(){
+            return localStorage.getItem("Status") === 'Instructor';
+        },
+        isCustomer(){
+            return localStorage.getItem("Status") === 'Customer';
         }
     }
 }
