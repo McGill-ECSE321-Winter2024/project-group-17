@@ -49,7 +49,6 @@ export default {
       this.showCreateAccount = !this.showCreateAccount;
     },
     async createAccount() {
-      console.log("createAccount method called");
       const customerAccount = {
         name: this.name,
         email: this.email,
@@ -62,7 +61,7 @@ export default {
         this.email = '';
         this.password = '';
 
-        this.$router.push('/home');
+        this.$router.push('/authen');
       }
       catch (error) {
         if (error.response && error.response.data) {
