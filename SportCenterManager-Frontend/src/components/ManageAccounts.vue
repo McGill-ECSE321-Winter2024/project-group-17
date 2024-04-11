@@ -1,6 +1,15 @@
 <template>
     <div style ="padding-right: 7%; width: 70%;" id="manage-accounts-main-body">
         <p style = "font-weight: bold; font-size:25px;">MANAGE ACCOUNTS</p>
+
+        <div id = "create">
+            <p style = "font-weight:bold;font-size:20px;"> Create Instructor Account</p>
+            <p>Name: </p><input type="text" v-model="name">
+            <p>Email: </p><input type ="text" v-model="email">
+            <p>Password: </p><input type ="text" v-model="password">
+            <button type ="button" id="create-btn">Create</button>
+        </div>
+        <p style = "font-weight:bold; font-size:20px;"> Delete Accounts</p>
         <div style="margin-top:3%;" id="manage-accounts-filter-btns">
             <button class="state-btn" id = "instructors" @click="toggleAcc()" v-bind:disabled="!InstbuttonStateOn" style="margin-right: 2%;" type="button">Instructors</button>
             <button class="state-btn" id = "instructors" @click="toggleAcc()" v-bind:disabled="InstbuttonStateOn" style="margin-right: 2%;" type="button">Customers</button>
@@ -15,6 +24,7 @@
                 </div>
             </div>
         </div>
+        
     </div>
 </template>
 
@@ -83,3 +93,12 @@ export default {
     },
 }
 </script>
+<style>
+    #create{
+        margin-bottom: 2vw;
+    }
+    #create-btn{
+        width:50%;
+        background-color: white;
+    }
+</style>
