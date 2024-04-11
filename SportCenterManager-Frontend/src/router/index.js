@@ -8,6 +8,7 @@ import Sessions from '@/components/Sessions'
 import AccountView from '@/components/AccountView'
 import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
+import Home from '@/components/Home'
 import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
@@ -19,6 +20,16 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/',
+      name: 'Hello',
+      component: Hello
+    },
+    {
+      path: '/home',
+      name: 'Home',
+      component: Home
+    },
     {
       path: '/courses',
       name: 'Courses',
@@ -58,7 +69,7 @@ export default new Router({
       }
     },
     {
-      path: '/customerAccount',
+      path: '/myAccount',
       name: 'AccountView',
       component: AccountView,
       children: [

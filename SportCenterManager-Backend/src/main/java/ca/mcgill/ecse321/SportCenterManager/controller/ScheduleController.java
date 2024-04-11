@@ -87,7 +87,5 @@ public class ScheduleController {
     public ScheduleResponseDto getSchedule(){
         Schedule schedule = service.findSchedule();
         return new ScheduleResponseDto(schedule);
-    }
-    
-
+    }  
 }
