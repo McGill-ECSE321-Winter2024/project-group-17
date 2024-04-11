@@ -54,9 +54,9 @@ export default {
         return {
             accounts: [],
             InstbuttonStateOn: false,
-            inst_name: "",
-            inst_email: "",
-            inst_password: ""
+            inst_name: null,
+            inst_email: null,
+            inst_password: null
         };
     },
     async created() {
@@ -74,20 +74,17 @@ export default {
         async createInstructor() {
             const newInstructor = {
                 name: this.inst_name,
-                password: this.inst_password,
-                email: this.inst_email
+                email: this.inst_email,
+                password: this.inst_password
             };
             try {
-                await AXIOS.post("/instructorAccounts", newInstructor).then(response => {
-                    this.accounts.push(response.data);
-                    this.clearInputs();
-
-                })
-
+                console.log(newInstructor)
+                await AXIOS.post('/instructorAccounts', newInstructor);
+                this.retrieveInstructors();
+                this.clearInputs();
             } catch (e) {
                 console.log(e);
             }
-
         },
 
         async toggleAcc() {
