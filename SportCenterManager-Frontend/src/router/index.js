@@ -12,6 +12,7 @@ import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
+import AccountInformation from '@/components/AccountInformation'
 
 Vue.use(Router)
 
@@ -68,10 +69,6 @@ export default new Router({
           path: 'billing',
           component: BillingInformation
         },
-        /*{
-          path: 'registrations',
-          component: ViewCustomerRegistrations
-        },*/
         {
           path: 'approve',
           component: ApproveCourse

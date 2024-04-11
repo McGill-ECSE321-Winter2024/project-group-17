@@ -1,30 +1,27 @@
 <template>
     <div id="customer-account-component">
         <div id="customer-account-body">
-            <p style="font-weight: bold; font-size: 25px; text-align: left;">ACCOUNT INFORMATION</p>
+            <p style="font-weight: bold; font-size: 25px; text-align: left;">PAYMENT INFORMATION</p>
             <div id="account-information-box">
                 <div id="account-table">
                     <p class="item" style="grid-area: name;">Name:<span class="error"
-                            :class="{ 'state-el': !isNameEmpty, 'disabled': disabled }">*</span></p>
+                        :class="{ 'state-el': !isNameEmpty, 'disabled': disabled }">*</span></p>
                     <input type="text" v-model="name" :disabled="disabled" style="grid-area: name-input;">
                     <p class="error" style="grid-area: name-error;"
-                        :class="{ 'state-el': isNameValid, 'disabled': disabled }"> {{ nameError
-                        }}
-                    </p>
+                        :class="{ 'state-el': isNameValid, 'disabled': disabled }"> {{ nameError }}</p>
 
-                    <p class="item" style="grid-area: address;">Email:<span class="error"
-                            :class="{ 'state-el': !isAddressEmpty, 'disabled': disabled }">*</span></p>
-                    <input type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
-                    <p class="error" style="grid-area: address-error;"
-                        :class="{ 'state-el': isAddressValid, 'disabled': disabled }"> {{
-                                addressError }}</p>
+                    <!-- Only show the email address field for non-customer statuses -->
+                    <p v-if="status !== 'Customer'" class="item" style="grid-area: address;">Email Address:<span class="error"
+                        :class="{ 'state-el': !isAddressEmpty, 'disabled': disabled }">*</span></p>
+                    <input v-if="status !== 'Customer'" type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
+                    <p v-if="status !== 'Customer'" class="error" style="grid-area: address-error;"
+                        :class="{ 'state-el': isAddressValid, 'disabled': disabled }"> {{ addressError }}</p>
 
                     <p class="item" style="grid-area: password;">Password:<span class="error"
-                            :class="{ 'state-el': !isPasswordEmpty, 'disabled': disabled }">*</span></p>
-                    <input type="text" v-model="password" :disabled="disabled" style="grid-area: password-input;">
+                        :class="{ 'state-el': !isPasswordEmpty, 'disabled': disabled || status === 'Customer' }">*</span></p>
+                    <input type="text" v-model="password" :disabled="disabled || status === 'Customer'" style="grid-area: password-input;">
                     <p class="error" style="grid-area: password-error;"
-                        :class="{ 'state-el': isPasswordValid, 'disabled': disabled }"> {{
-                                passwordError }}</p>
+                        :class="{ 'state-el': isPasswordValid, 'disabled': disabled }"> {{ passwordError }}</p>
                 </div>
                 <div id="account-information-edit">
                     <button id="submit-btn" :class="{ 'state-el': disabled }"
@@ -58,16 +55,32 @@ export default {
             address: null,
             password: null,
             disabled: true,
+            status: localStorage.getItem('Status'),
+            id: localStorage.getItem('id')
         }
     },
     async created() {
         try {
-            const response = await client.get("/customerAccounts/15752/accountInformation");
-            this.name = response.data.name;
-            this.address = response.data.address;
-            this.password = response.data.password;
+            if(this.status=='Customer'){
+                const response = await client.post('/customerAccounts/' + this.id);
+                this.name = response.data.name;
+                this.address = response.data.address;
+                this.password = response.data.password;
+            }
+            
+            if(this.status=='Instructor'){
+                const response = await client.post('/instructorAccounts/' + this.id);
+                this.name = response.data.name;
+                this.address = response.data.address;
+                this.password = response.data.password;
+            }
+            if(this.status=='Owner'){
+                const response = await client.post('/ownerAccount');
+                this.name = response.data.name;
+                this.password = response.data.password;
+            }
         }
-        catch (e) {
+        catch(e){
             console.log(e);
         }
     },
@@ -83,11 +96,11 @@ export default {
             const accountInformation = {
                 name: this.name,
                 address: this.address,
-                password: this.password
+                password: this.password,
             };
             if (this.checkInput()) {
                 try {
-                    await client.put("/customerAccounts/15752/accountInformation", accountInformation);
+                    await client.put("/customerAccounts/15752/billingInformation", accountInformation);
                     this.swapButtons();
                 }
                 catch (e) {
@@ -96,11 +109,10 @@ export default {
             }
         },
         async clearAccountInformation() {
-            const response = await client.get("/customerAccounts/15752/accountInformation");
-            this.name = null;
-            this.address = null;
-            this.password = null;
-
+            const response = await client.get("/customerAccounts/15752/billingInformation");
+            this.name = response.data.name;
+            this.address = response.data.address;
+            this.password = response.data.password;
         },
         swapButtons() {
             this.disabled = !this.disabled;
@@ -112,7 +124,7 @@ export default {
                 alert("Please fill in all required fields.");
                 return false;
             }
-            if (!this.isNameValid || !this.isAddressValid || !this.isPasswordValid) {
+            if (!this.isNameValid || !this.isAddressValid || !this.isPasswordValid ) {
                 alert("Please correct the errors in the form.");
                 return false;
             }
@@ -123,6 +135,7 @@ export default {
         }
     },
     computed: {
+        
         isNameEmpty() {
             return this.name === null || this.name === "";
         },
@@ -132,7 +145,6 @@ export default {
         isPasswordEmpty() {
             return this.password === null || this.password === "";
         },
-
         isNameValid() {
             if (this.isNameEmpty) {
                 this.nameError = "Name is required.";
@@ -143,7 +155,7 @@ export default {
         },
         isAddressValid() {
             if (this.isAddressEmpty) {
-                this.addressError = "Email address is required.";
+                this.addressError = "Address is required.";
                 return false;
             }
             this.addressError = "";
@@ -157,6 +169,7 @@ export default {
             this.passwordError = "";
             return true;
         }
+        
     }
 }
 </script>
