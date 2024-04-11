@@ -13,6 +13,7 @@ import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
 import ViewLogin from '@/components/ViewLogin.vue'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations.vue'
+import AccountInformation from '@/components/AccountInformation.vue'
 
 Vue.use(Router)
 
@@ -69,6 +70,10 @@ export default new Router({
       name: 'AccountView',
       component: AccountView,
       children: [
+        {
+        path:'/',
+        component: AccountInformation
+        },
         {
           path: 'billing',
           component: BillingInformation
