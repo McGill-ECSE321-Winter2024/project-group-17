@@ -1,5 +1,8 @@
 package ca.mcgill.ecse321.SportCenterManager.service;
 
+import ca.mcgill.ecse321.SportCenterManager.dao.InstructorAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.dao.OwnerAccountRepository;
+import ca.mcgill.ecse321.SportCenterManager.model.Account;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -14,8 +17,14 @@ public class CustomerAccountService {
 
     @Autowired
     private CustomerAccountRepository customerRepo;
-   @Autowired
-   private BillingInformationService billingService;
+    @Autowired
+    private BillingInformationService billingService;
+
+    @Autowired
+    private InstructorAccountRepository instructorRepo;
+
+    @Autowired
+    private OwnerAccountRepository ownerRepo;
 
     @Transactional
     public Iterable<CustomerAccount> findAllCustomers() {
@@ -90,11 +99,26 @@ public class CustomerAccountService {
         }
    }
    @Transactional
-   public CustomerAccount login(String email, String password) {
-      if (!customerRepo.existsCustomerAccountByEmailAndPassword(email, password)) {
-         throw new ServiceException(HttpStatus.FORBIDDEN, "Invalid email or password");
+   public Account login(String email, String password) {
+
+      if (email.equals("owner@sportcenter.com")) {
+          if (!ownerRepo.existsOwnerAccountByEmail(email)) {
+              throw new ServiceException(HttpStatus.FORBIDDEN, "Invalid email or password");
+          }
+          return ownerRepo.findOwnerAccountByEmail(email);
       }
-      return customerRepo.findCustomerAccountByEmailAndPassword(email, password);
+      else if (email.endsWith("@sportcenter.com")) {
+          if (!instructorRepo.existsInstructorAccountByEmailAndPassword(email, password)) {
+              throw new ServiceException(HttpStatus.FORBIDDEN, "Invalid email or password");
+          }
+          return instructorRepo.findInstructorAccountByEmailAndPassword(email, password);
+      }
+      else {
+          if (!customerRepo.existsCustomerAccountByEmailAndPassword(email, password)) {
+              throw new ServiceException(HttpStatus.FORBIDDEN, "Invalid email or password");
+          }
+          return customerRepo.findCustomerAccountByEmailAndPassword(email, password);
+      }
    }
 
     @Transactional
