@@ -28,10 +28,10 @@
                 Schedule</button>
         </router-link>
 
-        <router-link to = "/customerAccount/manageAccounts">
-            <button class = "acc-nav-btn state-btn" v-bind:disabled="manageAccounts"
-                style="margin-bottom: 2%; text-align: left;" type="button"
-                @click="toggleManageAccounts">Manage Accounts</button>
+        <router-link to="/myAccount/manageAccounts">
+            <button class="acc-nav-btn state-btn" v-bind:disabled="manageAccounts"
+                style="margin-bottom: 2%; text-align: left;" type="button" @click="toggleManageAccounts">Manage
+                Accounts</button>
         </router-link>
     </div>
 </template>
@@ -47,7 +47,7 @@ export default {
                 registrationState: false,
                 approveState: false,
                 manageAccounts: false,
-                modifyScheduleState:false
+                modifyScheduleState: false
             }
         } else if (this.$route.path === '/myAccount/billing' || this.$route.path === '/myAccount/billing/') {
             return {
@@ -56,7 +56,7 @@ export default {
                 registrationState: false,
                 approveState: false,
                 manageAccounts: false,
-                modifyScheduleState:false
+                modifyScheduleState: false
             }
         } else if (this.$route.path === '/myAccount/registrations' || this.$route.path === '/myAccount/registrations/') {
             return {
@@ -65,7 +65,7 @@ export default {
                 registrationState: true,
                 approveState: false,
                 manageAccounts: false,
-                modifyScheduleState:false
+                modifyScheduleState: false
             }
         } else if (this.$route.path === '/myAccount/approve' || this.$route.path === '/myAccount/approve/') {
             return {
@@ -73,61 +73,63 @@ export default {
                 billingState: false,
                 registrationState: false,
                 approveState: true,
-                modifyScheduleState:false
+                modifyScheduleState: false,
+                manageAccounts: false
             }
-        } 
+        }
         else if (this.$route.path === '/myAccount/modifySchedule' || this.$route.path === '/myAccount/modifySchedule/') {
             return {
                 infoState: false,
                 billingState: false,
                 registrationState: false,
                 approveState: false,
-                modifyScheduleState:true,
-                manageAccounts: true
+                modifyScheduleState: true,
+                manageAccounts: false
             }
         }
-        else if (this.$route.path ==='/customerAccount/manageAccounts'|| this.$route.path === '/customerAccount/manageAccounts'){
-            return{
+        else if (this.$route.path === '/myAccount/manageAccounts' || this.$route.path === '/myAccount/manageAccounts') {
+            return {
                 infoState: false,
                 billingState: false,
                 registrationState: false,
-                approveState: true,
+                approveState: false,
+                modifyScheduleState: false,
                 manageAccounts: true
             }
-        }  
+        }
     },
     methods: {
         toggleInfo() {
             this.infoState = true;
             this.billingState = false;
             this.registrationState = false;
-            this.manageAccounts = false;
             this.approveState = false;
             this.modifyScheduleState = false;
+            this.manageAccounts = false;
         },
         toggleBilling() {
             this.infoState = false;
             this.billingState = true;
             this.registrationState = false;
-            this.manageAccounts = false;
             this.approveState = false;
             this.modifyScheduleState = false;
+            this.manageAccounts = false;
         },
         toggleRegistration() {
             this.infoState = false;
             this.billingState = false;
             this.registrationState = true;
-            this.manageAccounts = false;
             this.approveState = false;
             this.modifyScheduleState = false;
+            this.manageAccounts = false;
         },
         toggleRequestedCourses() {
             this.infoState = false;
             this.billingState = false;
             this.registrationState = false;
-            this.manageAccounts = false;
             this.approveState = true;
             this.modifyScheduleState = false;
+            this.manageAccounts = false;
         },
         toggleModifySchedule() {
             this.infoState = false;
@@ -135,6 +137,15 @@ export default {
             this.registrationState = false;
             this.approveState = false;
             this.modifyScheduleState = true;
+            this.manageAccounts = false;
+        },
+        toggleManageAccounts() {
+            this.infoState = false;
+            this.billingState = false;
+            this.registrationState = false;
+            this.approveState = false;
+            this.modifyScheduleState = false;
+            this.manageAccounts = true
         }
     },
     computed: {
@@ -143,15 +154,7 @@ export default {
         },
         isOwner() {
             return localStorage.getItem('Status') === 'Owner';
-        },
-        toggleManageAccounts(){
-            this.infoState = false;
-            this.billingState = false;
-            this.registrationState = false;
-            this.approveState = false;
-            this.manageAccounts = true
         }
-
     }
 }
 </script>

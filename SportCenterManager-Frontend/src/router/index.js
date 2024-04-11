@@ -89,6 +89,10 @@ export default new Router({
         {
           path:'modifySchedule',
           component: ModifySchedule
+        },
+        {
+          path: 'manageAccounts',
+          component: ManageAccounts
         }
       ]
     }, 
