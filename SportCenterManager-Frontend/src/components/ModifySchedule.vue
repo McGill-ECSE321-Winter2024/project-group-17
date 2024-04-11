@@ -2,7 +2,7 @@
     <div style="padding-right: 7%; width: 80%;" id="customer-registrations-main-body">
         <p style="font-weight: bold; font-size: 25px;">MODIFY CENTER SCHEDULE</p> 
         <div class = "content">
-            <p> Current Schedule: {{ curr_open }} {{ curr_close }}</p>
+            <p> Current Schedule: {{ curr_open }} to {{ curr_close }}</p>
             <div class = "time-div">
                 <p> Opening Time: </p>
                 <div>
@@ -42,7 +42,16 @@ export default {
             closingHour: null
         };
     },
-
+    beforeMount(){
+        try{
+            current = client.get('/schedule');
+            this.curr_open = current.openingHour();
+            this.curr_close = current.closingHour();
+        }catch(e){
+            this.curr_open = "N/A";
+            this.curr_close = "N/A";
+        }
+    },
     methods: {
         async modifySchedule() {
             const newSchedule ={
@@ -78,16 +87,6 @@ export default {
             );
         }
   
-    },
-    beforeMount(){
-        try{
-            current = client.get('/schedule');
-            this.curr_open = current.openingHour();
-            this.curr_close = current.closingHour();
-        }catch(e){
-            this.curr_open = "not set";
-            this.curr_close = "not set";
-        }
     }
        
 };
