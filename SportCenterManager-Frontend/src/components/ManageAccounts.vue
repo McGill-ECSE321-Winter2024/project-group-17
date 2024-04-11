@@ -18,9 +18,9 @@
         </div>
         <p style="font-weight:bold;text-align:left; font-size:20px;"> Delete Accounts</p>
         <div style="margin-top:3%;" id="manage-accounts-filter-btns">
-            <button class="state-btn" id="instructors" @click="toggleAcc()" v-bind:disabled="!InstbuttonStateOn"
+            <button class="state-btn" id="instructors" @click="toggleAcc()" v-bind:disabled="!InstbuttonStateOff"
                 style="margin-right: 2%;" type="button">Instructors</button>
-            <button class="state-btn" id="instructors" @click="toggleAcc()" v-bind:disabled="InstbuttonStateOn"
+            <button class="state-btn" id="instructors" @click="toggleAcc()" v-bind:disabled="InstbuttonStateOff"
                 style="margin-right: 2%;" type="button">Customers</button>
         </div>
         <div id="accounts-list">
@@ -29,7 +29,7 @@
                     <p style="font-size:18px; font-weight:bold;">
                         <a style="color:black;">{{ account.name }}</a>
                     </p>
-                    <button type="button" @click="deleteAccount(account)">DELETE</button>
+                    <button type="button" class="delete-btn" @click="deleteAccount(account)">DELETE</button>
                 </div>
             </div>
         </div>
@@ -53,7 +53,7 @@ export default {
     data() {
         return {
             accounts: [],
-            InstbuttonStateOn: false,
+            InstbuttonStateOff: false,
             inst_name: null,
             inst_email: null,
             inst_password: null
@@ -61,6 +61,7 @@ export default {
     },
     async created() {
         try {
+            
             await AXIOS.get("/instructorAccounts").then(response => {
                 this.accounts = response.data.instructors;
             })
@@ -88,11 +89,11 @@ export default {
         },
 
         async toggleAcc() {
-            if (this.InstbuttonStateOn) {
-                this.retrieveInstructors().then(this.InstbuttonStateOn = !this.InstbuttonStateOn)
+            if (!this.InstbuttonStateOff) {
+                this.retrieveInstructors().then(this.InstbuttonStateOff = !this.InstbuttonStateOff)
 
             } else {
-                this.retrieveCustomers().then(this.InstbuttonStateOn = !this.InstbuttonStateOn)
+                this.retrieveCustomers().then(this.InstbuttonStateOff = !this.InstbuttonStateOff)
             }
         },
         async retrieveInstructors() {
@@ -108,14 +109,14 @@ export default {
 
         async deleteAccount(account) {
             try {
-                if (this.InstbuttonStateOn) {
+                if (!this.InstbuttonStateOff) {
                     await AXIOS.delete("/instructorAccounts/" + account.id).then(response => {
-                        this.getAccounts();
+                        this.retrieveInstructors();
                     })
                 }
                 else {
                     await AXIOS.delete("/customerAccounts/" + account.id).then(response => {
-                        this.getAccounts();
+                        this.retrieveCustomers();
                     })
                 }
 
@@ -132,6 +133,22 @@ export default {
 }
 </script>
 <style>
+#accounts-list{
+    padding-bottom:5vw;
+}
+.acc-name{
+    display:flex;
+    flex-direction:row;
+    justify-content: space-between;
+    margin-top:2vw;
+}
+.delete-btn{
+    background-color: white;
+}
+.delete-btn:hover{
+    background-color:rgb(250, 115, 62);
+}
+
 p {
     margin-top: 5px;
 }
