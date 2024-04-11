@@ -17,7 +17,7 @@
                     <p> 1. Make an account. </p>
                     <p> 2. Fill in your billing information. </p>
                     <p> 3. Browse our offered courses. </p>
-                    <p> 4. Choose a session that fits your scheudle. </p>
+                    <p> 4. Choose a session that fits your schedule. </p>
                     <p> 5. Register!</p>
 
                 </div>
