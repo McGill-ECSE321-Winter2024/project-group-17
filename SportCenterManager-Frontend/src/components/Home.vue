@@ -5,7 +5,7 @@
                 <h1> Welcome. </h1>
                 <div id="buttons">
                     <a class="home_button" href="#/courses"> Courses </a>
-                    <a class="home_button" href="#/registration"> Register </a>
+                    <a class="home_button" href="#/authen"> Register </a>
                 </div>
             </div>
         </div>
