@@ -111,6 +111,17 @@ public class InstructorAccountService {
                 return error;
             }
 
+            if (email.equals("owner@sportcenter.com")) {
+                error = "Email cannot be owner@sportcenter.com";
+                return error;
+            }
+
+            if (!(email.endsWith("@sportcenter.com"))) {
+                error = "Email does not end with @sportcenter.com";
+                return error;
+            
+            }
+
             int count = 0;
             String allowedCharacters = "abcdefghijklmnopqrstuvwxyz._-@1234567890";
             boolean validEmail = false;
@@ -124,7 +135,7 @@ public class InstructorAccountService {
             }
 
             // Check if email is valid
-            if (count != 1 || (!(email.endsWith(".com")) && !(email.endsWith(".ca"))) || email.startsWith("@") || email.contains(".@") || email.contains("@.") || validEmail) {
+            if (count != 1 || email.startsWith("@") || validEmail) {
                 error = "Invalid Email";
                 return error;
             }
