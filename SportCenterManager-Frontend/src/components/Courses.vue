@@ -1,9 +1,13 @@
 <template>
    <div>
-     <div class="createbtn-container">
-      <button @click="openCreateModal" class="course-createbtn">Create Course</button>
+    <div v-if="isOwnerOrInstructor">
+      <div class="createbtn-container">
+        <button @click="openCreateModal" class="course-createbtn">Create Course</button>
+      </div>
+      <CreateCourseModal :is-open="isCreateModalOpen" @close="closeCreateModal" />
     </div>
-    <CreateCourseModal :is-open="isCreateModalOpen" @close="closeCreateModal" />
+     
+
     <div class="search-bar-container">
       <input type="text" v-model="searchTerm" placeholder="Search by course name" class="search-bar" />
     </div>
@@ -12,13 +16,15 @@
         <a :href="'#/courses/sessions/' + course.id">{{ course.name }}</a>
         <h4>${{ course.costPerSession }}/session</h4>
         <p>{{ course.description }}</p>
-        <div class="dropdown-container">
-          <div class="dropdown">
-            <button @click="toggleDropdown(course.id)" class="dropbtn">&#8942;</button>
-            <div v-if="isOpen[course.id]" class="dropdown-content">
-              <button @click="openModifyModal" class="dropdown-item">Modify</button>
-              <ModifyCourseModal :is-open="isModifyModalOpen" :courseId="course.id" @close="closeModifyModal" />
-              <button @click="confirmDeletion(course.id)" class="dropdown-item deletebtn">Delete</button>
+        <div v-if="isOwner">
+          <div class="dropdown-container">
+            <div class="dropdown">
+              <button @click="toggleDropdown(course.id)" class="dropbtn">&#8942;</button>
+              <div v-if="isOpen[course.id]" class="dropdown-content">
+                <button @click="openModifyModal" class="dropdown-item">Modify</button>
+                <ModifyCourseModal :is-open="isModifyModalOpen" :courseId="course.id" @close="closeModifyModal" />
+                <button @click="confirmDeletion(course.id)" class="dropdown-item deletebtn">Delete</button>
+              </div>
             </div>
           </div>
         </div>
@@ -116,6 +122,12 @@ export default {
       return this.courses.filter(course =>
         course.name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
+    },
+    isOwnerOrInstructor() {
+      return localStorage.getItem("Status") === 'Owner' || localStorage.getItem("Status") === 'Instructor';
+    },
+    isOwner() {
+      return localStorage.getItem("Status") === 'Owner';
     }
   }
 };

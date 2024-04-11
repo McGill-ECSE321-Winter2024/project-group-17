@@ -12,6 +12,8 @@ import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
+import SuperviseSession from '@/components/SuperviseSession.vue'
+import ModifySchedule from '@/components/ModifySchedule'
 
 Vue.use(Router)
 
@@ -38,17 +40,17 @@ export default new Router({
      component: Sessions
     },
     {
-      path: '/courses/sessions/register',
+      path: '/courses/sessions/register/:coursedId/:sessionId',
       name: 'Register',
       component: Register
     },
     {
-      path: '/courses/sessions/register/confirmation',
+      path: '/courses/sessions/register/:courseId/:sessionId/confirmation',
       name: 'RegistrationConfirmation',
       component: RegistrationConfirmation,
       beforeEnter: (to, from, next) => {
-        if (localStorage.registerAuthenticated) {
-          localStorage.registerAuthenticated = undefined;
+        if (localStorage.getItem("registerAuthenticated") != null) {
+          localStorage.setItem("registerAuthenticated", undefined);
           next();
         } else {
           next({path: "/home"});
@@ -64,13 +66,17 @@ export default new Router({
           path: 'billing',
           component: BillingInformation
         },
-        /*{
+        {
           path: 'registrations',
           component: ViewCustomerRegistrations
-        },*/
+        },
         {
           path: 'approve',
           component: ApproveCourse
+        },
+        {
+          path:'modifySchedule',
+          component: ModifySchedule
         }
       ]
     }, 
@@ -79,5 +85,10 @@ export default new Router({
       name: 'Login',
       component: ViewLogin
     },
+    {
+      path: '/courses/sessions/supervise/:courseId/:sessionId',
+      name: 'SuperviseSession',
+      component: SuperviseSession
+    }
   ]
 })

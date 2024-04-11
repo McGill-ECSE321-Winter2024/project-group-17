@@ -9,7 +9,7 @@
             <input type="time" class="input-style" id="end-time" v-model="end" step="1" />
             <label for="end-time">Select a date:</label>
             <input type="date" class="input-style" id="date" v-model="date" />
-            <input type="text" class="input-style" placeholder="Instructor Id" v-model="instructor" />
+            <input type="text" class="input-style" placeholder="Instructor Id (Optional)" v-model="instructor" />
         </div>
         <button class ="create-btn" @click="createSession()" v-bind:disabled="isCreateButtonDisabled">Create</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
@@ -54,6 +54,11 @@ export default {
 
     methods: {
         async createSession() {
+
+            if (this.instructor === null) {
+                this.instructor = -1;
+            }
+
             const sessionToCreate = {
                 startTime: this.start,
                 endTime: this.end,
@@ -83,7 +88,7 @@ export default {
     computed: {
         isCreateButtonDisabled() {
             return (
-                !this.start || !this.end || !this.date || !this.instructor
+                !this.start || !this.end || !this.date
             );
         }
     }

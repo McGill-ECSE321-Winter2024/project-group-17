@@ -660,5 +660,15 @@ public class EventController {
         Session session = eventService.superviseSession(instructorId, sessionId);
         return new SessionResponseDto(session);
     }
+    
+    @GetMapping("/instructor/{instructor_id}/sessions")
+    public SessionListDto getInstructorSessions(@PathVariable(name = "instructor_id") int instructorId) {
+    	List<Session> sessions = eventService.findInstructorSessions(instructorId);
+    	List<SessionResponseDto> response = new ArrayList<SessionResponseDto>();
+    	for (Session session: sessions) {
+    		response.add(new SessionResponseDto(session));
+    	}
+    	return new SessionListDto(response);
+    }
 
 }
