@@ -51,7 +51,7 @@ export default {
         password: this.password
       };
       try {
-        const response = await client.post('/', login);
+        const response = await client.post('/login', login);
 
         const id = response.data.id;
         

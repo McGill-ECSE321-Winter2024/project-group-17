@@ -68,7 +68,7 @@ export default new Router({
       }
     },
     {
-      path: '/customerAccount',
+      path: '/myAccount',
       name: 'AccountView',
       component: AccountView,
       children: [

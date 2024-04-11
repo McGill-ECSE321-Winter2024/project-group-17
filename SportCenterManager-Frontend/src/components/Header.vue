@@ -17,7 +17,7 @@ export default {
             if (this.$route.path === '/home') {
                 return "";
             }
-            if (this.$route.path.includes('/customerAccount')) {
+            if (this.$route.path.includes('/myAccount')) {
                 return "MY ACCOUNT";
             }
             if (this.$route.path.includes('/register')) {
@@ -34,7 +34,7 @@ export default {
             if (this.$route.path === '/home') {
                 return null;
             }
-            if (this.$route.path.includes('/customerAccount')) {
+            if (this.$route.path.includes('/myAccount')) {
                 return require("@/assets/my-account-bg.jpg");
             }
             if (this.$route.path.includes('/register')) {
