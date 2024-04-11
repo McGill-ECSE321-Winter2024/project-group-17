@@ -11,6 +11,9 @@
 export default {
     computed: {
         pageName() {
+            if (this.$route.path === '/') {
+                return "LOGIN";
+            }
             if (this.$route.path === '/home') {
                 return "HOME";
             }
@@ -25,6 +28,9 @@ export default {
             }
         },
         pageAsset() {
+            if (this.$route.path === '/') {
+                return require("@/assets/login-bg.png")
+            }
             if (this.$route.path === '/home') {
                 return require("@/assets/placeholder.png");
             }

@@ -1,10 +1,5 @@
 <template>
   <div id="login-component">
-    <div id="login-header">
-      <figure class="image">
-        <p style="margin-top: 20%; margin-bottom: 20%;">LOGIN</p>
-      </figure>
-    </div>
     <div id="login-body">
       <div id="login-form">
         <div class="form-group">
@@ -56,16 +51,21 @@ export default {
         password: this.password
       };
       try {
-        const response = await client.post('/login', login);
+        const response = await client.post('/', login);
+
+        const id = response.data.id;
         
         if (login.email === "owner@sportcenter.com") {
           localStorage.setItem('Status', 'Owner');
+          localStorage.setItem('Id', id);
         }
         else if (login.email.endsWith("@sportcenter.com")) {
           localStorage.setItem('Status', 'Instructor');
+          localStorage.setItem('Id', id);
         }
         else {
           localStorage.setItem('Status', 'Customer');
+          localStorage.setItem('Id', id);
         }
  
         this.email = '';
@@ -97,19 +97,6 @@ export default {
     align-items: center;
     width: 100%;
     height: 100%;
-  }
-  #login-header {
-    background-color: #000000;
-    width: 100%;
-    padding: 6%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    color: white;
-    font-weight: bold;
-    font-size: 50px;
   }
   #login-body {
     display: flex;
