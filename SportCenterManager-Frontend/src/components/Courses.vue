@@ -68,6 +68,43 @@ export default {
     catch (e) {
       alert(e.response.data.message);
     }
+
+    if (this.courses.length === 0){
+      try {
+        const cardio = {
+                name: 'Cardio',
+                description: 'Workout',
+                costPerSession: '8.99'
+        };
+
+        const stretching = {
+                name: 'Stretching',
+                description: 'Improve your flexibility',
+                costPerSession: '8.99'
+        };
+
+        const strengthTraining = {
+                name: 'Strength Training',
+                description: 'High difficulty',
+                costPerSession: '12.99'
+        };
+
+        const response1 = await client.post('/courses', cardio);
+        const response2 = await client.post('/courses', stretching);
+        const response3 = await client.post('/courses', strengthTraining);
+        
+        await client.put('/courses/' + response1.data.id + '/approve');
+        await client.put('/courses/' + response2.data.id + '/approve');
+        await client.put('/courses/' + response3.data.id + '/approve');
+        
+        const response = await client.get('/courses/approved');
+        this.courses = response.data.courses;
+      }
+      catch (e) {
+        alert(e.response.data.message)
+      }
+
+    }
   },
   methods: {
     openCreateModal() {
