@@ -75,7 +75,7 @@ export default new Router({
       ]
     }, 
     {
-      path: '/',
+      path: '/authen',
       name: 'Login',
       component: ViewLogin
     },

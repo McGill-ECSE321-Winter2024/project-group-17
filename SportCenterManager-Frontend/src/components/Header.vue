@@ -11,7 +11,7 @@
 export default {
     computed: {
         pageName() {
-            if (this.$route.path === '/') {
+            if (this.$route.path === '/authen') {
                 return "LOGIN";
             }
             if (this.$route.path === '/home') {
@@ -28,8 +28,8 @@ export default {
             }
         },
         pageAsset() {
-            if (this.$route.path === '/') {
-                return require("@/assets/login-bg.png")
+            if (this.$route.path === '/authen') {
+                return require("@/assets/login-bg.jpg")
             }
             if (this.$route.path === '/home') {
                 return require("@/assets/placeholder.png");
