@@ -28,12 +28,47 @@
                     <h2> About the Center </h2>
                     <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
                     <h3> Opening Hours </h3>
+                    <p> {{ schedule.openingHours }} to {{ schedule.closingHours }}</p>
                 </div>
             </div>
 
         </div>
     </div>
-</template> 
+</template>
+<script>
+import axios from "axios";
+import config from "../../config";
+const frontendUrl = 'http://' + config.dev.host + ':' + config.dev.port;
+const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backendPort;
+
+const client = axios.create({
+    baseURL: backendUrl,
+    headers: { 'Access-Control-Allow-Origin': frontendUrl}
+});
+export default{
+    name:"Schedule",
+    data(){
+        return{
+            schedule: "",
+            openingHours:"",
+            closingHours:""
+        };
+        
+    },
+
+async created(){
+    try{
+        const response = await client.get('/schedule');
+        this.schedule = response.data.schedule
+        this.openingHours = this.schedule.openingHours;
+        this.closingHours = this.schedule.closingHours;
+    }
+    catch(e){
+        console.log(e);
+    }
+    }
+}
+</script> 
 
 <style>
     a:hover{
@@ -49,7 +84,7 @@
         background-position:center;
         background-repeat: no-repeat;
         background-size:cover;
-        height:90vh; 
+        height:110vh; 
         display:flex;
         justify-content:flex-end;
         margin-top:-10vw;
