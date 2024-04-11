@@ -19,6 +19,7 @@
             </div>
         </div>
         <div id="customer-registrations-list">
+            <p v-if="registrations.length === 0">No registration to be shown!</p>
             <div class="customer-registration-entry" v-for="registration in registrations">
                 <SessionRegistrantsModal v-if="openModal === registration.session.id" :courseId="registration.session.course.id" :sessionId="registration.session.id" :isOpen="openModal === registration.session.course.id" @close="closeViewRegistrantsModal()"/>
                 <div :class="'customer-registration-entry-text'">
@@ -36,7 +37,7 @@
 </template>
 
 <script>
-import axios, { Axios } from "axios";
+import axios from "axios";
 import config from "../../config";
 import SessionRegistrantsModal from "./SessionRegistrantsModal.vue";
 
@@ -66,15 +67,15 @@ export default {
 
     methods: {
         isCustomer(){
-            return localStorage.getItem("permission") === "customer";
+            return localStorage.getItem("Status") === "Customer";
         },
 
         isInstructor(){
-            return localStorage.getItem("permission") === "instructor";
+            return localStorage.getItem("Status") === "Instructor";
         },
 
         isOwner(){
-            return localStorage.getItem("permission") === "owner";
+            return localStorage.getItem("Status") === "Owner";
         },
 
         toggleRegistration(){
@@ -84,9 +85,9 @@ export default {
         async filterRegistrations(){
             // Sets registrations to contain only past registrations
             this.registrations = [];
-            if (localStorage.getItem("permission") === "customer") {
+            if (localStorage.getItem("Status") === "Customer") {
                 try {
-                    await AXIOS.get("/customerAccounts/" + localStorage.getItem("userId") + "/registrations").then(response => {
+                    await AXIOS.get("/customerAccounts/" + localStorage.getItem("Id") + "/registrations").then(response => {
                         this.registrations = [];
                         if (this.buttonState) {
                             this.filterPastRegistrations(response.data.registrations);
@@ -99,9 +100,9 @@ export default {
                     alert("Failed to get registrations!" + e);
                     return;
                 }
-            } else if (localStorage.getItem("permission") === "instructor") {
+            } else if (localStorage.getItem("Status") === "Instructor") {
                 try {
-                    await AXIOS.get("/instructor/" + localStorage.getItem("userId") + "/sessions").then(response => {
+                    await AXIOS.get("/instructor/" + localStorage.getItem("Id") + "/sessions").then(response => {
                         let sessions = [];
                         for (let i = 0; i < response.data.sessions.length; i++){
                             sessions.push({
@@ -118,7 +119,7 @@ export default {
                 } catch (e) {
                     alert(e.response.data.message);
                 }
-            } else if (localStorage.getItem("permission") === "owner") {
+            } else if (localStorage.getItem("Status") === "Owner") {
                 try {
                     await AXIOS.get("/courses").then(async response => {
                         for (let i = 0; i < response.data.courses.length; i++){
@@ -259,8 +260,6 @@ export default {
     },
 
     beforeMount(){
-        localStorage.setItem("userId", 1);
-        localStorage.setItem("permission", "customer");
         this.filterRegistrations();
         this.sortRegistrations();
     }

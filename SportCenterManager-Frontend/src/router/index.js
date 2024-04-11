@@ -57,7 +57,7 @@ export default new Router({
       component: Register
     },
     {
-      path: '/courses/sessions/register/confirmation',
+      path: '/courses/sessions/register/:courseId/:sessionId/confirmation',
       name: 'RegistrationConfirmation',
       component: RegistrationConfirmation,
       beforeEnter: (to, from, next) => {
