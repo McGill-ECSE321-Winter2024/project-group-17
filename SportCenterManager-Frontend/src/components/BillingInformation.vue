@@ -83,12 +83,14 @@ export default {
             cardNumber: null,
             cvc: null,
             expirationDate: null,
-            disabled: true
+            disabled: true,
+            id: null
         }
     },
     async created() {
         try {
-            const response = await client.get("/customerAccounts/15752/billingInformation");
+            this.id = localStorage.getItem('Id');
+            const response = await client.get("/customerAccounts/" + this.id + "/billingInformation");
             this.name = response.data.name;
             this.address = response.data.address;
             this.country = response.data.country;
@@ -119,7 +121,7 @@ export default {
             };
             if (this.checkInput()) {
                 try {
-                    await client.put("/customerAccounts/15752/billingInformation", billingInformation);
+                    await client.put("/customerAccounts/" + this.id + "/billingInformation", billingInformation);
                     this.swapButtons();
                 }
                 catch (e) {
@@ -128,7 +130,7 @@ export default {
             }
         },
         async clearBillingInformation() {
-            const response = await client.get("/customerAccounts/15752/billingInformation");
+            const response = await client.get("/customerAccounts/" + this.id + "/billingInformation");
             this.name = response.data.name;
             this.address = response.data.address;
             this.country = response.data.country;
