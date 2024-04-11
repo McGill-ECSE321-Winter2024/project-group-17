@@ -29,7 +29,7 @@
                     <p style="font-size:18px; font-weight:bold;">
                         <a style="color:black;">{{ account.name }}</a>
                     </p>
-                    <button type="button" class="delete-btn" @click="deleteAccount(account)">DELETE</button>
+                    <button type="button" class="delete-btn" @click="deleteAccount(account.id)">DELETE</button>
                 </div>
             </div>
         </div>
@@ -61,7 +61,6 @@ export default {
     },
     async created() {
         try {
-            
             await AXIOS.get("/instructorAccounts").then(response => {
                 this.accounts = response.data.instructors;
             })
@@ -89,11 +88,11 @@ export default {
         },
 
         async toggleAcc() {
+            this.InstbuttonStateOff = !this.InstbuttonStateOff;
             if (!this.InstbuttonStateOff) {
-                this.retrieveInstructors().then(this.InstbuttonStateOff = !this.InstbuttonStateOff)
-
+                await this.retrieveInstructors();
             } else {
-                this.retrieveCustomers().then(this.InstbuttonStateOff = !this.InstbuttonStateOff)
+                await this.retrieveCustomers();
             }
         },
         async retrieveInstructors() {
@@ -107,15 +106,15 @@ export default {
             })
         },
 
-        async deleteAccount(account) {
+        async deleteAccount(id) {
             try {
                 if (!this.InstbuttonStateOff) {
-                    await AXIOS.delete("/instructorAccounts/" + account.id).then(response => {
+                    await AXIOS.delete("/instructorAccounts/" + id).then(response => {
                         this.retrieveInstructors();
                     })
                 }
                 else {
-                    await AXIOS.delete("/customerAccounts/" + account.id).then(response => {
+                    await AXIOS.delete("/customerAccounts/" + id).then(response => {
                         this.retrieveCustomers();
                     })
                 }
@@ -133,20 +132,23 @@ export default {
 }
 </script>
 <style>
-#accounts-list{
-    padding-bottom:5vw;
+#accounts-list {
+    padding-bottom: 5vw;
 }
-.acc-name{
-    display:flex;
-    flex-direction:row;
+
+.acc-name {
+    display: flex;
+    flex-direction: row;
     justify-content: space-between;
-    margin-top:2vw;
+    margin-top: 2vw;
 }
-.delete-btn{
+
+.delete-btn {
     background-color: white;
 }
-.delete-btn:hover{
-    background-color:rgb(250, 115, 62);
+
+.delete-btn:hover {
+    background-color: rgb(250, 115, 62);
 }
 
 p {
