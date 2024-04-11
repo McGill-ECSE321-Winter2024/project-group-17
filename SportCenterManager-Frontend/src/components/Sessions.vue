@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="createbtn-container">
+        <div class="createbtn-container" v-if="isOwner">
             <button @click="navigateToCreate" class="createbtn">Create Session</button>
         </div>
 
@@ -10,15 +10,28 @@
     
         <div class="session-grid">
             <div v-for="session in sessions" :key="session.id" class="session-box">
-            <h3>{{ instructors[session.instructor.id] }}</h3>
-            <p>{{ session.startTime }} - {{ session.endTime }}</p>
-            <p>{{ session.date }}</p>
-            <button @click="">REGISTER</button>
-            <button @click="">SUPERVISE</button>
-            <router-link :to="{ name: 'ModifySession', params: { sessionId: session.id, courseId: courseId, instructorId: session.instructor.id} }">
-                <button>MODIFY</button>
-            </router-link>
-            <button @click="confirmDeletion(session.id)">DELETE</button>
+                <h3>{{ instructors[session.instructor.id] }}</h3>
+                <p>{{ session.startTime }} - {{ session.endTime }}</p>
+                <p>{{ session.date }}</p>
+                
+                <div v-if="isCustomer">
+                    <router-link :to="{ name: 'Register', params: { sessionId: session.id, courseId: courseId} }">
+                        <button>REGISTER</button>
+                    </router-link>
+                </div>
+                
+
+                <div v-if="isInstructor">
+                    <button @click="">SUPERVISE</button>
+                </div>
+                
+
+                <div v-if="isOwner">
+                    <router-link :to="{ name: 'ModifySession', params: { sessionId: session.id, courseId: courseId, instructorId: session.instructor.id} }">
+                        <button>MODIFY</button>
+                    </router-link>
+                    <button @click="confirmDeletion(session.id)">DELETE</button>  
+                </div>
             </div>
         </div>
     </div>
@@ -95,6 +108,17 @@ export default {
                 alert(e.response.data.message);
             }
             }
+    },
+    computed: {
+        isOwner() {
+            return localStorage.getItem("Status") === 'Owner';
+        },
+        isInstructor(){
+            return localStorage.getItem("Status") === 'Instructor';
+        },
+        isCustomer(){
+            return localStorage.getItem("Status") === 'Customer';
+        }
     }
 }
 </script>

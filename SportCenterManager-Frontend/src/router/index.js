@@ -44,7 +44,7 @@ export default new Router({
      component: Sessions
     },
     {
-      path: '/courses/sessions/register',
+      path: '/courses/sessions/register/:coursedId/:sessionId',
       name: 'Register',
       component: Register
     },
@@ -70,10 +70,10 @@ export default new Router({
           path: 'billing',
           component: BillingInformation
         },
-        /*{
+        {
           path: 'registrations',
           component: ViewCustomerRegistrations
-        },*/
+        },
         {
           path: 'approve',
           component: ApproveCourse
