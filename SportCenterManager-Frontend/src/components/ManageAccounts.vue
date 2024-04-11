@@ -13,7 +13,7 @@
             <div class ="field">
                 <p>Password: </p><input type ="password" v-model="inst_password">
             </div>
-            <button type ="button" @Click="createInstructor()" id="create-btn">Create</button>
+            <button type ="button" @click="createInstructor()" id="create-btn">Create</button>
         </div>
         <p style = "font-weight:bold;text-align:left; font-size:20px;"> Delete Accounts</p>
         <div style="margin-top:3%;" id="manage-accounts-filter-btns">
@@ -58,7 +58,7 @@ export default {
     },
     async created(){
         try{
-            await AXIOS.get("/InstructorAccounts").then(response=>{
+            await AXIOS.get("/instructorAccounts").then(response=>{
                 this.accounts = response.data.accounts
             })
         }
