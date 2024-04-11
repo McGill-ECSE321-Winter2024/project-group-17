@@ -19,7 +19,6 @@
 
 import axios from "axios";
 import config from "../../config";
-import { useRoute } from 'vue-router';
 
 const frontendUrl = 'http://' + config.dev.host + ':' + config.dev.port
 const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backendPort
@@ -69,8 +68,8 @@ export default {
 
     beforeMount() {
         // Temporary placeholder
-        this.PROPS.courseId = localStorage.courseId;
-        this.PROPS.sessionId = localStorage.sessionId;
+        this.PROPS.courseId = localStorage.getItem("courseId");
+        this.PROPS.sessionId = localStorage.getItem("sessionId");
         this.customer = {
             id: 1
         };
@@ -79,7 +78,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 
 p {
     margin: 0%;

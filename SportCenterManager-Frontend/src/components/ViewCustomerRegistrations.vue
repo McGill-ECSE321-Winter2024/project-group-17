@@ -1,6 +1,8 @@
 <template>
     <div style="padding-right: 7%; width: 70%;" id="customer-registrations-main-body">
-        <p style="font-weight: bold; font-size: 25px;">REGISTRATIONS</p>
+        <p style="font-weight: bold; font-size: 25px;" v-if="isCustomer()">REGISTRATIONS</p>
+        <p style="font-weight: bold; font-size: 25px;" v-if="isInstructor()">SUPERVISED SESSIONS</p>
+        <p style="font-weight: bold; font-size: 25px;" v-if="isOwner()">MANAGE REGISTRATIONS</p>
         <div style="display: flex; justify-content: space-between; flex-direction: row;">
             <div style="margin-top: 3%;" id="customer-registrations-filter-btns">
                 <button class="state-btn" id="upcoming-registrations-btn" @click="toggleRegistration()" v-bind:disabled="!buttonState" style="margin-right: 2%;" type="button">Upcoming</button>
@@ -18,22 +20,26 @@
         </div>
         <div id="customer-registrations-list">
             <div class="customer-registration-entry" v-for="registration in registrations">
+                <SessionRegistrantsModal v-if="openModal === registration.session.id" :courseId="registration.session.course.id" :sessionId="registration.session.id" :isOpen="openModal === registration.session.course.id" @close="closeViewRegistrantsModal()"/>
                 <div :class="'customer-registration-entry-text'">
-                <p style="font-size: 18px; font-weight: bold;">
-                    <a style="color: black;">Course: {{ registration.session.course.name}}</a>
-                </p>
-                <p>Date/Time: {{ registration.session.date }} -- {{ registration.session.startTime }} to {{ registration.session.endTime }}</p>
-                <p>Instructor: {{ registration.session.instructor.name }}</p>
+                    <p style="font-size: 18px; font-weight: bold;">
+                        <a style="color: black;">Course: {{ registration.session.course.name}}</a>
+                    </p>
+                    <p>Date/Time: {{ registration.session.date }} -- {{ registration.session.startTime }} to {{ registration.session.endTime }}</p>
+                    <p v-if="isInstructor() || isOwner()" @click="viewRegistrants(registration.session.id)" style="cursor: pointer; width: 38%"><u>View Registrants</u></p>
+                    <p v-if="isCustomer()">Instructor: {{ registration.session.instructor.name }}</p>
                 </div>
-                <button type="button" @click="cancelRegistration(registration)" v-if="!buttonState">CANCEL</button>
+                <button type="button" @click="cancelRegistration(registration)" v-if="!buttonState && isCustomer()">CANCEL</button>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-import axios from "axios";
+import axios, { Axios } from "axios";
 import config from "../../config";
+import SessionRegistrantsModal from "./SessionRegistrantsModal.vue";
+
 const frontendUrl = 'http://' + config.dev.host + ':' + config.dev.port
 const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backendPort
 
@@ -43,72 +49,125 @@ const AXIOS = axios.create({
 })
 
 export default {
+    components:{
+        SessionRegistrantsModal
+    },
+
     data(){
         return {
             registrations: [],
             // if buttonState is false, then filtering by past registrations, else filtering upcoming registrations 
             buttonState: false,
             // state 1 = ascending date, 2 = descending date, 3 = ascending name, 4 = descending name
-            sortState: "1"
+            sortState: "1",
+            openModal : 0
         };
     },
-    
+
     methods: {
+        isCustomer(){
+            return localStorage.getItem("permission") === "customer";
+        },
+
+        isInstructor(){
+            return localStorage.getItem("permission") === "instructor";
+        },
+
+        isOwner(){
+            return localStorage.getItem("permission") === "owner";
+        },
 
         toggleRegistration(){
-            if (this.buttonState) {
-                this.filterUpcomingRegistrations().then(this.buttonState = !this.buttonState);
-            } else {
-                this.filterPastRegistrations().then(this.buttonState = !this.buttonState);
-            }
+            this.filterRegistrations().then(this.buttonState = !this.buttonState);
         },
 
-        async filterPastRegistrations(){
+        async filterRegistrations(){
             // Sets registrations to contain only past registrations
-            try {
-                await AXIOS.get("/customerAccounts/1/registrations").then(response => {
-                    this.registrations = [];
-                    let regs = response.data.registrations;
-                    let currentDate = new Date();
-                    for (let i = 0; i < regs.length; i++){
-                        if (Date.parse(regs[i].session.date) < currentDate) {
-                            this.registrations.push(regs[i]);
-                        } else if (Date.parse(regs[i].session.date) == currentDate) {
-                            if (Date.parse(regs[i].session.endTime) < currentDate) {
-                                this.registrations.push(regs[i]);
-                            }
+            this.registrations = [];
+            if (localStorage.getItem("permission") === "customer") {
+                try {
+                    await AXIOS.get("/customerAccounts/" + localStorage.getItem("userId") + "/registrations").then(response => {
+                        this.registrations = [];
+                        if (this.buttonState) {
+                            this.filterPastRegistrations(response.data.registrations);
+                        } else {
+                            this.filterUpcomingRegistrations(response.data.registrations)
                         }
-                    }
-                    this.sortRegistrations();
-                });
-            } catch (e) {
-                alert("Failed to get registrations!" + e);
-                return;
+                        this.sortRegistrations();
+                    });
+                } catch (e) {
+                    alert("Failed to get registrations!" + e);
+                    return;
+                }
+            } else if (localStorage.getItem("permission") === "instructor") {
+                try {
+                    await AXIOS.get("/instructor/" + localStorage.getItem("userId") + "/sessions").then(response => {
+                        let sessions = [];
+                        for (let i = 0; i < response.data.sessions.length; i++){
+                            sessions.push({
+                                session: response.data.sessions[i],
+                            });
+                        }
+                        if (this.buttonState){
+                            this.filterPastRegistrations(sessions);
+                        } else {
+                            this.filterUpcomingRegistrations(sessions);
+                        }
+                        this.sortRegistrations();
+                    });
+                } catch (e) {
+                    alert(e.response.data.message);
+                }
+            } else if (localStorage.getItem("permission") === "owner") {
+                try {
+                    await AXIOS.get("/courses").then(async response => {
+                        for (let i = 0; i < response.data.courses.length; i++){
+                            await AXIOS.get("/courses/" + response.data.courses[i].id + "/sessions").then(innerResponse => {
+                                let sessions = [];
+                                for (let i = 0; i < innerResponse.data.sessions.length; i++){
+                                    sessions.push({
+                                        session: innerResponse.data.sessions[i],
+                                    });
+                                }
+                                if (this.buttonState){
+                                    this.filterPastRegistrations(sessions);
+                                } else {
+                                    this.filterUpcomingRegistrations(sessions);
+                                }
+                            })
+                        }
+                        this.sortRegistrations();
+                    });
+                } catch (e) {
+                    alert(e.response.data.message);
+                }
             }
         },
 
-        async filterUpcomingRegistrations(){
-            // Sets registration list to only contain upcoming sessions
-            try {
-                await AXIOS.get("/customerAccounts/1/registrations").then(response => {
-                    this.registrations = [];
-                    let regs = response.data.registrations;
-                    let currentDate = new Date();
-                    for (let i = 0; i < regs.length; i++){
-                        if (Date.parse(regs[i].session.date) > currentDate) {
-                            this.registrations.push(regs[i]);
-                        } else if (Date.parse(regs[i].session.date) == currentDate.getDate()) {
-                            if (Date.parse(regs[i].session.endTime) >= currentDate) {
-                                this.registrations.push(regs[i]);
-                            }
-                        }
-
+        filterPastRegistrations(regs) {
+            let currentDate = new Date();
+            for (let i = 0; i < regs.length; i++){
+                if (Date.parse(regs[i].session.date) < currentDate) {
+                    this.registrations.push(regs[i]);
+                } else if (Date.parse(regs[i].session.date) == currentDate) {
+                    if (Date.parse(regs[i].session.endTime) < currentDate) {
+                        this.registrations.push(regs[i]);
                     }
-                    this.sortRegistrations();
-                });
-            } catch (e) {
-                alert("Failed to get registrations!" + e);
-                return;
+                }
+            }
+        },
+
+        filterUpcomingRegistrations(regs){
+            let currentDate = new Date();
+            for (let i = 0; i < regs.length; i++){
+                if (Date.parse(regs[i].session.date) > currentDate) {
+                    this.registrations.push(regs[i]);
+                } else if (Date.parse(regs[i].session.date) == currentDate.getDate()) {
+                    if (Date.parse(regs[i].session.endTime) >= currentDate) {
+                        this.registrations.push(regs[i]);
+                    }
+                }
+
             }
         },
 
@@ -120,6 +179,14 @@ export default {
             } catch (e){
                 alert("Failed to cancel registration" + e);
             }
+        },
+
+        viewRegistrants(num){
+            this.openModal = parseInt(num);
+        },
+
+        closeViewRegistrantsModal(){
+            this.openModal = 0;
         },
 
         sortRegistrations(){
@@ -192,13 +259,15 @@ export default {
     },
 
     beforeMount(){
-        this.filterUpcomingRegistrations();
+        localStorage.setItem("userId", 1);
+        localStorage.setItem("permission", "customer");
+        this.filterRegistrations();
         this.sortRegistrations();
     }
 }
 </script>
 
-<style>
+<style scoped>
 
 #customer-registrations-main-body {
   display: flex;

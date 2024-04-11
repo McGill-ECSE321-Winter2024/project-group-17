@@ -61,8 +61,8 @@ export default new Router({
       name: 'RegistrationConfirmation',
       component: RegistrationConfirmation,
       beforeEnter: (to, from, next) => {
-        if (localStorage.registerAuthenticated) {
-          localStorage.registerAuthenticated = undefined;
+        if (localStorage.getItem("registerAuthenticated") != null) {
+          localStorage.setItem("registerAuthenticated", undefined);
           next();
         } else {
           next({path: "/home"});

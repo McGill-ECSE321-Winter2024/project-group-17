@@ -86,9 +86,9 @@ export default {
 
         async register(){
                 await AXIOS.put("/courses/" + this.session.course.id + "/sessions/" + this.session.id + "/registrations/" + this.customer.id).then(response => {
-                    localStorage.sessionId = this.session.id;
-                    localStorage.courseId = this.session.course.id;
-                    localStorage.registerAuthenticated = true;
+                    localStorage.setItem("sessionId", this.session.id);
+                    localStorage.setItem("courseId", this.session.course.id);
+                    localStorage.setItem("registerAuthenticated", true);
                     this.$router.push({name: "RegistrationConfirmation"});
                 }).catch(response => {
                     alert(response.response.data.message)
@@ -99,8 +99,8 @@ export default {
 
     beforeMount() {
         // Temporary placeholder
-        PROPS.courseId = 1;
-        PROPS.sessionId = 1;
+        PROPS.courseId = 2;
+        PROPS.sessionId = 4;
         this.getSession();
         this.customer = {
             id: 1
@@ -109,7 +109,8 @@ export default {
 }
 
 </script>
-<style>
+
+<style scoped>
 .background {
     position: relative;
     display: inline-block;
