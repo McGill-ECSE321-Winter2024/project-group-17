@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="createbtn-container" v-if="isOwner">
-            <button @click="navigateToCreate" class="createbtn">Create Session</button>
+        <div v-if="isOwner">
+            <button @click="navigateToCreate" class="createbtn btn">Create Session</button>
         </div>
 
         <p style="font-weight: bold; font-size: 48px; text-align: left; margin-left: 200px; margin-bottom: 0px;">{{ name }}</p>
@@ -11,24 +11,26 @@
         <div class="session-grid">
             <div v-for="session in sessions" :key="session.id" class="session-box">
                 <h3>{{ instructors[session.instructor.id] }}</h3>
+                
                 <p>{{ session.startTime }} - {{ session.endTime }}</p>
                 <p>{{ session.date }}</p>
                 
                 <div v-if="isCustomer">
                     <router-link :to="{ name: 'Register', params: { sessionId: session.id, courseId: courseId} }">
-                        <button>REGISTER</button>
+                        <button class="btn">REGISTER</button>
                     </router-link>
                 </div>
                 
-
-                <div v-if="isInstructor">
-                    <button @click="">SUPERVISE</button>
+                <div v-if="isInstructor && instructors[session.instructor.id] === 'TBD'">
+                    <router-link :to="{ name: 'SuperviseSession', params: {sessionId: session.id, courseId: courseId}}">
+                        <button class="btn">SUPERVISE</button>
+                    </router-link>
+                    
                 </div>
                 
-
                 <div v-if="isOwner">
                     <router-link :to="{ name: 'ModifySession', params: { sessionId: session.id, courseId: courseId, instructorId: session.instructor.id} }">
-                        <button>MODIFY</button>
+                        <button class="btn">MODIFY</button>
                     </router-link>
                     <button @click="confirmDeletion(session.id)">DELETE</button>  
                 </div>
@@ -61,6 +63,7 @@ export default {
         };
     },
     async created() {
+        this.$set(this.instructors, 0, 'TBD');
         try {
             const response = await client.get('/courses/' + this.$route.params.courseId);
             this.name = response.data.name;
@@ -83,13 +86,16 @@ export default {
     },
     methods: {
         async findInstructor(instructorId){
-            try {
-                const response = await client.get('/instructorAccounts/' + instructorId);
-                const name = response.data.name;
-                this.$set(this.instructors, instructorId, name);
-            } catch (e) {
-                console.error('Error fetching instructor name:', error);
+            if (instructorId !== 0){
+                try {
+                    const response = await client.get('/instructorAccounts/' + instructorId);
+                    const name = response.data.name;
+                    this.$set(this.instructors, instructorId, name);
+                } catch (error) {
+                    console.error('Error fetching instructor name:', error.response.data.message);
+                }    
             }
+             
         },
         navigateToCreate(){
             this.$router.push('/courses/sessions/create/' + this.$route.params.courseId);
@@ -137,7 +143,7 @@ export default {
   padding: 10px;
 }
 
-button {
+.btn {
   background-color: #007bff;
   color: white;
   border: none;
@@ -145,7 +151,7 @@ button {
   cursor: pointer;
 }
 
-button:hover {
+.btn:hover {
   background-color: #0056b3;
 }
 
