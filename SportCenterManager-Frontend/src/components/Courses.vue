@@ -1,7 +1,7 @@
 <template>
    <div>
-     <div class="createbth-container">
-      <button @click="openCreateModal" class="createbtn">Create Course</button>
+     <div class="createbtn-container">
+      <button @click="openCreateModal" class="course-createbtn">Create Course</button>
     </div>
     <CreateCourseModal :is-open="isCreateModalOpen" @close="closeCreateModal" />
     <div class="search-bar-container">
@@ -9,7 +9,7 @@
     </div>
     <div class="grid-container">
       <div v-for="course in filteredCourses" :key="course.id" class="grid-item">
-        <h3>{{ course.name }}</h3>
+        <a :href="'#/courses/sessions/' + course.id">{{ course.name }}</a>
         <h4>${{ course.costPerSession }}/session</h4>
         <p>{{ course.description }}</p>
         <div class="dropdown-container">
@@ -123,7 +123,8 @@ export default {
 </script>
 
 <style scoped>
-h3 {
+a {
+  font-size: 24px;
   font-weight: bold;
   color: white;
   background-color: rgb(73, 172, 225);
@@ -197,15 +198,19 @@ p {
   color: rgb(255, 0, 0);
 }
 
-.createbtn{
+.course-createbtn{
   background-color: black;
   color: white;
   border-radius: 10px;
 }
 
-.createbth-container{
+.createbtn-container{
   text-align: right;
   margin-right: 20px;
+}
+
+.course-createbtn:hover {
+  background-color: #0056b3;
 }
 
 .dropdown-item {

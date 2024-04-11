@@ -1,15 +1,19 @@
 <template>
     <div>
         <h1>Create Session</h1>
+        <p style="font-weight: bold; font-size: 24px;">{{ this.name }}</p>
         <div class="input-container">
-            <input type="text" class="input-style" placeholder="Start time" v-model="start" />
-            <input type="text" class="input-style" placeholder="End time" v-model="end" />
-            <input type="text" class="input-style" placeholder="Date" v-model="date" />
+            <label for="start-time">Select a start time:</label>
+            <input type="time" class="input-style" id="start-time" v-model="start" step="1" />
+            <label for="end-time">Select an end time:</label>
+            <input type="time" class="input-style" id="end-time" v-model="end" step="1" />
+            <label for="end-time">Select a date:</label>
+            <input type="date" class="input-style" id="date" v-model="date" />
             <input type="text" class="input-style" placeholder="Instructor Id" v-model="instructor" />
-            <input type="text" class="input-style" placeholder="Course Id" v-model="course" />
         </div>
         <button class ="create-btn" @click="createSession()" v-bind:disabled="isCreateButtonDisabled">Create</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
+        <button class ="create-btn"  @click="navigateToSessions()">Cancel</button>
     </div>
 </template>
 
@@ -34,53 +38,52 @@ export default {
             end: null,
             date: null,
             instructor: null,
-            course: null
+            name: null
         };
     },
 
-    /*async created() {
+    async created() {
             try {
-                const response = await client.get("/courses/{course_id}/sessions");
-                this.sessions = response.data.sessions
+                const response = await client.get("/courses/" + this.$route.params.courseId);
+                this.name = response.data.name;
             }
             catch (e) {
-                alert("Failed to create session. " + e);
+                alert(e.response.data.message);
             }
-    },*/
+    },
 
     methods: {
         async createSession() {
             const sessionToCreate = {
-                start: this.start,
-                end: this.end,
+                startTime: this.start,
+                endTime: this.end,
                 date: this.date,
-                instructor: this.instructor,
-                course: this.course
+                instructorId: this.instructor,
+                courseId: this.$route.params.courseId  
             };
             try {
-                await client.post('/courses/{course_id}/sessions', sessionToCreate);
+                await client.post(`/courses/` + this.$route.params.courseId + `/sessions`, sessionToCreate);
                 this.clearInputs();
                 this.navigateToSessions();
             }
             catch (e) {
-                alert("Failed to create session. " + e);
+                alert(e.response.data.message);
             }
         },
         clearInputs() {
             this.start= null,
             this.end= null,
             this.date= null,
-            this.instructor= null,
-            this.course= null
+            this.instructor= null
         },
         navigateToSessions() {
-            this.$router.push('/courses/{course_id}/sessions')
+            this.$router.push('/courses/sessions/' + this.$route.params.courseId);
         }
     },
     computed: {
         isCreateButtonDisabled() {
             return (
-                !this.start || !this.end || !this.date || !this.instructor || !this.course
+                !this.start || !this.end || !this.date || !this.instructor
             );
         }
     }
@@ -108,7 +111,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 50vh;
+  height: 60vh;
 }
 td,
 th {
