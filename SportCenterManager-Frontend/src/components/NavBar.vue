@@ -7,8 +7,8 @@
             <div class = "navbar-right">
                 <a class = "navbar-courses" href="#/courses"> Courses |</a>
                 <a v-if = 'status === "Customer"' class = "navbar-account" href = '#/customerAccount'>My Account </a>
-                <a v-else-if = "status === 'Owner'" class = "navbar-account" href= '#/ownerAccount'>My Account</a>
-                <a v-else-if = "status === 'Instructor'" class = "navbar-account" href = '#/instructorAccount'>My Account</a>
+                <a v-else-if = "status === 'Owner'" class = "navbar-account" href= '#/customerAccount'>My Account</a>
+                <a v-else-if = "status === 'Instructor'" class = "navbar-account" href = '#/customerAccount'>My Account</a>
                 <a v-else class = "navbar-account" href = '#/authen'>Log In/ Sign Up</a>
             </div>
         </nav>
