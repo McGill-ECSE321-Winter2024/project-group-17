@@ -32,7 +32,7 @@ public class InstructorAccountServiceTests {
     public void testFindInstructorByValidId() {
         // setup
         int id = 30;
-        InstructorAccount instructorAccount = new InstructorAccount("validName", "validEmail@gmail.com", "validPassword$");
+        InstructorAccount instructorAccount = new InstructorAccount("validName", "validEmail@sportcenter.com", "validPassword$");
         instructorAccount.setId(30);
         lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
 
@@ -71,23 +71,23 @@ public class InstructorAccountServiceTests {
         // setup
         List<InstructorAccount> listCustomerAccounts = new ArrayList<InstructorAccount>();
 
-        InstructorAccount customerAccount1 = new InstructorAccount("validName1", "validEmail1@gmail.com", "validPassword$1");
+        InstructorAccount customerAccount1 = new InstructorAccount("validName1", "validEmail1@sportcenter.com", "validPassword$1");
         customerAccount1.setId(5);
         listCustomerAccounts.add(customerAccount1);
 
-        InstructorAccount customerAccount2 = new InstructorAccount("validName2", "validEmail1@gmail.com", "validPassword$2");
+        InstructorAccount customerAccount2 = new InstructorAccount("validName2", "validEmail1@sportcenter.com", "validPassword$2");
         customerAccount1.setId(10);
         listCustomerAccounts.add(customerAccount2);
 
-        InstructorAccount customerAccount3 = new InstructorAccount("validName3", "validEmail1@gmail.com", "validPassword$3");
+        InstructorAccount customerAccount3 = new InstructorAccount("validName3", "validEmail1@sportcenter.com", "validPassword$3");
         customerAccount1.setId(15);
         listCustomerAccounts.add(customerAccount3);
 
-        InstructorAccount customerAccount4 = new InstructorAccount("validName4", "validEmail1@gmail.com", "validPassword$4");
+        InstructorAccount customerAccount4 = new InstructorAccount("validName4", "validEmail1@sportcenter.com", "validPassword$4");
         customerAccount1.setId(20);
         listCustomerAccounts.add(customerAccount4);
 
-        InstructorAccount customerAccount5 = new InstructorAccount("validName5", "validEmail1@gmail.com", "validPassword$5");
+        InstructorAccount customerAccount5 = new InstructorAccount("validName5", "validEmail1@sportcenter.com", "validPassword$5");
         customerAccount1.setId(25);
         listCustomerAccounts.add(customerAccount5);
 
@@ -107,7 +107,7 @@ public class InstructorAccountServiceTests {
     public void testCreateValidInstructor() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = 30;
@@ -129,7 +129,7 @@ public class InstructorAccountServiceTests {
     public void testCreateInstructorByEmptyName() {
         // setup
         String name = "";
-        String email = "validEmail@gmail.com";
+        String email = "validEmail@sportcenter.com";
         String password = "validPassword$6";
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
@@ -169,7 +169,7 @@ public class InstructorAccountServiceTests {
     public void testCreateInstructorByEmailWithSpace() {
         // setup
         String name = "validName6";
-        String email = "invalidEmail @gmail.com";
+        String email = "invalidEmail @sportcenter.com";
         String password = "validPassword$6";
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
@@ -187,10 +187,52 @@ public class InstructorAccountServiceTests {
     }
 
     @Test
+    public void testCreateInstructorWithOwnerEmail() {
+        // setup
+        String name = "validName6";
+        String email = "owner@sportcenter.com";
+        String password = "validPassword$6";
+        lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
+        String error = "";
+
+        // act
+        try {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
+            error = e.getMessage();
+        }
+
+        // assertions
+        assertEquals("Email cannot be owner@sportcenter.com", error);
+        verify(instructorRepo, times(0)).save(any(InstructorAccount.class));
+    }
+
+    @Test
+    public void testCreateInstructorWithWrongEmailEnding() {
+        // setup
+        String name = "validName6";
+        String email = "invalidEmail6@gmail.com";
+        String password = "validPassword$6";
+        lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
+        String error = "";
+
+        // act
+        try {
+            service.createInstructor(name, email, password);
+        } catch (ServiceException e) {
+            error = e.getMessage();
+        }
+
+        // assertions
+        assertEquals("Email does not end with @sportcenter.com", error);
+        verify(instructorRepo, times(0)).save(any(InstructorAccount.class));
+    }
+
+    @Test
     public void testCreateInstructorByInvalidEmail() {
         // setup
         String name = "validName6";
-        String email = "invalidEmail6@gmail.co";
+        String email = "invalidEmail6@@sportcenter.com";
         String password = "validPassword$6";
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
@@ -211,7 +253,7 @@ public class InstructorAccountServiceTests {
     public void testCreateInstructorByEmptyPassword() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "";
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
@@ -232,7 +274,7 @@ public class InstructorAccountServiceTests {
     public void testCreateInstructorByShortPassword() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "P$6";
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
@@ -253,7 +295,7 @@ public class InstructorAccountServiceTests {
     public void testCreateInstructorByPasswordWithoutUppercaseChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "invalidpassword$6";
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
@@ -274,7 +316,7 @@ public class InstructorAccountServiceTests {
     public void testCreateInstructorByPasswordWithoutLowercaseChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "PASSWORD$";
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
@@ -295,7 +337,7 @@ public class InstructorAccountServiceTests {
     public void testCreateInstructorByPasswordWithoutSpecialChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "invalidPassword6";
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(null);
         String error = "";
@@ -315,14 +357,14 @@ public class InstructorAccountServiceTests {
     public void testCreateDuplicateInstructor() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(instructorAccount);
         lenient().when(instructorRepo.existsInstructorAccountByEmail(email)).thenReturn(true);
 
         String sameName = "validName6";
-        String sameEmail = "validEmail6@gmail.com";
+        String sameEmail = "validEmail6@sportcenter.com";
         String samePassword = "validPassword$6";
 
         String error = "";
@@ -345,7 +387,7 @@ public class InstructorAccountServiceTests {
     public void testUpdateValidInstructor() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = instructorAccount.getId();
@@ -353,7 +395,7 @@ public class InstructorAccountServiceTests {
         lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
+        String newEmail = "validEmail7@sportcenter.com";
         String newPassword = "validPassword7$";
 
         // act
@@ -372,7 +414,7 @@ public class InstructorAccountServiceTests {
     public void testUpdateInstructorWithInvalidId() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = 50;
@@ -382,7 +424,7 @@ public class InstructorAccountServiceTests {
 
         int invalidId = 60;
         String newName = "validName8";
-        String newEmail = "validEmail8@gmail.com";
+        String newEmail = "validEmail8@sportcenter.com";
         String newPassword = "validPassword8$";
         String error = "";
 
@@ -404,7 +446,7 @@ public class InstructorAccountServiceTests {
     public void testUpdateInstructorByEmptyName() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = instructorAccount.getId();
@@ -412,7 +454,7 @@ public class InstructorAccountServiceTests {
         lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
 
         String newName = "";
-        String newEmail = "validEmail7@gmail.com";
+        String newEmail = "validEmail7@sportcenter.com";
         String newPassword = "validPassword7$";
         String error = "";
 
@@ -432,7 +474,7 @@ public class InstructorAccountServiceTests {
     public void testUpdateInstructorByEmptyEmail() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = instructorAccount.getId();
@@ -456,11 +498,12 @@ public class InstructorAccountServiceTests {
         verify(instructorRepo, times(0)).save(any(InstructorAccount.class));
         verify(instructorRepo, times(1)).findInstructorAccountById(id);
     }
+
     @Test
     public void testUpdateInstructorByEmailWithSpace() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = instructorAccount.getId();
@@ -468,7 +511,7 @@ public class InstructorAccountServiceTests {
         lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail @gmail.com";
+        String newEmail = "validEmail @sportcenter.com";
         String newPassword = "validPassword7$";
         String error = "";
 
@@ -486,10 +529,10 @@ public class InstructorAccountServiceTests {
     }
 
     @Test
-    public void testUpdateInstructorByInvalidEmail() {
+    public void testUpdateInstructorWithOwnerEmail() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = instructorAccount.getId();
@@ -497,7 +540,65 @@ public class InstructorAccountServiceTests {
         lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.co";
+        String newEmail = "owner@sportcenter.com";
+        String newPassword = "validPassword7$";
+        String error = "";
+
+        // act
+        try {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
+            error = e.getMessage();
+        }
+
+        // assertions
+        assertEquals("Email cannot be owner@sportcenter.com", error);
+        verify(instructorRepo, times(0)).save(any(InstructorAccount.class));
+        verify(instructorRepo, times(1)).findInstructorAccountById(id);
+    }
+
+    @Test
+    public void testUpdateInstructorWithWrongEmailEnding() {
+        // setup
+        String name = "validName6";
+        String email = "validEmail6@sportcenter.com";
+        String password = "validPassword$6";
+        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
+        int id = instructorAccount.getId();
+        lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(instructorAccount);
+        lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
+
+        String newName = "validName7";
+        String newEmail = "validEmail@gmail.com";
+        String newPassword = "validPassword7$";
+        String error = "";
+
+        // act
+        try {
+            service.updateInstructorAccount(id, newName, newEmail, newPassword);
+        } catch (ServiceException e) {
+            error = e.getMessage();
+        }
+
+        // assertions
+        assertEquals("Email does not end with @sportcenter.com", error);
+        verify(instructorRepo, times(0)).save(any(InstructorAccount.class));
+        verify(instructorRepo, times(1)).findInstructorAccountById(id);
+    }
+
+    @Test
+    public void testUpdateInstructorByInvalidEmail() {
+        // setup
+        String name = "validName6";
+        String email = "validEmail6@sportcenter.com";
+        String password = "validPassword$6";
+        InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
+        int id = instructorAccount.getId();
+        lenient().when(instructorRepo.save(any(InstructorAccount.class))).thenReturn(instructorAccount);
+        lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
+
+        String newName = "validName7";
+        String newEmail = "validEmail7@@sportcenter.com";
         String newPassword = "validPassword7$";
         String error = "";
 
@@ -518,7 +619,7 @@ public class InstructorAccountServiceTests {
     public void testUpdateInstructorByEmptyPassword() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = instructorAccount.getId();
@@ -526,7 +627,7 @@ public class InstructorAccountServiceTests {
         lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
+        String newEmail = "validEmail7@sportcenter.com";
         String newPassword = "";
         String error = "";
 
@@ -547,7 +648,7 @@ public class InstructorAccountServiceTests {
     public void testUpdateInstructorByShortPassword() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = instructorAccount.getId();
@@ -555,7 +656,7 @@ public class InstructorAccountServiceTests {
         lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
+        String newEmail = "validEmail7@sportcenter.com";
         String newPassword = "valP$";
         String error = "";
 
@@ -576,7 +677,7 @@ public class InstructorAccountServiceTests {
     public void testUpdateInstructorByPasswordWithoutUppercaseChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = instructorAccount.getId();
@@ -584,7 +685,7 @@ public class InstructorAccountServiceTests {
         lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
+        String newEmail = "validEmail7@sportcenter.com";
         String newPassword = "validpassword7$";
         String error = "";
 
@@ -605,7 +706,7 @@ public class InstructorAccountServiceTests {
     public void testUpdateInstructorByPasswordWithoutLowercaseChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = instructorAccount.getId();
@@ -613,7 +714,7 @@ public class InstructorAccountServiceTests {
         lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
+        String newEmail = "validEmail7@sportcenter.com";
         String newPassword = "PASSWORD7$";
         String error = "";
 
@@ -634,7 +735,7 @@ public class InstructorAccountServiceTests {
     public void testUpdateInstructorByPasswordWithoutSpecialChar() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = instructorAccount.getId();
@@ -642,7 +743,7 @@ public class InstructorAccountServiceTests {
         lenient().when(instructorRepo.findInstructorAccountById(id)).thenReturn(instructorAccount);
 
         String newName = "validName7";
-        String newEmail = "validEmail7@gmail.com";
+        String newEmail = "validEmail7@sportcenter.com";
         String newPassword = "validPassword7";
         String error = "";
 
@@ -663,7 +764,7 @@ public class InstructorAccountServiceTests {
     public void testUpdateDuplicateInstructor() {
         // setup
         String name = "validName6";
-        String email = "validEmail6@gmail.com";
+        String email = "validEmail6@sportcenter.com";
         String password = "validPassword$6";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = 50;
@@ -673,7 +774,7 @@ public class InstructorAccountServiceTests {
         lenient().when(instructorRepo.existsInstructorAccountByEmail(email)).thenReturn(true);
 
         String newName = "validName7";
-        String newEmail = "validEmail6@gmail.com";
+        String newEmail = "validEmail6@sportcenter.com";
         String newPassword = "validPassword$7";
         String error = "";
 
@@ -696,7 +797,7 @@ public class InstructorAccountServiceTests {
     public void testDeleteInstructorByValidId() {
         // setup
         String name = "validName8";
-        String email = "validEmail8@gmail.com";
+        String email = "validEmail8@sportcenter.com";
         String password = "validPassword$8";
         InstructorAccount instructorAccount = new InstructorAccount(name, email, password);
         int id = 30;

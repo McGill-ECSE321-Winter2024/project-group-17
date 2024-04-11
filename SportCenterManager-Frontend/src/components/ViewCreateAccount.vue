@@ -62,7 +62,7 @@ export default {
         this.email = '';
         this.password = '';
 
-        this.$router.push('/homepage');
+        this.$router.push('/home');
       }
       catch (error) {
         if (error.response && error.response.data) {
