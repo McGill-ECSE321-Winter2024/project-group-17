@@ -30,21 +30,10 @@ const AXIOS = axios.create({
   headers: { 'Access-Control-Allow-Origin': frontendUrl }
 })
 
-// const PROPS = defineProps({
-//     sessionId: Number
-// })
-
-// Temporary palceholder
-let PROPS = {
-    courseId: Number,
-    sessionId: Number
-}
-
 export default {
     
     data () {
         return {
-            customer: undefined,
             session: {
                 course: {
                     name: undefined
@@ -64,7 +53,7 @@ export default {
     methods: {
         async getSession(){
             try {
-                await AXIOS.get("/courses/" + PROPS.courseId + "/sessions/" + PROPS.sessionId).then(response => {
+                await AXIOS.get("/courses/" + this.$route.params.courseId + "/sessions/" + this.$route.params.sessionId).then(response => {
                     this.session = response.data
                 });
             } catch (e) {
@@ -73,23 +62,10 @@ export default {
             }
         },
 
-        // async getCustomer(){
-        //     try {
-        //         await AXIOS.get("/customerAccounts/" + ??? ).then(response => {
-        //             this.customer = response.data
-        //         });
-        //     } catch (e) {
-        //         alert("Failed to get customer!" + e);
-        //         return;
-        //     }
-        // },
-
         async register(){
-                await AXIOS.put("/courses/" + this.session.course.id + "/sessions/" + this.session.id + "/registrations/" + this.customer.id).then(response => {
-                    localStorage.sessionId = this.session.id;
-                    localStorage.courseId = this.session.course.id;
-                    localStorage.registerAuthenticated = true;
-                    this.$router.push({name: "RegistrationConfirmation"});
+                await AXIOS.put("/courses/" + this.session.course.id + "/sessions/" + this.session.id + "/registrations/" + localStorage.getItem("Id")).then(response => {
+                    localStorage.setItem("registerAuthenticated", true);
+                    this.$router.push({name: "RegistrationConfirmation", params: {courseId: this.session.course.id, sessionId: this.session.id}});
                 }).catch(response => {
                     alert(response.response.data.message)
                 })
@@ -98,18 +74,13 @@ export default {
     },
 
     beforeMount() {
-        // Temporary placeholder
-        PROPS.courseId = 1;
-        PROPS.sessionId = 1;
         this.getSession();
-        this.customer = {
-            id: 1
-        };
     }
 }
 
 </script>
-<style>
+
+<style scoped>
 .background {
     position: relative;
     display: inline-block;
