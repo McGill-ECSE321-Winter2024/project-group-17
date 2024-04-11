@@ -1,11 +1,5 @@
 <template>
     <div id="register-components">
-        <div id="register-header">
-            <div class="background" style="position: relative; width: 100%; height: 30vh; overflow: hidden;">
-                <img src="../assets/registration-bg.png" style="position: absolute; left: 0; width: 100%; height: 100%; object-fit: cover;">
-                <p class="text-overlay" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">REGISTRATION</p>
-            </div>
-        </div>
         <div id="register-body" style="padding-top: 3%; padding-left: 5%;">
             <div id="register-text">
                 <p class="register-course-desc-text" id="course-desc" >Course Description: <br> {{ this.session.course.description }}</p>
@@ -36,35 +30,30 @@ const AXIOS = axios.create({
   headers: { 'Access-Control-Allow-Origin': frontendUrl }
 })
 
-// const PROPS = defineProps({
-//     sessionId: Number
-// })
-
-// Temporary palceholder
-let PROPS = {
-    courseId: Number,
-    sessionId: Number
-}
-
 export default {
     
     data () {
         return {
-            customer: undefined,
             session: {
-                course: undefined,
-                instructor: undefined,
+                course: {
+                    name: undefined
+                },
+                instructor: {
+                    name: undefined,
+                    email: undefined
+                },
                 startTime: undefined,
                 endTime: undefined,
+                date: undefined
             },
-            confirmEnabled: true
+            confirmEnabled: true,
         };
     }, 
 
     methods: {
         async getSession(){
             try {
-                await AXIOS.get("/courses/" + PROPS.courseId + "/sessions/" + PROPS.sessionId).then(response => {
+                await AXIOS.get("/courses/" + this.$route.params.courseId + "/sessions/" + this.$route.params.sessionId).then(response => {
                     this.session = response.data
                 });
             } catch (e) {
@@ -73,20 +62,10 @@ export default {
             }
         },
 
-        // async getCustomer(){
-        //     try {
-        //         await AXIOS.get("/customerAccounts/" + ??? ).then(response => {
-        //             this.customer = response.data
-        //         });
-        //     } catch (e) {
-        //         alert("Failed to get customer!" + e);
-        //         return;
-        //     }
-        // },
-
         async register(){
-                await AXIOS.put("/courses/" + this.session.course.id + "/sessions/" + this.session.id + "/registrations/" + this.customer.id).then(response => {
-                    alert("Registration Successful");
+                await AXIOS.put("/courses/" + this.session.course.id + "/sessions/" + this.session.id + "/registrations/" + localStorage.getItem("Id")).then(response => {
+                    localStorage.setItem("registerAuthenticated", true);
+                    this.$router.push({name: "RegistrationConfirmation", params: {courseId: this.session.course.id, sessionId: this.session.id}});
                 }).catch(response => {
                     alert(response.response.data.message)
                 })
@@ -95,19 +74,13 @@ export default {
     },
 
     beforeMount() {
-        // Temporary placeholder
-        PROPS.courseId = 1;
-        PROPS.sessionId = 1;
         this.getSession();
-        this.customer = {
-            id: 1
-        };
     }
 }
 
-
 </script>
-<style>
+
+<style scoped>
 .background {
     position: relative;
     display: inline-block;

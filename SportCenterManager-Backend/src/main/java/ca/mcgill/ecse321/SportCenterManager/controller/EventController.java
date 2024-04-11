@@ -277,6 +277,7 @@ public class EventController {
                     )
             }
     )
+    @CrossOrigin(origins = "*")
     @PostMapping("/courses")
     public CourseResponseDto createCourse(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
@@ -658,6 +659,16 @@ public class EventController {
     public SessionResponseDto superviseSession(@PathVariable(name = "session_id") int sessionId, @PathVariable(name = "instructor_id") int instructorId) {
         Session session = eventService.superviseSession(instructorId, sessionId);
         return new SessionResponseDto(session);
+    }
+    
+    @GetMapping("/instructor/{instructor_id}/sessions")
+    public SessionListDto getInstructorSessions(@PathVariable(name = "instructor_id") int instructorId) {
+    	List<Session> sessions = eventService.findInstructorSessions(instructorId);
+    	List<SessionResponseDto> response = new ArrayList<SessionResponseDto>();
+    	for (Session session: sessions) {
+    		response.add(new SessionResponseDto(session));
+    	}
+    	return new SessionListDto(response);
     }
 
 }

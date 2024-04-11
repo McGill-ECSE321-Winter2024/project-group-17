@@ -25,7 +25,9 @@ import ca.mcgill.ecse321.SportCenterManager.service.ScheduleService;
 
 @CrossOrigin(origins = "*")
 @RestController
+@CrossOrigin(origins="*")
 public class ScheduleController {
+
     @Autowired
     ScheduleService service;
 
@@ -87,7 +89,5 @@ public class ScheduleController {
     public ScheduleResponseDto getSchedule(){
         Schedule schedule = service.findSchedule();
         return new ScheduleResponseDto(schedule);
-    }
-
-    
+    }  
 }

@@ -25,13 +25,13 @@ public class InstructorAccountIntegrationTests {
     private InstructorAccountRepository instructorRepo;
 
     private String name = "Namir";
-    private String email = "Namir@gmail.com";
+    private String email = "Namir@sportcenter.com";
     private String password = "Password$";
     private String newName = "Eric";
-    private String newEmail = "Eric@gmail.com";
+    private String newEmail = "Eric@sportcenter.com";
     private String newPassword = "Password$1";
     private String newName1 = "Mahmoud";
-    private String newEmail1 = "Mahmoud@gmail.com";
+    private String newEmail1 = "Mahmoud@sportcenter.com";
     private String newPassword1 = "Password$2";
 
     private int validId;
@@ -57,7 +57,7 @@ public class InstructorAccountIntegrationTests {
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Namir", response.getBody().getName());
-        assertEquals("Namir@gmail.com", response.getBody().getEmail());
+        assertEquals("Namir@sportcenter.com", response.getBody().getEmail());
         assertEquals("Password$", response.getBody().getPassword());
         assertTrue(response.getBody().getId() > 0, "ID is not positive" );
 
@@ -155,9 +155,41 @@ public class InstructorAccountIntegrationTests {
 
     @Test
     @Order(8)
+    public void testCreateInstructorWithOwnerEmail() {
+        // setup
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, "owner@sportcenter.com", password);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email cannot be owner@sportcenter.com", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(9)
+    public void testCreateInstructorWithWrongEmailEnding() {
+        // setup
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, "eric@gmail.com", password);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email does not end with @sportcenter.com", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(10)
     public void testCreateInstructorWithInvalidEmail() {
         // setup
-        InstructorRequestDto requestDto = new InstructorRequestDto(name, "Namir@gmail.co", password);
+        InstructorRequestDto requestDto = new InstructorRequestDto(name, "Namir@@sportcenter.com", password);
 
         //act
         ResponseEntity<ErrorDto> response = client.postForEntity("/instructorAccounts", requestDto, ErrorDto.class);
@@ -170,7 +202,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(9)
+    @Order(11)
     public void testCreateInstructorWithEmptyPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "");
@@ -186,7 +218,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(10)
+    @Order(12)
     public void testCreateInstructorWithShortPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "Pass$");
@@ -202,7 +234,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(11)
+    @Order(13)
     public void testCreateInstructorWithoutUppercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "password$");
@@ -218,7 +250,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(12)
+    @Order(14)
     public void testCreateInstructorWithoutLowercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "PASSWORD$");
@@ -234,7 +266,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(13)
+    @Order(15)
     public void testCreateInstructorWithoutSpecialCharPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, "m"+email, "Passworddd");
@@ -250,7 +282,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(14)
+    @Order(16)
     public void testCreateInstructorWithSameEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(name, email, password);
@@ -266,7 +298,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(15)
+    @Order(17)
     public void testUpdateInstructorByValidId() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName, newEmail, newPassword);
@@ -280,14 +312,14 @@ public class InstructorAccountIntegrationTests {
         assertNotNull(response.getBody());
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Eric", response.getBody().getName());
-        assertEquals("Eric@gmail.com", response.getBody().getEmail());
+        assertEquals("Eric@sportcenter.com", response.getBody().getEmail());
         assertEquals("Password$1", response.getBody().getPassword());
         assertEquals(this.validId, response.getBody().getId());
 
     }
 
     @Test
-    @Order(16)
+    @Order(18)
     public void testUpdateInstructorByInvalidId() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, newPassword1);
@@ -304,7 +336,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(17)
+    @Order(19)
     public void testUpdateInstructorWithEmptyName() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto("", this.newEmail1, newPassword1);
@@ -319,7 +351,7 @@ public class InstructorAccountIntegrationTests {
         assertEquals("Name is empty", response.getBody().getMessage());
     }
     @Test
-    @Order(18)
+    @Order(20)
     public void testUpdateInstructorWithEmptyEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "", newPassword1);
@@ -335,7 +367,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(19)
+    @Order(21)
     public void testUpdateInstructorWithSpaceEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1+" ", newPassword1);
@@ -351,10 +383,42 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(20)
+    @Order(22)
+    public void testUpdateInstructorWithOwnerEmail() {
+        // setup
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "owner@sportcenter.com", newPassword1);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email cannot be owner@sportcenter.com", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(23)
+    public void testUpdateInstructorWithWrongEmailEnding() {
+        // setup
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "eric@gmail.com", newPassword1);
+
+        //act
+        ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
+
+        // assertions
+        assertNotNull(response);
+        assertNotNull(response.getBody());
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Email does not end with @sportcenter.com", response.getBody().getMessage());
+    }
+
+    @Test
+    @Order(24)
     public void testUpdateInstructorWithInvalidEmail() {
         // setup
-        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "Mahmoud@gmail", newPassword1);
+        InstructorRequestDto requestDto = new InstructorRequestDto(newName1, "Mahmoud@@sportcenter.com", newPassword1);
 
         //act
         ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.validId, HttpMethod.PUT, new HttpEntity<>(requestDto), ErrorDto.class);
@@ -367,7 +431,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(21)
+    @Order(25)
     public void testUpdateInstructorWithEmptyPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "");
@@ -383,7 +447,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(22)
+    @Order(26)
     public void testUpdateInstructorWithShortPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "Pass$");
@@ -399,7 +463,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(23)
+    @Order(27)
     public void testUpdateInstructorWithoutUppercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "password$$");
@@ -415,7 +479,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(24)
+    @Order(28)
     public void testUpdateInstructorWithoutLowercasePassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "PASSWORD$$");
@@ -431,7 +495,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(25)
+    @Order(29)
     public void testUpdateInstructorWithoutSpecialCharPassword() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName1, newEmail1, "Passworddddd");
@@ -447,7 +511,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(26)
+    @Order(30)
     public void testUpdateInstructorWithSameEmail() {
         // setup
         InstructorRequestDto requestDto = new InstructorRequestDto(newName, newEmail, newPassword);
@@ -463,7 +527,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(27)
+    @Order(31)
     public void testDeleteInstructorByInvalidId() {
         // act
         ResponseEntity<ErrorDto> response = client.exchange("/instructorAccounts/" + this.invalidId, HttpMethod.DELETE, null, ErrorDto.class);
@@ -476,7 +540,7 @@ public class InstructorAccountIntegrationTests {
     }
 
     @Test
-    @Order(28)
+    @Order(32)
     public void testDeleteInstructorByValidId() {
         // act
         client.delete("/instructorAccounts/" + this.validId, InstructorResponseDto.class);

@@ -2,12 +2,18 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Hello from '@/components/Hello'
 import Courses from '@/components/Courses'
-import CreateCourse from '@/components/CreateCourse'
+import CreateSession from '@/components/CreateSession'
+import ModifySession from '@/components/ModifySession'
+import Sessions from '@/components/Sessions'
 import AccountView from '@/components/AccountView'
-import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
 import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
 import Home from '@/components/Home'
+import ApproveCourse from '@/components/ApproveCourse'
+import ViewLogin from '@/components/ViewLogin.vue'
+import RegistrationConfirmation from '@/components/RegisterConfirmation'
+import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
+import ModifySchedule from '@/components/ModifySchedule'
 
 Vue.use(Router)
 
@@ -29,14 +35,37 @@ export default new Router({
       component: Courses
     },
     {
-      path: '/courses/create',
-      name: 'CreateCourse',
-      component: CreateCourse
+      path: '/courses/sessions/create/:courseId',
+      name: 'CreateSession',
+      component: CreateSession
+    },
+    {
+     path: '/courses/sessions/modify/:courseId/:sessionId/:instructorId',
+     name: 'ModifySession',
+     component: ModifySession
+     },
+     {
+     path: '/courses/sessions/:courseId',
+     name: 'Sessions',
+     component: Sessions
     },
     {
       path: '/courses/sessions/register',
       name: 'Register',
       component: Register
+    },
+    {
+      path: '/courses/sessions/register/:courseId/:sessionId/confirmation',
+      name: 'RegistrationConfirmation',
+      component: RegistrationConfirmation,
+      beforeEnter: (to, from, next) => {
+        if (localStorage.getItem("registerAuthenticated") != null) {
+          localStorage.setItem("registerAuthenticated", undefined);
+          next();
+        } else {
+          next({path: "/home"});
+        }
+      }
     },
     {
       path: '/customerAccount',
@@ -47,11 +76,24 @@ export default new Router({
           path: 'billing',
           component: BillingInformation
         },
-        {
+        /*{
           path: 'registrations',
           component: ViewCustomerRegistrations
+        },*/
+        {
+          path: 'approve',
+          component: ApproveCourse
+        },
+        {
+          path:'modifySchedule',
+          component: ModifySchedule
         }
       ]
-    }
+    }, 
+    {
+      path: '/authen',
+      name: 'Login',
+      component: ViewLogin
+    },
   ]
 })
