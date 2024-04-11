@@ -2,12 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Hello from '@/components/Hello'
 import Courses from '@/components/Courses'
-import CreateCourse from '@/components/CreateCourse'
 import CreateSession from '@/components/CreateSession'
 import ModifySession from '@/components/ModifySession'
-import DeleteSession from '@/components/DeleteSession'
-import GetSession from '@/components/GetSession'
-import ModifyCourse from '@/components/ModifyCourse'
+import Sessions from '@/components/Sessions'
 import AccountView from '@/components/AccountView'
 import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
@@ -26,24 +23,19 @@ export default new Router({
       component: Courses
     },
     {
-      path: '/session',
+      path: '/courses/sessions/create/:courseId',
       name: 'CreateSession',
       component: CreateSession
     },
     {
-     path: '/session/modify',
+     path: '/courses/sessions/modify/:courseId/:sessionId/:instructorId',
      name: 'ModifySession',
      component: ModifySession
      },
      {
-      path: '/session/delete',
-      name: 'DeleteSession',
-      component: DeleteSession
-     },
-     {
-     path: '/session/find',
-     name: 'FindSession',
-     component: GetSession
+     path: '/courses/sessions/:courseId',
+     name: 'Sessions',
+     component: Sessions
     },
     {
       path: '/courses/sessions/register',
@@ -72,10 +64,10 @@ export default new Router({
           path: 'billing',
           component: BillingInformation
         },
-        {
+        /*{
           path: 'registrations',
           component: ViewCustomerRegistrations
-        },
+        },*/
         {
           path: 'approve',
           component: ApproveCourse
