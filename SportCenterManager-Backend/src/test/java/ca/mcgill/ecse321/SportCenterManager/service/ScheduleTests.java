@@ -4,11 +4,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.sql.Time;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -16,13 +19,17 @@ import org.mockito.Mock;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.ScheduleRepository;
+import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
 import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
+import ca.mcgill.ecse321.SportCenterManager.model.Session;
 
 @SpringBootTest
 public class ScheduleTests {
     @Mock 
     private ScheduleRepository scheduleRepo;
+    @Mock
+    private SessionRepository sessionRepo;
     @InjectMocks
     private ScheduleService scheduleService;
 
@@ -49,11 +56,16 @@ public class ScheduleTests {
     public void testValidScheduleUpdate(){
         Time start = new Time(0);
         Time end = new Time(3600000);
-
+        
+        Schedule oldSchedule = new Schedule(new Time(0), new Time(2000000));
         Schedule test_schedule = new Schedule(start,end);
-
+        List<Schedule> schedules = new ArrayList<Schedule>();
+        schedules.add(oldSchedule);
+        
         when(scheduleRepo.count()).thenReturn(1L);
+        when(scheduleRepo.findAll()).thenReturn((Iterable<Schedule>) schedules);
         when(scheduleRepo.save(any(Schedule.class))).thenReturn(test_schedule);
+        when(sessionRepo.save(any(Session.class))).thenReturn(null);
 
         Schedule schedule = scheduleService.updateSchedule(start,end);
         
@@ -61,7 +73,7 @@ public class ScheduleTests {
         assertNotNull(schedule);
         assertEquals(test_schedule.getOpeningHours(),schedule.getOpeningHours());
         assertEquals(test_schedule.getClosingHours(),test_schedule.getClosingHours());
-        verify(scheduleRepo, times(1)).save(any(Schedule.class));
+        verify(scheduleRepo, times(2)).save(any(Schedule.class));
     }
 
     @Test
