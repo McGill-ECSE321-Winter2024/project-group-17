@@ -12,6 +12,7 @@ import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
+import SuperviseSession from '@/components/SuperviseSession.vue'
 import ModifySchedule from '@/components/ModifySchedule'
 
 Vue.use(Router)
@@ -39,7 +40,7 @@ export default new Router({
      component: Sessions
     },
     {
-      path: '/courses/sessions/register',
+      path: '/courses/sessions/register/:coursedId/:sessionId',
       name: 'Register',
       component: Register
     },
@@ -65,10 +66,10 @@ export default new Router({
           path: 'billing',
           component: BillingInformation
         },
-        /*{
+        {
           path: 'registrations',
           component: ViewCustomerRegistrations
-        },*/
+        },
         {
           path: 'approve',
           component: ApproveCourse
@@ -84,5 +85,10 @@ export default new Router({
       name: 'Login',
       component: ViewLogin
     },
+    {
+      path: '/courses/sessions/supervise/:courseId/:sessionId',
+      name: 'SuperviseSession',
+      component: SuperviseSession
+    }
   ]
 })
