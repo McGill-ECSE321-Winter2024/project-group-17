@@ -11,7 +11,7 @@
           <input type="password" v-model="password" placeholder="Enter your password">
         </div>
         <div style="margin-bottom: 10px; font-size: 14px;">
-          Don't have an account? <a href="#" @click="goToCreateAccount" style="font-weight: bold;">Register</a>
+          Don't have an account? <a href="#" @click="goToCreateAccount" style="font-weight: bold; color: blue;">Register</a>
           <div v-if="showCreateAccount">
             <createAccount />
           </div>
