@@ -18,11 +18,6 @@ Vue.use(Router)
 export default new Router({
   routes: [
     {
-      path: '/',
-      name: 'Hello',
-      component: Hello
-    },
-    {
       path: '/courses',
       name: 'Courses',
       component: Courses
@@ -31,8 +26,7 @@ export default new Router({
       path: '/courses/sessions/create/:courseId',
       name: 'CreateSession',
       component: CreateSession
-    }
-    ,
+    },
     {
      path: '/courses/sessions/modify/:courseId/:sessionId/:instructorId',
      name: 'ModifySession',
@@ -81,7 +75,7 @@ export default new Router({
       ]
     }, 
     {
-      path: '/login',
+      path: '/authen',
       name: 'Login',
       component: ViewLogin
     },
