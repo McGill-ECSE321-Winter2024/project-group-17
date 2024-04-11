@@ -1,11 +1,11 @@
 <template>
-    <div class = "homepage-component">
-        <div id = "banner">
-            <div id = "left">
+    <div class="homepage-component">
+        <div id="banner">
+            <div id="left">
                 <h1> Welcome. </h1>
-                <div id = "buttons">
-                    <a class = "home_button" href="#/courses"> Courses </a>
-                    <a class = "home_button" href="#/registration"> Register </a>
+                <div id="buttons">
+                    <a class="home_button" href="#/courses"> Courses </a>
+                    <a class="home_button" href="#/registration"> Register </a>
                 </div>
             </div>
         </div>
@@ -13,22 +13,26 @@
             <div id="first_block">
                 <div id="content_left">
                     <h2>How to Register</h2>
-                   
-                        <p> 1. Make an account. </p>
-                        <p> 2. Fill in your billing information. </p>
-                        <p> 3. Browse our offered courses. </p>
-                        <p> 4. Choose a session that fits your scheudle. </p>
-                        <p> 5. Register!</p>
-                    
+
+                    <p> 1. Make an account. </p>
+                    <p> 2. Fill in your billing information. </p>
+                    <p> 3. Browse our offered courses. </p>
+                    <p> 4. Choose a session that fits your scheudle. </p>
+                    <p> 5. Register!</p>
+
                 </div>
             </div>
 
-            <div id = "second_block">
-                <div id ="content_right">
+            <div id="second_block">
+                <div id="content_right">
                     <h2> About the Center </h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
+                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
+                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
+                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
                     <h3> Opening Hours </h3>
-                    <p> {{ schedule.openingHours }} to {{ schedule.closingHours }}</p>
+                    <p> {{ openingHours }} to {{ closingHours }}</p>
                 </div>
             </div>
 
@@ -43,108 +47,112 @@ const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backend
 
 const client = axios.create({
     baseURL: backendUrl,
-    headers: { 'Access-Control-Allow-Origin': frontendUrl}
+    headers: { 'Access-Control-Allow-Origin': frontendUrl }
 });
-export default{
-    name:"Schedule",
-    data(){
-        return{
-            schedule: "",
-            openingHours:"",
-            closingHours:""
+export default {
+    name: "Schedule",
+    data() {
+        return {
+            openingHours: null,
+            closingHours: null
         };
-        
     },
 
-async created(){
-    try{
-        const response = await client.get('/schedule');
-        this.schedule = response.data.schedule
-        this.openingHours = this.schedule.openingHours;
-        this.closingHours = this.schedule.closingHours;
-    }
-    catch(e){
-        console.log(e);
-    }
+    async created() {
+        try {
+            const response = await client.get('/schedule');
+            this.openingHours = response.data.openingHours;
+            this.closingHours = response.data.closingHours;
+        }
+        catch (e) {
+            console.log(e);
+        }
     }
 }
-</script> 
+</script>
 
 <style>
-    a:hover{
-        background-color: #ffffff;
-        color:black;
-        text-decoration: none;
-    }
+a:hover {
+    background-color: #ffffff;
+    color: black;
+    text-decoration: none;
+}
 
-    #banner{
-        color:white;
-        background-image: url("../assets/basketball-933173_1280.jpg");
-        background-color: black;
-        background-position:center;
-        background-repeat: no-repeat;
-        background-size:cover;
-        height:110vh; 
-        display:flex;
-        justify-content:flex-end;
-        margin-top:-10vw;
-        box-shadow: 0px 2px 5px -1px gray;
-        overflow:hidden;
-    }
-    #left{
-        text-align: center;
-        position:absolute;
-        top: 47%;
-        left: 80%;
-        transform: translate(-50%,-50%);
-        display:flex;
-        flex-direction:column;
-        justify-content: center;
-        width: 18%;
-    }
-    #buttons{
-        display:flex;
-        flex-direction: row;
-        justify-content:center;
-        width:100%;
-    }
-    .home_button{
-        padding:2vw;
-        padding-top:4px;
-        padding-bottom:4px;
-        margin:5%;
-        border-color: white;
-        border-style: solid;
-    }
+#banner {
+    color: white;
+    background-image: url("../assets/basketball-933173_1280.jpg");
+    background-color: black;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    height: 110vh;
+    display: flex;
+    justify-content: flex-end;
+    margin-top: -10vw;
+    box-shadow: 0px 2px 5px -1px gray;
+    overflow: hidden;
+}
 
-    #content{
-        margin-top:5vw;
-        margin-left:10vw;
-        margin-right:10vw;
-        padding-bottom: 5vw;
-        display: flex;
-        flex-direction:column;
-        row-gap: 5vw ;
-    }
-    #first_block{
-        display:flex;
-        justify-content: flex-start;
-        width:100%;
-        align-content:left;
-    }
-    #content_left{
-        width: 45vw;
-        text-align: left;
-    }
-    #second_block{
-        display:flex;
-        justify-content:flex-end;
-        width:100%;
-        text-align:right;
-        margin-top: 5vw;
-    }
-    #content_right{
-        width:45vw;
-        text-align: right;
-    }
+#left {
+    text-align: center;
+    position: absolute;
+    top: 47%;
+    left: 80%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    width: 18%;
+}
+
+#buttons {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    width: 100%;
+}
+
+.home_button {
+    padding: 2vw;
+    padding-top: 4px;
+    padding-bottom: 4px;
+    margin: 5%;
+    border-color: white;
+    border-style: solid;
+}
+
+#content {
+    margin-top: 5vw;
+    margin-left: 10vw;
+    margin-right: 10vw;
+    padding-bottom: 5vw;
+    display: flex;
+    flex-direction: column;
+    row-gap: 5vw;
+}
+
+#first_block {
+    display: flex;
+    justify-content: flex-start;
+    width: 100%;
+    align-content: left;
+}
+
+#content_left {
+    width: 45vw;
+    text-align: left;
+}
+
+#second_block {
+    display: flex;
+    justify-content: flex-end;
+    width: 100%;
+    text-align: right;
+    margin-top: 5vw;
+}
+
+#content_right {
+    width: 45vw;
+    text-align: right;
+}
 </style>
