@@ -9,7 +9,7 @@
     </div>
     <div class="grid-container">
       <div v-for="course in filteredCourses" :key="course.id" class="grid-item">
-        <a :href="'#/courses/sessions/' + course.id">{{ course.name }}</a>
+        <router-link :to="{ name: 'Sessions', params: { courseId: course.id, courseName: course.name } }">{{ course.name }}</router-link>
         <h4>${{ course.costPerSession }}/session</h4>
         <p>{{ course.description }}</p>
         <div class="dropdown-container">

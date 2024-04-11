@@ -12,6 +12,7 @@ import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
+import ViewSessionRegistants from '@/components/ViewSessionRegistrants'
 
 Vue.use(Router)
 
@@ -36,6 +37,11 @@ export default new Router({
      path: '/courses/sessions/:courseId',
      name: 'Sessions',
      component: Sessions
+    },
+    {
+      path: '/courses/sessions/:courseId/:sessionId',
+      name: 'ViewSessionRegistrants',
+      component: ViewSessionRegistants
     },
     {
       path: '/courses/sessions/register',

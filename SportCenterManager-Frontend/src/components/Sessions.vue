@@ -19,6 +19,9 @@
                 <button>MODIFY</button>
             </router-link>
             <button @click="confirmDeletion(session.id)">DELETE</button>
+            <router-link :to="{ name: 'ViewSessionRegistrants', params: { sessionId: session.id, courseId: courseId, courseName: courseName, instructorName: session.instructor.name } }">
+                <button>VIEW REGISTRANTS</button>
+            </router-link>
             </div>
         </div>
     </div>
@@ -44,7 +47,8 @@ export default {
             costPerSession: null,
             sessions: [],
             instructors: {},
-            courseId: this.$route.params.courseId
+            courseId: this.$route.params.courseId,
+            courseName: this.$route.params.courseName
         };
     },
     async created() {
