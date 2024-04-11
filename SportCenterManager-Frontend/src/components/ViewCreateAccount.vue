@@ -61,7 +61,8 @@ export default {
         this.email = '';
         this.password = '';
 
-        this.$router.push('/authen');
+        this.showCreateAccount = !this.showCreateAccount;
+
       }
       catch (error) {
         if (error.response && error.response.data) {
