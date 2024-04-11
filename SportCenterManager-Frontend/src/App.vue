@@ -18,7 +18,7 @@ export default {
     NavBar,
     Header
   },
-  /*
+  
   async created() {
     const owner = {
         name: 'owner', 
@@ -31,7 +31,7 @@ export default {
       console.log(error.response.data.message);
     }
   },
-  */
+  
   computed: {
     isAccountView() {
       return this.$route.path.includes('/customerAccount');

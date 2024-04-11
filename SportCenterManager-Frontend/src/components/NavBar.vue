@@ -7,9 +7,9 @@
             <div class = "navbar-right"> 
                 <a class = "navbar-courses" href="#/courses"> Courses |</a>
                 <template v-if = 'status !== null'>
-                    <a v-if = 'status === "Customer"' class = "navbar-account" href = '#/customerAccount'>My Account |</a>
-                    <a v-else-if = "status === 'Owner'" class = "navbar-account" href= '#/ownerAccount'>My Account |</a>
-                    <a v-else-if = "status === 'Instructor'" class = "navbar-account" href = '#/instructorAccount'>My Account |</a>
+                    <a v-if = 'status === "Customer"' class = "navbar-account" href = '#/myAccount'>My Account |</a>
+                    <a v-else-if = "status === 'Owner'" class = "navbar-account" href= '#/myAccount'>My Account |</a>
+                    <a v-else-if = "status === 'Instructor'" class = "navbar-account" href = '#/myAccount'>My Account |</a>
                     <a class = "navbar-account" href = '#/authen' @click="logout">Logout</a>
                 </template>
                 <template v-else>
