@@ -1,9 +1,13 @@
 <template>
    <div>
-     <div class="createbtn-container">
-      <button @click="openCreateModal" class="course-createbtn">Create Course</button>
+    <div v-if="isOwnerOrInstructor">
+      <div class="createbtn-container">
+        <button @click="openCreateModal" class="course-createbtn">Create Course</button>
+      </div>
+      <CreateCourseModal :is-open="isCreateModalOpen" @close="closeCreateModal" />
     </div>
-    <CreateCourseModal :is-open="isCreateModalOpen" @close="closeCreateModal" />
+     
+
     <div class="search-bar-container">
       <input type="text" v-model="searchTerm" placeholder="Search by course name" class="search-bar" />
     </div>
@@ -12,13 +16,15 @@
         <a :href="'#/courses/sessions/' + course.id">{{ course.name }}</a>
         <h4>${{ course.costPerSession }}/session</h4>
         <p>{{ course.description }}</p>
-        <div class="dropdown-container">
-          <div class="dropdown">
-            <button @click="toggleDropdown(course.id)" class="dropbtn">&#8942;</button>
-            <div v-if="isOpen[course.id]" class="dropdown-content">
-              <button @click="openModifyModal" class="dropdown-item">Modify</button>
-              <ModifyCourseModal :is-open="isModifyModalOpen" :courseId="course.id" @close="closeModifyModal" />
-              <button @click="confirmDeletion(course.id)" class="dropdown-item deletebtn">Delete</button>
+        <div v-if="isOwner">
+          <div class="dropdown-container">
+            <div class="dropdown">
+              <button @click="toggleDropdown(course.id)" class="dropbtn">&#8942;</button>
+              <div v-if="isOpen[course.id]" class="dropdown-content">
+                <button @click="openModifyModal" class="dropdown-item">Modify</button>
+                <ModifyCourseModal :is-open="isModifyModalOpen" :courseId="course.id" @close="closeModifyModal" />
+                <button @click="confirmDeletion(course.id)" class="dropdown-item deletebtn">Delete</button>
+              </div>
             </div>
           </div>
         </div>
@@ -61,6 +67,43 @@ export default {
     }
     catch (e) {
       alert(e.response.data.message);
+    }
+
+    if (this.courses.length === 0){
+      try {
+        const cardio = {
+                name: 'Cardio',
+                description: 'Workout',
+                costPerSession: '8.99'
+        };
+
+        const stretching = {
+                name: 'Stretching',
+                description: 'Improve your flexibility',
+                costPerSession: '8.99'
+        };
+
+        const strengthTraining = {
+                name: 'Strength Training',
+                description: 'High difficulty',
+                costPerSession: '12.99'
+        };
+
+        const response1 = await client.post('/courses', cardio);
+        const response2 = await client.post('/courses', stretching);
+        const response3 = await client.post('/courses', strengthTraining);
+        
+        await client.put('/courses/' + response1.data.id + '/approve');
+        await client.put('/courses/' + response2.data.id + '/approve');
+        await client.put('/courses/' + response3.data.id + '/approve');
+        
+        const response = await client.get('/courses/approved');
+        this.courses = response.data.courses;
+      }
+      catch (e) {
+        alert(e.response.data.message)
+      }
+
     }
   },
   methods: {
@@ -116,6 +159,12 @@ export default {
       return this.courses.filter(course =>
         course.name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
+    },
+    isOwnerOrInstructor() {
+      return localStorage.getItem("Status") === 'Owner' || localStorage.getItem("Status") === 'Instructor';
+    },
+    isOwner() {
+      return localStorage.getItem("Status") === 'Owner';
     }
   }
 };

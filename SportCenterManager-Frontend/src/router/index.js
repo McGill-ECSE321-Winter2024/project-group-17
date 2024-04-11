@@ -8,16 +8,32 @@ import Sessions from '@/components/Sessions'
 import AccountView from '@/components/AccountView'
 import BillingInformation from '@/components/BillingInformation'
 import Register from '@/components/Register'
+import Home from '@/components/Home'
 import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
+<<<<<<< HEAD
 import AccountInformation from '@/components/AccountInformation'
+=======
+import SuperviseSession from '@/components/SuperviseSession.vue'
+import ModifySchedule from '@/components/ModifySchedule'
+>>>>>>> main
 
 Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/',
+      name: 'Hello',
+      component: Hello
+    },
+    {
+      path: '/home',
+      name: 'Home',
+      component: Home
+    },
     {
       path: '/courses',
       name: 'Courses',
@@ -39,17 +55,17 @@ export default new Router({
      component: Sessions
     },
     {
-      path: '/courses/sessions/register',
+      path: '/courses/sessions/register/:coursedId/:sessionId',
       name: 'Register',
       component: Register
     },
     {
-      path: '/courses/sessions/register/confirmation',
+      path: '/courses/sessions/register/:courseId/:sessionId/confirmation',
       name: 'RegistrationConfirmation',
       component: RegistrationConfirmation,
       beforeEnter: (to, from, next) => {
-        if (localStorage.registerAuthenticated) {
-          localStorage.registerAuthenticated = undefined;
+        if (localStorage.getItem("registerAuthenticated") != null) {
+          localStorage.setItem("registerAuthenticated", undefined);
           next();
         } else {
           next({path: "/home"});
@@ -57,7 +73,7 @@ export default new Router({
       }
     },
     {
-      path: '/customerAccount',
+      path: '/myAccount',
       name: 'AccountView',
       component: AccountView,
       children: [
@@ -69,9 +85,20 @@ export default new Router({
           path: 'billing',
           component: BillingInformation
         },
+<<<<<<< HEAD
+=======
+        {
+          path: 'registrations',
+          component: ViewCustomerRegistrations
+        },
+>>>>>>> main
         {
           path: 'approve',
           component: ApproveCourse
+        },
+        {
+          path:'modifySchedule',
+          component: ModifySchedule
         }
       ]
     },
@@ -80,5 +107,10 @@ export default new Router({
       name: 'Login',
       component: ViewLogin
     },
+    {
+      path: '/courses/sessions/supervise/:courseId/:sessionId',
+      name: 'SuperviseSession',
+      component: SuperviseSession
+    }
   ]
 })
