@@ -2,16 +2,17 @@
     <div style="padding-right: 7%; width: 80%;" id="customer-registrations-main-body">
         <p style="font-weight: bold; font-size: 25px;">MODIFY CENTER SCHEDULE</p> 
         <div class = "content">
+            <p> Current Schedule: {{ curr_open }} {{ curr_close }}</p>
             <div class = "time-div">
                 <p> Opening Time: </p>
                 <div>
-                    <b-form-timepicker  v-model="OpeningHour" locale="en"></b-form-timepicker>
+                    <b-form-timepicker  v-model="openingHour" locale="en"></b-form-timepicker>
                 </div>
             </div>      
             <div class = "time-div">
                 <p> Closing Time: </p>
                 <div>
-                    <b-form-timepicker  v-model="ClosingHour" locale="en"></b-form-timepicker>
+                    <b-form-timepicker  v-model="closingHour" locale="en"></b-form-timepicker>
                 </div>
             </div>
             <button class = "update-btn" @click ="modifySchedule()" v-bind:disabled="isUpdateButtonDisabled"> Update Schedule </button>
@@ -27,7 +28,7 @@ const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backend
 
 const client = axios.create({
     baseURL: backendUrl,
-    headers: { 'Access-Control-Allow-Origin': frontendUrl}
+    //headers: { 'Access-Control-Allow-Origin': frontendUrl}
 });
 
 export default {
@@ -35,23 +36,27 @@ export default {
 
     data() {
         return {
-            OpeningHour: null,
-            ClosingHour: null
+            curr_open: null,
+            curr_close: null,
+            openingHour: null,
+            closingHour: null
         };
     },
 
     methods: {
         async modifySchedule() {
             const newSchedule ={
-                openingHour: this.OpeningHour,
-                closingHour: this.ClosingHour
+                openingHour: this.openingHour,
+                closingHour: this.closingHour
             };
             
             try {
-                console.log(this.OpeningHour);
-                console.log(this.ClosingHour);
+                console.log(this.openingHour);
+                console.log(this.closingHour);
                 await client.post('/schedule', newSchedule);
-                this.clearInputs();
+                this.curr_open = this.openingHour;
+                this.curr_close = this.closingHour;
+                this.clearInputs(); 
             }
             catch (e) {
                 if (e.response && e.response.data) {
@@ -62,17 +67,29 @@ export default {
             }
         },
         clearInputs() {
-            this.OpeningHour = null;
-            this.ClosingHour = null;
+            this.openingHour = null;
+            this.closingHour = null;
         },
     },
     computed: {
         isUpdateButtonDisabled() {
             return (
-                !this.OpeningHour || !this.ClosingHour
+                !this.openingHour || !this.closingHour
             );
         }
-    }   
+  
+    },
+    beforeMount(){
+        try{
+            current = client.get('/schedule');
+            this.curr_open = current.openingHour();
+            this.curr_close = current.closingHour();
+        }catch(e){
+            this.curr_open = "not set";
+            this.curr_close = "not set";
+        }
+    }
+       
 };
 
 </script>
