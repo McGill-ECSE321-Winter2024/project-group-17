@@ -13,6 +13,7 @@ import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
 import SuperviseSession from '@/components/SuperviseSession.vue'
+import ModifySchedule from '@/components/ModifySchedule'
 
 Vue.use(Router)
 
@@ -44,12 +45,12 @@ export default new Router({
       component: Register
     },
     {
-      path: '/courses/sessions/register/confirmation',
+      path: '/courses/sessions/register/:courseId/:sessionId/confirmation',
       name: 'RegistrationConfirmation',
       component: RegistrationConfirmation,
       beforeEnter: (to, from, next) => {
-        if (localStorage.registerAuthenticated) {
-          localStorage.registerAuthenticated = undefined;
+        if (localStorage.getItem("registerAuthenticated") != null) {
+          localStorage.setItem("registerAuthenticated", undefined);
           next();
         } else {
           next({path: "/home"});
@@ -72,6 +73,10 @@ export default new Router({
         {
           path: 'approve',
           component: ApproveCourse
+        },
+        {
+          path:'modifySchedule',
+          component: ModifySchedule
         }
       ]
     }, 

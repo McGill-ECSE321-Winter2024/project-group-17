@@ -11,7 +11,7 @@
         <p placeholder=""><b>Instructor: </b> {{ session.instructor.name }}</p>
         <p placeholder=""><b>Instructor Email: </b> {{ session.instructor.email }}</p>
     </div>
-    <button type="button" style="background-color: white; color: black; width: 15%; margin-top: 3%;" @click="$router.push({name:'Sessions'})">BACK TO SESSIONS</button>
+    <button type="button" style="background-color: white; color: black; width: 15%; margin-top: 3%;" @click="$router.push({name:'Sessions', params: {courseId: session.course.id}})">BACK TO SESSIONS</button>
 </div>
 </template>
 
@@ -19,7 +19,6 @@
 
 import axios from "axios";
 import config from "../../config";
-import { useRoute } from 'vue-router';
 
 const frontendUrl = 'http://' + config.dev.host + ':' + config.dev.port
 const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backendPort
@@ -29,15 +28,9 @@ const AXIOS = axios.create({
   headers: { 'Access-Control-Allow-Origin': frontendUrl }
 })
 
-
 export default {
     data () {
         return {
-            PROPS: {
-                sessionId: Number,
-                courseId: Number    
-            },
-            customer: undefined,
             session: {
                 course: {
                     name: undefined
@@ -57,7 +50,7 @@ export default {
     methods: {
         async getSession(){
             try {
-                await AXIOS.get("/courses/" + this.PROPS.courseId + "/sessions/" + this.PROPS.sessionId).then(response => {
+                await AXIOS.get("/courses/" + this.$route.params.courseId + "/sessions/" + this.$route.params.sessionId).then(response => {
                     this.session = response.data;
                 });
             } catch (e) {
@@ -68,18 +61,12 @@ export default {
     },
 
     beforeMount() {
-        // Temporary placeholder
-        this.PROPS.courseId = localStorage.courseId;
-        this.PROPS.sessionId = localStorage.sessionId;
-        this.customer = {
-            id: 1
-        };
         this.getSession();
     }
 }
 </script>
 
-<style>
+<style scoped>
 
 p {
     margin: 0%;
