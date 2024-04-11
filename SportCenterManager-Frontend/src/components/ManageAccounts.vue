@@ -157,6 +157,8 @@ p {
     display: flex;
     flex-direction: row;
     justify-content: space-between;
+    column-gap: 2vw;
+    align-items: center;
 }
 
 input {
