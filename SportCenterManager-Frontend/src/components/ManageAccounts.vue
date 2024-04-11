@@ -5,17 +5,17 @@
         <div id = "create">
             <p style = "font-weight:bold;font-size:20px;text-align:left;margin-left:0;padding-left:0;"> Create Instructor Account</p>
             <div class = "field">
-                <p>Name: </p><input type="text" v-model="name">
+                <p>Name: </p><input type="text" v-model="inst_name">
             </div>
             <div class ="field">
-                <p>Email: </p><input type ="text" v-model="email">
+                <p>Email: </p><input type ="text" v-model="inst_email">
             </div>
             <div class ="field">
-                <p>Password: </p><input type ="text" v-model="password">
+                <p>Password: </p><input type ="password" v-model="inst_password">
             </div>
-            <button type ="button" id="create-btn">Create</button>
+            <button type ="button" @Click="createInstructor()" id="create-btn">Create</button>
         </div>
-        <p style = "font-weight:bold; font-size:20px;"> Delete Accounts</p>
+        <p style = "font-weight:bold;text-align:left; font-size:20px;"> Delete Accounts</p>
         <div style="margin-top:3%;" id="manage-accounts-filter-btns">
             <button class="state-btn" id = "instructors" @click="toggleAcc()" v-bind:disabled="!InstbuttonStateOn" style="margin-right: 2%;" type="button">Instructors</button>
             <button class="state-btn" id = "instructors" @click="toggleAcc()" v-bind:disabled="InstbuttonStateOn" style="margin-right: 2%;" type="button">Customers</button>
@@ -50,11 +50,42 @@ export default {
     data(){
         return {
             accounts: [],
-            InstbuttonStateOn: false
+            InstbuttonStateOn: false,
+            inst_name: "",
+            inst_email:"",
+            inst_password:""
         };
+    },
+    async created(){
+        try{
+            await AXIOS.get("/InstructorAccounts").then(response=>{
+                this.accounts = response.data.accounts
+            })
+        }
+        catch(e){
+            console.log(e);
+        }
     },
     
     methods: {
+        async createInstructor(){
+            const newInstructor={
+                name: this.inst_name,
+                password: this.inst_password,
+                email: this.inst_email
+            };
+            try{
+                await AXIOS.post("/instructorAccounts",newInstructor).then(reponse=>{
+                    this.accounts.push(response.data);
+                    this.clearInputs();
+                                    
+                })
+                
+            }catch(e){
+                console.log(e);
+            }
+
+        },
 
         async toggleAcc(){
             if (this.InstbuttonStateOn) {
@@ -68,8 +99,8 @@ export default {
             await AXIOS.get("/instructorAccounts").then(reponse=>{
                     this.accounts=[];
                     let accounts = response.data;
-                    this.accounts.push(accounts);                })
-
+                    this.accounts.push(accounts);                
+                })
         },
         async retrieveCustomers(){
             await AXIOS.get("/customerAccounts").then(response=> {
@@ -94,9 +125,13 @@ export default {
             } catch (e){
                 alert("Failed to cancel registration" + e);
             }
+        },
+        clearInputs(){
+            this.inst_email = null;
+            this.inst_name = null;
+            this.inst_password = null;
         }
-
-    },
+    }
 }
 </script>
 <style>
