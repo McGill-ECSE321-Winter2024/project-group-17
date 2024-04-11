@@ -10,10 +10,7 @@
             <input type="time" class="input-style" id="end-time" v-model="end" step="1" />
             <label for="end-time">Select a date:</label>
             <input type="date" class="input-style" id="date" v-model="date" />
-<<<<<<< HEAD
-=======
             <input type="text" class="input-style" placeholder="Instructor Id (Optional)" v-model="instructor" />
->>>>>>> main
         </div>
         <button class ="modify-btn" @click="modifySession()" v-bind:disabled="isModifyButtonDisabled">Modify</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
@@ -73,10 +70,6 @@ export default {
     },
 
     methods: {
-<<<<<<< HEAD
-        async modifySession() {
-            const sessionToModify = {
-=======
         async createSession() {
 
             if (this.instructor === null) {
@@ -84,7 +77,6 @@ export default {
             }
 
             const sessionToCreate = {
->>>>>>> main
                 startTime: this.start,
                 endTime: this.end,
                 date: this.date,

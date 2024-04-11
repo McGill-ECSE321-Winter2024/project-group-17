@@ -11,15 +11,15 @@
                         :class="{ 'state-el': isNameValid, 'disabled': disabled }"> {{ nameError }}</p>
 
                     <!-- Only show the email address field for non-customer statuses -->
-                    <p v-if="status !== 'Customer'" class="item" style="grid-area: address;">Email Address:<span class="error"
+                    <p v-if="status !== 'Owner'" class="item" style="grid-area: address;">Email Address:<span class="error"
                         :class="{ 'state-el': !isAddressEmpty, 'disabled': disabled }">*</span></p>
-                    <input v-if="status !== 'Customer'" type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
-                    <p v-if="status !== 'Customer'" class="error" style="grid-area: address-error;"
+                    <input v-if="status !== 'Owner'" type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
+                    <p v-if="status !== 'Owner'" class="error" style="grid-area: address-error;"
                         :class="{ 'state-el': isAddressValid, 'disabled': disabled }"> {{ addressError }}</p>
 
                     <p class="item" style="grid-area: password;">Password:<span class="error"
-                        :class="{ 'state-el': !isPasswordEmpty, 'disabled': disabled || status === 'Customer' }">*</span></p>
-                    <input type="text" v-model="password" :disabled="disabled || status === 'Customer'" style="grid-area: password-input;">
+                        :class="{ 'state-el': !isPasswordEmpty, 'disabled': disabled || status === 'Owner' }">*</span></p>
+                    <input type="text" v-model="password" :disabled="disabled || status === 'Owner'" style="grid-area: password-input;">
                     <p class="error" style="grid-area: password-error;"
                         :class="{ 'state-el': isPasswordValid, 'disabled': disabled }"> {{ passwordError }}</p>
                 </div>

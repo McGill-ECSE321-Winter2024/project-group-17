@@ -13,12 +13,9 @@ import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
-<<<<<<< HEAD
 import AccountInformation from '@/components/AccountInformation'
-=======
 import SuperviseSession from '@/components/SuperviseSession.vue'
 import ModifySchedule from '@/components/ModifySchedule'
->>>>>>> main
 
 Vue.use(Router)
 
@@ -85,13 +82,11 @@ export default new Router({
           path: 'billing',
           component: BillingInformation
         },
-<<<<<<< HEAD
-=======
+
         {
           path: 'registrations',
           component: ViewCustomerRegistrations
         },
->>>>>>> main
         {
           path: 'approve',
           component: ApproveCourse
