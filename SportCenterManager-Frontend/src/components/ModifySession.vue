@@ -1,14 +1,15 @@
 <template>
     <div>
         <h1>Modify Session</h1>
+        <p style="font-weight: bold; font-size: 24px;">{{ this.courseName }}</p>
+        <p style= "font-size: 20px;">{{ this.instructorName }}</p>
         <div class="input-container">
-            <input type="text" class="input-style" placeholder="Start time" v-model="start" />
-            <input type="text" class="input-style" placeholder="End time" v-model="end" />
-            <label for="datepicker">Select a date:</label>
-            <input type="date" id="datepicker" name="datepicker" v-model="date">
-            <input type="text" class="input-style" placeholder="Instructor Id" v-model="instructor" />
-            <input type="text" class="input-style" placeholder="Course Id" v-model="course" />
-            <input type="text" class="input-style" placeholder="Session id" v-model="session" />
+            <label for="start-time">Select a start time:</label>
+            <input type="time" class="input-style" id="start-time" v-model="start" step="1" />
+            <label for="end-time">Select an end time:</label>
+            <input type="time" class="input-style" id="end-time" v-model="end" step="1" />
+            <label for="end-time">Select a date:</label>
+            <input type="date" class="input-style" id="date" v-model="date" />
         </div>
         <button class ="modify-btn" @click="modifySession()" v-bind:disabled="isModifyButtonDisabled">Modify</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
@@ -32,51 +33,73 @@ export default {
     name: 'ModifySession',
     data() {
         return {
-            sessions: [],
-            session: null,
             start: null,
             end: null,
             date: null,
-            instructor: null,
-            course: null
+            courseName: null,
+            instructorName: null
         };
     },
 
+    async created() {
+            try {
+                const response = await client.get("/courses/" + this.$route.params.courseId);
+                this.courseName = response.data.name;
+            }
+            catch (e) {
+                alert(e.response.data.message);
+            }
+
+            try {
+                const response = await client.get('/instructorAccounts/' + this.$route.params.instructorId);
+                this.instructorName = response.data.name;
+            }
+            catch (e) {
+                alert(e.response.data.message);
+            }
+
+            try {
+                const response = await client.get('/courses/' + this.$route.params.courseId + '/sessions/' + this.$route.params.sessionId);
+                this.start = response.data.startTime;
+                this.end = response.data.endTime;
+                this.date = response.data.date;
+            }
+            catch (e) {
+                alert(e.response.data.message);
+            }
+    },
 
     methods: {
         async modifySession() {
             const sessionToModify = {
-                id: this.session,
                 startTime: this.start,
                 endTime: this.end,
                 date: this.date,
-                instructorId: this.instructor,
-                courseId: this.course
+                instructorId: this.$route.params.instructorId,
+                courseId: this.$route.params.courseId
             };
             try {
-                await client.put(`/courses/${this.course}/sessions/${this.session}`, sessionToModify);
+                await client.put('/courses/' + this.$route.params.courseId + '/sessions/' + this.$route.params.sessionId, sessionToModify);
                 this.clearInputs();
                 this.navigateToSessions();
             }
-            catch (e){
+            catch (e) {
                 alert(e.response.data.message);
             }
         },
         clearInputs() {
             this.start= null,
             this.end= null,
-            this.date= null,
-            this.instructor= null,
-            this.course= null
+            this.date= null
         },
         navigateToSessions() {
-            this.$router.push(`/session`)
+            this.$router.push('/courses/sessions/' + this.$route.params.courseId);
         }
     },
     computed: {
         isModifyButtonDisabled() {
             return (
-                !this.start || !this.end || !this.date || !this.instructor || !this.course || !this.session
+                !this.start || !this.end || !this.date
             );
         }
     }

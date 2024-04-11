@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
+import ca.mcgill.ecse321.SportCenterManager.model.Account;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
@@ -30,7 +31,7 @@ public class LoginServiceTests{
         when(customerRepo.existsCustomerAccountByEmailAndPassword(email,password)).thenReturn(true);
         when(customerRepo.findCustomerAccountByEmailAndPassword(email,password)).thenReturn(bob);
 
-        CustomerAccount customer = customerService.login(email, password);
+        Account customer = customerService.login(email, password);
 
         assertNotNull(customer);
         assertEquals(bob.getEmail(), customer.getEmail());

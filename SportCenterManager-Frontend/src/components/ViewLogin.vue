@@ -1,10 +1,5 @@
 <template>
   <div id="login-component">
-    <div id="login-header">
-      <figure class="image">
-        <p style="margin-top: 20%; margin-bottom: 20%;">LOGIN</p>
-      </figure>
-    </div>
     <div id="login-body">
       <div id="login-form">
         <div class="form-group">
@@ -16,7 +11,7 @@
           <input type="password" v-model="password" placeholder="Enter your password">
         </div>
         <div style="margin-bottom: 10px; font-size: 14px;">
-          Don't have an account? <a href="#" @click="goToCreateAccount" style="font-weight: bold;">Register</a>
+          Don't have an account? <a href="#" @click="goToCreateAccount" style="font-weight: bold; color: blue;">Register</a>
           <div v-if="showCreateAccount">
             <createAccount />
           </div>
@@ -56,7 +51,22 @@ export default {
         password: this.password
       };
       try {
-        const response = await client.post('/login', login);
+        const response = await client.post('/', login);
+
+        const id = response.data.id;
+        
+        if (login.email === "owner@sportcenter.com") {
+          localStorage.setItem('Status', 'Owner');
+          localStorage.setItem('Id', id);
+        }
+        else if (login.email.endsWith("@sportcenter.com")) {
+          localStorage.setItem('Status', 'Instructor');
+          localStorage.setItem('Id', id);
+        }
+        else {
+          localStorage.setItem('Status', 'Customer');
+          localStorage.setItem('Id', id);
+        }
  
         this.email = '';
         this.password = '';
@@ -87,19 +97,6 @@ export default {
     align-items: center;
     width: 100%;
     height: 100%;
-  }
-  #login-header {
-    background-color: #000000;
-    width: 100%;
-    padding: 6%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-    align-items: center;
-    color: white;
-    font-weight: bold;
-    font-size: 50px;
   }
   #login-body {
     display: flex;

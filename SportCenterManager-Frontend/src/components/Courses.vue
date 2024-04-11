@@ -1,18 +1,23 @@
 <template>
    <div>
-    <div class="createbth-container">
-      <button @click="navigateToCreateCourse" class="createbtn">Create Course</button>
+     <div class="createbtn-container">
+      <button @click="openCreateModal" class="course-createbtn">Create Course</button>
+    </div>
+    <CreateCourseModal :is-open="isCreateModalOpen" @close="closeCreateModal" />
+    <div class="search-bar-container">
+      <input type="text" v-model="searchTerm" placeholder="Search by course name" class="search-bar" />
     </div>
     <div class="grid-container">
-      <div v-for="course in courses" :key="course.id" class="grid-item">
-        <h3>{{ course.name }}</h3>
+      <div v-for="course in filteredCourses" :key="course.id" class="grid-item">
+        <a :href="'#/courses/sessions/' + course.id">{{ course.name }}</a>
         <h4>${{ course.costPerSession }}/session</h4>
         <p>{{ course.description }}</p>
         <div class="dropdown-container">
           <div class="dropdown">
             <button @click="toggleDropdown(course.id)" class="dropbtn">&#8942;</button>
             <div v-if="isOpen[course.id]" class="dropdown-content">
-              <a :href="'#/courses/modify/' + course.id" class="dropdown-item">Modify</a>
+              <button @click="openModifyModal" class="dropdown-item">Modify</button>
+              <ModifyCourseModal :is-open="isModifyModalOpen" :courseId="course.id" @close="closeModifyModal" />
               <button @click="confirmDeletion(course.id)" class="dropdown-item deletebtn">Delete</button>
             </div>
           </div>
@@ -25,6 +30,8 @@
 <script>
 import axios from "axios";
 import config from "../../config";
+import CreateCourseModal from './CreateCourseModal.vue';
+import ModifyCourseModal from './ModifyCourseModal.vue';
 
 const frontendUrl = 'http://' + config.dev.host + ':' + config.dev.port;
 const backendUrl = 'http://' + config.dev.backendHost + ':' + config.dev.backendPort;
@@ -34,15 +41,22 @@ const client = axios.create({
     headers: { 'Access-Control-Allow-Origin': frontendUrl}
 });
 export default {
+  components: {
+    CreateCourseModal,
+    ModifyCourseModal
+  },
   data() {
     return {
       courses: [],
       isOpen: {},
+      isCreateModalOpen: false,
+      isModifyModalOpen: false,
+      searchTerm: ''
     };
   },
   async created() {
     try {
-      const response = await client.get('/courses');
+      const response = await client.get('/courses/approved');
       this.courses = response.data.courses;
     }
     catch (e) {
@@ -50,8 +64,24 @@ export default {
     }
   },
   methods: {
-    navigateToCreateCourse(){
-      this.$router.push('/courses/create');
+    openCreateModal() {
+      this.isCreateModalOpen = true;
+    },
+    closeCreateModal() {
+      this.isCreateModalOpen = false;
+    },
+    openModifyModal() {
+      this.isModifyModalOpen = true;
+    },
+    async closeModifyModal() {
+      this.isModifyModalOpen = false;
+      try {
+        const response = await client.get('/courses/approved');
+        this.courses = response.data.courses;
+      }
+      catch (e) {
+        alert(e.response.data.message);
+      }
     },
     toggleDropdown(courseId) {
       this.$set(this.isOpen, courseId, !this.isOpen[courseId]);
@@ -80,13 +110,21 @@ export default {
         alert(e.response.data.message);
       }
     }
+  },
+  computed: {
+    filteredCourses() {
+      return this.courses.filter(course =>
+        course.name.toLowerCase().includes(this.searchTerm.toLowerCase())
+      );
+    }
   }
 };
 
 </script>
 
 <style scoped>
-h3 {
+a {
+  font-size: 24px;
   font-weight: bold;
   color: white;
   background-color: rgb(73, 172, 225);
@@ -160,15 +198,19 @@ p {
   color: rgb(255, 0, 0);
 }
 
-.createbtn{
+.course-createbtn{
   background-color: black;
   color: white;
   border-radius: 10px;
 }
 
-.createbth-container{
+.createbtn-container{
   text-align: right;
   margin-right: 20px;
+}
+
+.course-createbtn:hover {
+  background-color: #0056b3;
 }
 
 .dropdown-item {
@@ -179,5 +221,14 @@ p {
 
 .dropdown-item:hover {
   background-color: #bebebe; 
+}
+.search-bar-container{
+  text-align: left;
+  margin-left: 50px;
+}
+.search-bar {
+  margin-bottom: 10px;
+  padding: 5px;
+  width: 200px;
 }
 </style>
