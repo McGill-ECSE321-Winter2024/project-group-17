@@ -9,7 +9,7 @@
             <input type="time" class="input-style" id="end-time" v-model="end" step="1" />
             <label for="end-time">Select a date:</label>
             <input type="date" class="input-style" id="date" v-model="date" />
-            <select class="input-style" v-model="instructor">
+            <select class="input-style" v-model="instructor" v-if="isOwner">
                 <option value="">Select an instructor</option>
                 <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">{{ instructor.name }}</option>
             </select>
@@ -66,6 +66,10 @@ export default {
     methods: {
         async createSession() {
 
+            if (this.isInstructor){
+                this.instructor = localStorage.getItem("Id");
+            }
+
             if (this.instructor === '') {
                 this.instructor = -1;
             }
@@ -101,6 +105,12 @@ export default {
             return (
                 !this.start || !this.end || !this.date
             );
+        },
+        isOwner(){
+            return localStorage.getItem("Status") === "Owner";
+        },
+        isInstructor(){
+            return localStorage.getItem("Status") === "Instructor";
         }
     }
 };

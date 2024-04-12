@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="createbtn-container" v-if="isOwner">
+        <div class="createbtn-container" v-if="isOwner || isInstructor">
             <button @click="navigateToCreate" class="createbtn btn">Create Session</button>
         </div>
 
