@@ -1,25 +1,28 @@
 <template>
-    <div id="customer-account-component">
-        <div id="customer-account-body">
-            <p style="font-weight: bold; font-size: 25px; text-align: left;">PAYMENT INFORMATION</p>
+    <div id="account-info-component">
+        <div id="account-info-body">
+            <p style="font-weight: bold; font-size: 25px; text-align: left;">MY ACCOUNT</p>
             <div id="account-information-box">
                 <div id="account-table">
                     <p class="item" style="grid-area: name;">Name:<span class="error"
-                        :class="{ 'state-el': !isNameEmpty, 'disabled': disabled }">*</span></p>
+                            :class="{ 'state-el': !isNameEmpty, 'disabled': disabled }">*</span></p>
                     <input type="text" v-model="name" :disabled="disabled" style="grid-area: name-input;">
                     <p class="error" style="grid-area: name-error;"
                         :class="{ 'state-el': isNameValid, 'disabled': disabled }"> {{ nameError }}</p>
 
                     <!-- Only show the email address field for non-customer statuses -->
-                    <p v-if="status !== 'Owner'" class="item" style="grid-area: address;">Email Address:<span class="error"
-                        :class="{ 'state-el': !isAddressEmpty, 'disabled': disabled }">*</span></p>
-                    <input v-if="status !== 'Owner'" type="text" v-model="address" :disabled="disabled" style="grid-area: address-input;">
-                    <p v-if="status !== 'Owner'" class="error" style="grid-area: address-error;"
-                        :class="{ 'state-el': isAddressValid, 'disabled': disabled }"> {{ addressError }}</p>
+                    <p v-if="!isOwner" class="item" style="grid-area: email;">Email Address:<span class="error"
+                            :class="{ 'state-el': !isEmailEmpty, 'disabled': disabled }">*</span></p>
+                    <input v-if="!isOwner" type="text" v-model="email" :disabled="disabled"
+                        style="grid-area: email-input;">
+                    <p v-if="!isOwner" class="error" style="grid-area: email-error;"
+                        :class="{ 'state-el': isEmailValid, 'disabled': disabled }"> {{ emailError }}</p>
 
                     <p class="item" style="grid-area: password;">Password:<span class="error"
-                        :class="{ 'state-el': !isPasswordEmpty, 'disabled': disabled || status === 'Owner' }">*</span></p>
-                    <input type="text" v-model="password" :disabled="disabled || status === 'Owner'" style="grid-area: password-input;">
+                            :class="{ 'state-el': !isPasswordEmpty, 'disabled': disabled }">*</span>
+                    </p>
+                    <input type="text" :disabled="disabled" :value="formatPassword" @input="updatePassword"
+                        style="grid-area: password-input;">
                     <p class="error" style="grid-area: password-error;"
                         :class="{ 'state-el': isPasswordValid, 'disabled': disabled }"> {{ passwordError }}</p>
                 </div>
@@ -51,36 +54,47 @@ const client = axios.create({
 export default {
     data() {
         return {
+            //Modified fields
+            modifiedName: null,
+            modifiedEmail: null,
+            modifiedPassword:null,
+
+            //original fields
             name: null,
-            address: null,
+            email: null,
             password: null,
             disabled: true,
-            status: localStorage.getItem('Status'),
-            id: localStorage.getItem('id')
+            status: null,
+            id: null
         }
     },
     async created() {
         try {
-            if(this.status=='Customer'){
-                const response = await client.post('/customerAccounts/' + this.id);
+            this.status = localStorage.getItem('Status');
+            this.id = localStorage.getItem('Id');
+            if (this.status == 'Customer') {
+                const response = await client.get('/customerAccounts/' + this.id);
                 this.name = response.data.name;
-                this.address = response.data.address;
+                this.email = response.data.email;
                 this.password = response.data.password;
             }
-            
-            if(this.status=='Instructor'){
-                const response = await client.post('/instructorAccounts/' + this.id);
+
+            else if (this.status == 'Instructor') {
+                const response = await client.get('/instructorAccounts/' + this.id);
                 this.name = response.data.name;
-                this.address = response.data.address;
+                this.email = response.data.email;
                 this.password = response.data.password;
             }
-            if(this.status=='Owner'){
-                const response = await client.post('/ownerAccount');
+            else if (this.status == 'Owner') {
+                const response = await client.get('/ownerAccount');
                 this.name = response.data.name;
                 this.password = response.data.password;
             }
+            this.modifiedEmail=this.email;
+            this.modifiedName=this.name;
+            this.modifiedPassword=this.password;
         }
-        catch(e){
+        catch (e) {
             console.log(e);
         }
     },
@@ -88,20 +102,36 @@ export default {
         editAccountInformation() {
             const btn = document.getElementById("edit-btn");
             if (btn.innerHTML === "Cancel") {
-                this.clearAccountInformation();
+                //this.clearAccountInformation();
+                this.email=this.modifiedEmail;
+                this.name=this.modifiedName;
+                this.password=this.modifiedPassword;
+            }else{
+                this.modifiedEmail = this.email;
+                this.modifiedName = this.name;
+                this.modifiedPassword = this.password;
             }
             this.swapButtons();
         },
         async submitAccountInformation() {
             const accountInformation = {
                 name: this.name,
-                address: this.address,
+                email: this.email,
                 password: this.password,
             };
             if (this.checkInput()) {
                 try {
-                    await client.put("/customerAccounts/15752/billingInformation", accountInformation);
                     this.swapButtons();
+                    if (this.status === 'Owner') {
+                        await client.put("/ownerAccount", accountInformation);
+                    }
+                    else if (this.status === 'Instructor') {
+                        await client.put("/instructorAccounts/" + this.id, accountInformation);
+                    }
+                    else if (this.status === 'Customer') {
+                        await client.put("/customerAccounts/" + this.id, accountInformation);
+                    }
+                    //this.swapButtons();
                 }
                 catch (e) {
                     console.log(e);
@@ -109,10 +139,23 @@ export default {
             }
         },
         async clearAccountInformation() {
-            const response = await client.get("/customerAccounts/15752/billingInformation");
-            this.name = response.data.name;
-            this.address = response.data.address;
-            this.password = response.data.password;
+            if (this.status === 'Owner') {
+                const response = await client.get("/ownerAccount");
+                this.name = null;
+                this.password = null;
+            }
+            else if (this.status === 'Instructor') {
+                const response = await client.get("/instructorAccounts/" + this.id);
+                this.name = null;
+                this.email = null;
+                this.password = null;
+            }
+            else if (this.status === 'Customer') {
+                const response = await client.get("/customerAccounts/" + this.id);
+                this.name = null;
+                this.email = null;
+                this.password = null;
+            }
         },
         swapButtons() {
             this.disabled = !this.disabled;
@@ -124,23 +167,38 @@ export default {
                 alert("Please fill in all required fields.");
                 return false;
             }
-            if (!this.isNameValid || !this.isAddressValid || !this.isPasswordValid ) {
+            if (!this.isValid()) {
                 alert("Please correct the errors in the form.");
                 return false;
             }
             return true;
         },
         isEmpty() {
-            return this.isNameEmpty || this.isAddressEmpty || this.isPasswordEmpty;
-        }
+            if (this.status === 'Owner') {
+                return this.isNameEmpty || this.isPasswordEmpty;
+            }
+            else {
+                return this.isNameEmpty || this.isEmailEmpty || this.isPasswordEmpty;
+            }
+        },
+        isValid() {
+            if (this.status === 'Owner') {
+                return this.isNameValid && this.isPasswordValid;
+            }
+            else {
+                return this.isNameValid && this.isEmailValid && this.isPasswordValid;
+            }
+        },
+        updatePassword(event) {
+            this.password = event.target.value;
+        },
     },
     computed: {
-        
         isNameEmpty() {
             return this.name === null || this.name === "";
         },
-        isAddressEmpty() {
-            return this.address === null || this.address === "";
+        isEmailEmpty() {
+            return this.email === null || this.email === "";
         },
         isPasswordEmpty() {
             return this.password === null || this.password === "";
@@ -153,12 +211,12 @@ export default {
             this.nameError = "";
             return true;
         },
-        isAddressValid() {
-            if (this.isAddressEmpty) {
-                this.addressError = "Address is required.";
+        isEmailValid() {
+            if (this.isEmailEmpty) {
+                this.emailError = "Email address is required.";
                 return false;
             }
-            this.addressError = "";
+            this.emailError = "";
             return true;
         },
         isPasswordValid() {
@@ -168,14 +226,22 @@ export default {
             }
             this.passwordError = "";
             return true;
+        },
+        isOwner() {
+            return this.status === 'Owner';
+        },
+        formatPassword() {
+            if (this.disabled) {
+                return this.password ? this.password.replace(/./g, '*') : '';
+            }
+            return this.password;
         }
-        
     }
 }
 </script>
 
 <style>
-#customer-account-component {
+#account-info-component {
     width: 100%;
     height: 100%;
 }
@@ -189,7 +255,7 @@ export default {
     grid-template-columns: 25% 75%;
     grid-row-gap: 10px;
     grid-column-gap: 10px;
-    grid-template-areas: "name name-input" ". name-error" "address address-input" ". address-error" "password password-input" ". password-error" "cardNumber cardNumber-input" ". card-error" "cvc cvc-input" ". cvc-error" "expirationDate expirationDate-input" ". date-error";
+    grid-template-areas: "name name-input" ". name-error" "email email-input" ". email-error" "password password-input" ". password-error";
 }
 
 .item {
