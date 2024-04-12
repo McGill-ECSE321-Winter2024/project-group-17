@@ -117,7 +117,8 @@ export default {
                     this.swapButtons();
                 }
                 catch (e) {
-                    console.log(e);
+                    const error = e.response.data.message;
+                    alert(error);
                 }
             }
         },
