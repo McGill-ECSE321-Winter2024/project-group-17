@@ -11,6 +11,7 @@ import static org.mockito.Mockito.when;
 
 import java.sql.Time;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
@@ -113,6 +114,32 @@ public class ScheduleTests {
         ServiceException e = assertThrows(ServiceException.class,()->scheduleService.updateSchedule(start, end));
         assertEquals("Cannot have closing hour occur before opening hour",e.getMessage());
 
+    }
+
+    @Test
+    public void getExistingSchedule(){
+        Time start = new Time(0);
+        Time end = new Time(3600000);
+    
+        Schedule test_schedule = new Schedule(start,end);
+        Schedule[] test_schedules = {test_schedule};
+        Iterable<Schedule> schedules = Arrays.asList(test_schedules);
+
+        when(scheduleRepo.count()).thenReturn(1L);
+        when((scheduleRepo.findAll())).thenReturn(schedules);
+
+        Schedule schedule = scheduleService.findSchedule();
+        
+        assertNotNull(schedule);
+        assertEquals(test_schedule.getOpeningHours(),schedule.getOpeningHours());
+        assertEquals(test_schedule.getClosingHours(),schedule.getClosingHours());
+    }
+    @Test
+    public void getNonexistingSchedule(){
+        when(scheduleRepo.count()).thenReturn(0L);
+        ServiceException e = assertThrows(ServiceException.class,()->scheduleService.findSchedule());
+        assertEquals("The opening hours have not been set!",e.getMessage());
+       
     }
     
 }
