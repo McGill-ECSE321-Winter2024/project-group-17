@@ -32,7 +32,7 @@
                     
                 </div>
                 
-                <div v-if="isOwner">
+                <div v-if="isOwner || isInstructor">
                     <router-link :to="{ name: 'ModifySession', params: { sessionId: session.id, courseId: courseId, instructorId: session.instructor.id} }">
                         <button class="btn">MODIFY</button>
                     </router-link>
