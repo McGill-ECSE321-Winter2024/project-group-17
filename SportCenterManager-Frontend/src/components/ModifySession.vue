@@ -11,8 +11,8 @@
             <label for="end-time">Select a date:</label>
             <input type="date" class="input-style" id="date" v-model="date" />
 
-            <label for="instructor">Select an instructor:</label>
-            <select class="input-style" id="instructor" v-model="instructor">
+            <label for="instructor" v-if="isOwner">Select an instructor:</label>
+            <select class="input-style" id="instructor" v-model="instructor" v-if="isOwner">
                 <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">{{ instructor.name
                     }}</option>
             </select>
@@ -72,6 +72,7 @@ export default {
             this.start = response.data.startTime;
             this.end = response.data.endTime;
             this.date = response.data.date;
+            this.instructor = response.data.instructor.id;
         }
         catch (e) {
             alert(e.response.data.message);
@@ -117,6 +118,9 @@ export default {
             return (
                 !this.start || !this.end || !this.date
             );
+        },
+        isOwner(){
+            return localStorage.getItem("Status") === "Owner";
         }
     }
 };
