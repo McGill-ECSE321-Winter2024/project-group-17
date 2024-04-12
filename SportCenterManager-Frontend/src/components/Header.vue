@@ -1,5 +1,5 @@
 <template>
-    <div v-if="pageAsset!=null" class="background" style="position: relative; width: 100%; height: 30vh; overflow: hidden;">
+    <div v-if="pageAsset!=null" class="background" style="position: relative; width: 100%; height: 40vh; overflow: hidden;">
         <img :src="pageAsset" style="position: absolute; left: 0; width: 100%; height: 100%; object-fit: cover;">
         <div div class="text-overlay"
             style="position: absolute; line-height:1.0em; top: 50%; left: 50%; transform: translate(-50%, -50%);">{{ pageName }}</div>

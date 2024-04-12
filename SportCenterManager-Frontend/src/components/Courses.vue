@@ -188,11 +188,13 @@ p {
   color: white;
 }
 .grid-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr); 
+  display: flex;
+  width:90vw;
+  flex-wrap: wrap;
   grid-gap: 10px;
-  margin-left: 40px; 
-  margin-right: 40px;
+  margin-left: 10vw; 
+  margin-right: 10vw;
+  justify-content: space-evenly;
 }
 
 .grid-item {
@@ -200,6 +202,8 @@ p {
   padding: 20px;
   text-align: center;
   border-radius: 10px;
+  width: 20vw;
+  min-width: fit-content;
 }
 
 .dropbtn {
@@ -273,11 +277,13 @@ p {
 }
 .search-bar-container{
   text-align: left;
-  margin-left: 50px;
+  margin-left: 10vw;
 }
 .search-bar {
-  margin-bottom: 10px;
+  margin-top: 1.5vw;
+  margin-bottom: 1.5vw;
   padding: 5px;
-  width: 200px;
+  width: 30vw;
+  min-width: 200px;
 }
 </style>

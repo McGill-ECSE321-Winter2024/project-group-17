@@ -63,14 +63,16 @@
     margin-right:2px;
 }
 .nav{
-    height:40px;
+    height:5vw;
     background-color: black;
     color:white;
     display: flex;
     justify-content:space-between;
-    align-items: center;
+    align-items: flex-start;
     padding-left: 1%;
     padding-right: 1%;
+    padding-top:0.5vw;
+    font-size: calc(12px+1.5vw);
 }
 
 a:link{
