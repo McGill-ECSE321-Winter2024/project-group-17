@@ -196,7 +196,7 @@ export default {
         },
         isEmailValid() {
             if (this.isEmailEmpty) {
-                this.emailError = "Address is required.";
+                this.emailError = "Email address is required.";
                 return false;
             }
             this.emailError = "";
