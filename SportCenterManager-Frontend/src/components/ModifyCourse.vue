@@ -66,7 +66,6 @@ export default {
                 await client.put('/courses/' + this.courseId, courseToModify);
                 this.clearInputs();
                 this.closeModal();
-                this.$router.push('/courses');
             }
             catch (e) {
                 if (e.response && e.response.data) {

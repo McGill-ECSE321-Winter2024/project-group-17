@@ -1,14 +1,21 @@
 <template>
     <div>
-        <h1>Create Session</h1>
+        <h1>Modify Session</h1>
+        <p style="font-weight: bold; font-size: 24px;">{{ this.courseName }}</p>
+        <p style= "font-size: 20px;">{{ this.instructorName }}</p>
         <div class="input-container">
-            <input type="text" class="input-style" placeholder="Start time" v-model="start" />
-            <input type="text" class="input-style" placeholder="End time" v-model="end" />
-            <input type="text" class="input-style" placeholder="Date" v-model="date" />
-            <input type="text" class="input-style" placeholder="Instructor Id" v-model="instructor" />
-            <input type="text" class="input-style" placeholder="Course Id" v-model="course" />
+            <label for="start-time">Select a start time:</label>
+            <input type="time" class="input-style" id="start-time" v-model="start" step="1" />
+            <label for="end-time">Select an end time:</label>
+            <input type="time" class="input-style" id="end-time" v-model="end" step="1" />
+            <label for="end-time">Select a date:</label>
+            <input type="date" class="input-style" id="date" v-model="date" />
+            <select class="input-style" v-model="instructor">
+                <option value="">Select an instructor</option>
+                <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">{{ instructor.name }}</option>
+            </select>
         </div>
-        <button class ="create-btn" @click="createSession()" v-bind:disabled="isCreateButtonDisabled">Create</button>
+        <button class ="modify-btn" @click="modifySession()" v-bind:disabled="isModifyButtonDisabled">Modify</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
     </div>
 </template>
@@ -26,61 +33,89 @@ const client = axios.create({
 });
 
 export default {
-    name: 'CreateSession',
+    name: 'ModifySession',
     data() {
         return {
-            sessions: [],
             start: null,
             end: null,
             date: null,
-            instructor: null,
-            course: null
+            instructor: '',
+            name: null,
+            instructors: []
         };
     },
 
-    /*async created() {
+    async created() {
             try {
-                const response = await client.get("/courses/{course_id}/sessions");
-                this.sessions = response.data.sessions
+                const response = await client.get("/courses/" + this.$route.params.courseId);
+                this.courseName = response.data.name;
             }
             catch (e) {
-                alert("Failed to create session. " + e);
+                alert(e.response.data.message);
             }
-    },*/
+
+            try {
+                const response = await client.get('/instructorAccounts/' + this.$route.params.instructorId);
+                this.instructorName = response.data.name;
+            }
+            catch (e) {
+                alert(e.response.data.message);
+            }
+
+            try {
+                const response = await client.get('/courses/' + this.$route.params.courseId + '/sessions/' + this.$route.params.sessionId);
+                this.start = response.data.startTime;
+                this.end = response.data.endTime;
+                this.date = response.data.date;
+            }
+            catch (e) {
+                alert(e.response.data.message);
+            }
+            try {
+                const response = await client.get("/instructorAccounts");
+                this.instructors = response.data.instructors;
+            }
+            catch (e) {
+                alert(e.response.data.message);
+            }
+    },
 
     methods: {
         async createSession() {
+
+            if (this.instructor === '') {
+                this.instructor = -1;
+            }
+
             const sessionToCreate = {
-                start: this.start,
-                end: this.end,
+                startTime: this.start,
+                endTime: this.end,
                 date: this.date,
-                instructor: this.instructor,
-                course: this.course
+                instructorId: this.$route.params.instructorId,
+                courseId: this.$route.params.courseId
             };
             try {
-                await client.post('/courses/{course_id}/sessions', sessionToCreate);
+                await client.put('/courses/' + this.$route.params.courseId + '/sessions/' + this.$route.params.sessionId, sessionToModify);
                 this.clearInputs();
                 this.navigateToSessions();
             }
             catch (e) {
-                alert("Failed to create session. " + e);
+                alert(e.response.data.message);
             }
         },
         clearInputs() {
             this.start= null,
             this.end= null,
-            this.date= null,
-            this.instructor= null,
-            this.course= null
+            this.date= null
         },
         navigateToSessions() {
-            this.$router.push('/courses/{course_id}/sessions')
+            this.$router.push('/courses/sessions/' + this.$route.params.courseId);
         }
     },
     computed: {
-        isCreateButtonDisabled() {
+        isModifyButtonDisabled() {
             return (
-                !this.start || !this.end || !this.date || !this.instructor || !this.course
+                !this.start || !this.end || !this.date
             );
         }
     }
@@ -90,7 +125,7 @@ export default {
 h1 {
     position: relative;
 }
-.create-btn {
+.modify-btn {
     border: none;
     color: white;
     background-color: black;
@@ -108,7 +143,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 50vh;
+  height: 70vh;
 }
 td,
 th {

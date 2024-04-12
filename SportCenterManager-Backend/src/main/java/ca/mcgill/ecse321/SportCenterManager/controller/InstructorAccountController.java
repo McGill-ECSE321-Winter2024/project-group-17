@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import ca.mcgill.ecse321.SportCenterManager.model.InstructorAccount;
 import ca.mcgill.ecse321.SportCenterManager.service.InstructorAccountService;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @CrossOrigin(origins = "*")
 @RestController

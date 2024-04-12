@@ -1,6 +1,8 @@
 package ca.mcgill.ecse321.SportCenterManager.controller;
 
+import ca.mcgill.ecse321.SportCenterManager.dto.AccountResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.ErrorDto;
+import ca.mcgill.ecse321.SportCenterManager.model.Account;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -31,7 +33,7 @@ public class LogInAndOutController {
                             responseCode = "200",
                             description = "OK: Successfully logged in",
                             content = @Content(
-                                    schema = @Schema(implementation = CustomerResponseDto.class),
+                                    schema = @Schema(implementation = AccountResponseDto.class),
                                     examples = {
                                             @ExampleObject(value = "{" + "\"name\" : \"Bob\"," + "\"email\" : \"bob@gmail.com\", " + "\"password\" : \"Password321\"}")
                                     }
@@ -50,18 +52,18 @@ public class LogInAndOutController {
                     )
             }
     )
-    public ResponseEntity<CustomerResponseDto> login(
+    public ResponseEntity<AccountResponseDto> login(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
-                            schema = @Schema(implementation = CustomerResponseDto.class),
+                            schema = @Schema(implementation = AccountResponseDto.class),
                             examples = {
                                     @ExampleObject(value = "{" + "\"name\" : \"Bob\"," + "\"email\" : \"bob@gmail.com\", " + "\"password\" : \"Password321\"}")
                             }
                     )
             )
             @RequestBody LoginDto client) {
-        CustomerAccount customer = customerService.login(client.getEmail(), client.getPassword());
-        return ResponseEntity.ok(new CustomerResponseDto(customer));
+        Account account = customerService.login(client.getEmail(), client.getPassword());
+        return ResponseEntity.ok(new AccountResponseDto(account));
     }
 
     @PostMapping("/logout")
