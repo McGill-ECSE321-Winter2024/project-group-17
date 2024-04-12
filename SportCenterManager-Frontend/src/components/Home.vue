@@ -103,6 +103,10 @@ a:hover {
     flex-direction: column;
     justify-content: center;
     width: 18%;
+    min-width: 200px;
+}
+h1{
+    font-size:  calc(24px + 4vw);
 }
 
 #buttons {
@@ -119,6 +123,7 @@ a:hover {
     margin: 5%;
     border-color: white;
     border-style: solid;
+    font-size:(18px+2vw);
 }
 
 #content {
