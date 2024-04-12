@@ -42,8 +42,11 @@ export default {
                 costPerSession: this.costPerSession
             };
             try {
-                await client.post('/courses', courseToCreate);
+                const response = await client.post('/courses', courseToCreate);
                 this.clearInputs();
+                if (this.isOwner) {
+                    await client.put('/courses/' + response.data.id + '/approve');
+                }
                 this.closeModal();
             }
             catch (e) {
@@ -69,6 +72,9 @@ export default {
             return (
                 !this.name || !this.description || !this.costPerSession
             );
+        },
+        isOwner(){
+            return localStorage.getItem("Status") === "Owner";
         }
     }
 };

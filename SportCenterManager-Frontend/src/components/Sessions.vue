@@ -1,12 +1,16 @@
 <template>
     <div>
-        <div v-if="isOwner">
+        <div class="createbtn-container" v-if="isOwner">
             <button @click="navigateToCreate" class="createbtn btn">Create Session</button>
         </div>
 
         <p style="font-weight: bold; font-size: 48px; text-align: left; margin-left: 200px; margin-bottom: 0px;">{{ name }}</p>
         <p style="font-style: italic; font-size: 24px; text-align: left; margin-left: 200px;margin-bottom: 10px;">${{ costPerSession }}/session</p>
         <p style="font-size: 18px; text-align: left; margin-left: 200px;">{{ description }}</p>
+
+        <div v-if="sessions.length === 0">
+            <p>No sessions currently available.</p>
+        </div>
     
         <div class="session-grid">
             <div v-for="session in sessions" :key="session.id" class="session-box">

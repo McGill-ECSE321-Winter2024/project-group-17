@@ -19,6 +19,7 @@
         </div>
         <button class="modify-btn" @click="modifySession()" v-bind:disabled="isModifyButtonDisabled">Modify</button>
         <button class="clear-btn" @click="clearInputs()">Clear</button>
+        <button class ="modify-btn" @click="navigateToSessions()">Cancel</button>
     </div>
 </template>
 

@@ -8,6 +8,7 @@
         </div>
         <button class ="modify-btn" @click="modifyCourse()" v-bind:disabled="isModifyButtonDisabled">Modify</button>
         <button class ="clear-btn" @click="clearInputs()">Clear</button>
+        <button class ="modify-btn" @click="closeModal()">Cancel</button>
     </div>
 
 </template>
