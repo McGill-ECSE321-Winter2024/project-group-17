@@ -32,7 +32,7 @@
                     
                 </div>
                 
-                <div v-if="isOwner || isInstructor">
+                <div v-if="isOwner || session.instructor.id.toString() === currInstructor.toString()">
                     <router-link :to="{ name: 'ModifySession', params: { sessionId: session.id, courseId: courseId, instructorId: session.instructor.id} }">
                         <button class="btn">MODIFY</button>
                     </router-link>
@@ -63,10 +63,12 @@ export default {
             costPerSession: null,
             sessions: [],
             instructors: {},
-            courseId: this.$route.params.courseId
+            courseId: this.$route.params.courseId,
+            currInstructor: localStorage.getItem("Id")
         };
     },
     async created() {
+        console.log(this.currInstructor);
         this.$set(this.instructors, 0, 'TBD');
         try {
             const response = await client.get('/courses/' + this.$route.params.courseId);
@@ -86,6 +88,7 @@ export default {
         }
         this.sessions.forEach(session => {
             this.findInstructor(session.instructor.id);
+            console.log(session.instructor.id);
         });
     },
     methods: {
