@@ -122,6 +122,9 @@ export default {
             if (this.checkInput()) {
                 try {
                     await client.put("/customerAccounts/" + this.id + "/billingInformation", billingInformation);
+                    if (localStorage.getItem("hasBilling") === "false") {
+                        localStorage.setItem("hasBilling", true);
+                    }
                     this.swapButtons();
                 }
                 catch (e) {

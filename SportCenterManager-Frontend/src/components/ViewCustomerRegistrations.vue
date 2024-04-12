@@ -171,11 +171,10 @@ export default {
 
             }
         },
-
         async cancelRegistration(registration){
             try {
-                await AXIOS.delete("/courses/" + registration.session.course.id + "/sessions/" + registration.session.id + "/registrations/" + registration.customer.id).then(response => {
-                    this.getRegistrations();
+                await AXIOS.delete("/courses/" + registration.session.course.id + "/sessions/" + registration.session.id + "/registrations/" + localStorage.getItem("Id")).then(response => {
+                    this.filterRegistrations();
                 })
             } catch (e){
                 alert("Failed to cancel registration" + e);

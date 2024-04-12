@@ -63,6 +63,7 @@ export default {
         },
 
         async register(){
+            if (this.hasBillingInfo()) {
                 await AXIOS.put("/courses/" + this.session.course.id + "/sessions/" + this.session.id + "/registrations/" + localStorage.getItem("Id")).then(response => {
                     localStorage.setItem("registerAuthenticated", true);
                     this.$router.push({name: "RegistrationConfirmation", params: {courseId: this.session.course.id, sessionId: this.session.id}});
@@ -70,9 +71,14 @@ export default {
                     alert(response.response.data.message)
                 })
                 this.confirmEnabled = false;
+            } else {
+                alert("Please add billing information before registering!")
+            }  
+        },
+        hasBillingInfo() {
+            return localStorage.getItem("hasBilling") === "true";
         }
     },
-
     beforeMount() {
         this.getSession();
     }
