@@ -56,7 +56,6 @@ export default {
       };
       try {
         await client.post("/customerAccounts", customerAccount);
-        localStorage.setItem("hasBilling", false);
 
         this.name = '';
         this.email = '';
