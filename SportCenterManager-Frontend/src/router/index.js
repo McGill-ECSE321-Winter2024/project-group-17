@@ -13,6 +13,7 @@ import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
+import ManageAccounts from '@/components/manageAccounts'
 import SuperviseSession from '@/components/SuperviseSession.vue'
 import ModifySchedule from '@/components/ModifySchedule'
 
@@ -88,6 +89,10 @@ export default new Router({
         {
           path:'modifySchedule',
           component: ModifySchedule
+        },
+        {
+          path: 'manageAccounts',
+          component: ManageAccounts
         }
       ]
     }, 

@@ -9,7 +9,10 @@
             <input type="time" class="input-style" id="end-time" v-model="end" step="1" />
             <label for="end-time">Select a date:</label>
             <input type="date" class="input-style" id="date" v-model="date" />
-            <input type="text" class="input-style" placeholder="Instructor Id (Optional)" v-model="instructor" />
+            <select class="input-style" v-model="instructor">
+                <option value="">Select an instructor</option>
+                <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">{{ instructor.name }}</option>
+            </select>
         </div>
         <button class ="create-btn" @click="createSession()" v-bind:disabled="isCreateButtonDisabled">Create</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
@@ -37,8 +40,9 @@ export default {
             start: null,
             end: null,
             date: null,
-            instructor: null,
-            name: null
+            instructor: '',
+            name: null,
+            instructors: []
         };
     },
 
@@ -50,12 +54,19 @@ export default {
             catch (e) {
                 alert(e.response.data.message);
             }
+            try {
+                const response = await client.get("/instructorAccounts");
+                this.instructors = response.data.instructors;
+            }
+            catch (e) {
+                alert(e.response.data.message);
+            }
     },
 
     methods: {
         async createSession() {
 
-            if (this.instructor === null) {
+            if (this.instructor === '') {
                 this.instructor = -1;
             }
 
@@ -116,7 +127,7 @@ h1 {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 60vh;
+  height: 70vh;
 }
 td,
 th {
