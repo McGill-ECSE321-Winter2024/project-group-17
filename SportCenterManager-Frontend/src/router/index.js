@@ -13,6 +13,7 @@ import ApproveCourse from '@/components/ApproveCourse'
 import ViewLogin from '@/components/ViewLogin.vue'
 import RegistrationConfirmation from '@/components/RegisterConfirmation'
 import ViewCustomerRegistrations from '@/components/ViewCustomerRegistrations'
+import AccountInformation from '@/components/AccountInformation'
 import ManageAccounts from '@/components/manageAccounts'
 import SuperviseSession from '@/components/SuperviseSession.vue'
 import ModifySchedule from '@/components/ModifySchedule'
@@ -75,9 +76,14 @@ export default new Router({
       component: AccountView,
       children: [
         {
+        path:'/',
+        component: AccountInformation
+        },
+        {
           path: 'billing',
           component: BillingInformation
         },
+
         {
           path: 'registrations',
           component: ViewCustomerRegistrations
@@ -95,7 +101,7 @@ export default new Router({
           component: ManageAccounts
         }
       ]
-    }, 
+    },
     {
       path: '/authen',
       name: 'Login',

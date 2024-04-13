@@ -144,7 +144,6 @@ h1 {
     padding: 10px 20px;
     border-radius: 5px;
 }
-
 .input-container {
     display: flex;
     flex-direction: column;

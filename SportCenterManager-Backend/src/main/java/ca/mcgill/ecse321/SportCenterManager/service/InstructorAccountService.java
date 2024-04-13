@@ -39,7 +39,7 @@ public class InstructorAccountService {
         else {
             // Check if name, email and password are invalid
             String nameError = isNameEmpty(name);
-            String emailError = isEmailValid(email);
+            String emailError = isEmailValid(email, "update", id);
             String passwordError = isPasswordValid(password);
 
             // Error messages are thrown if name or email or password are invalid. If not update, save and return
@@ -65,7 +65,7 @@ public class InstructorAccountService {
     public InstructorAccount createInstructor(String name, String email, String password) {
         // Check if name, email and password are invalid
         String nameError = isNameEmpty(name);
-        String emailError = isEmailValid(email);
+        String emailError = isEmailValid(email, "create", 0);
         String passwordError = isPasswordValid(password);
 
         // Error messages are thrown if name or email or password are invalid. If not create, save and return
@@ -97,7 +97,7 @@ public class InstructorAccountService {
     }
 
     //HELPER METHODS
-    private String isEmailValid(String email) {
+    private String isEmailValid(String email, String method, int id) {
         String error = "";
         // Check if email is empty
         if (email == null || email.isEmpty()) {
@@ -141,8 +141,13 @@ public class InstructorAccountService {
             }
         }
         // Check if email already exists
-        if (instructorRepo.existsInstructorAccountByEmail(email)) {
+        if (method.equals("create") && instructorRepo.existsInstructorAccountByEmail(email)) {
             error = "Instructor with this email already exists";
+        } else if (method.equals("update")) {
+            InstructorAccount instructor = instructorRepo.findInstructorAccountById(id);
+            if (instructor != null && !instructor.getEmail().equals(email) && instructorRepo.existsInstructorAccountByEmail(email)) {
+                error = "Instructor with this email already exists";
+            }
         }
         return error;
     }

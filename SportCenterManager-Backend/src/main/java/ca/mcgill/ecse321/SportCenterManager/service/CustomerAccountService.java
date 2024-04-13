@@ -50,7 +50,7 @@ public class CustomerAccountService {
        else {
            // Check if name, email and password are invalid
            String nameError = isNameEmpty(name);
-           String emailError = isEmailValid(email);
+           String emailError = isEmailValid(email, "update", id);
            String passwordError = isPasswordValid(password);
 
            // Error messages are thrown if name or email or password are invalid. If not update, save and return
@@ -77,7 +77,7 @@ public class CustomerAccountService {
 
         // Check if name, email and password are invalid
         String nameError = isNameEmpty(name);
-        String emailError = isEmailValid(email);
+        String emailError = isEmailValid(email, "create", 0);
         String passwordError = isPasswordValid(password);
 
        // Error messages are thrown if name or email or password are invalid. If not create, save and return
@@ -135,7 +135,7 @@ public class CustomerAccountService {
    }
 
     //HELPER METHODS
-    private String isEmailValid(String email) {
+    private String isEmailValid(String email, String method, int id) {
         String error = "";
         // Check if email is empty
         if (email == null || email.isEmpty()) {
@@ -168,8 +168,13 @@ public class CustomerAccountService {
             }
         }
         // Check if email already exists
-        if (customerRepo.existsCustomerAccountByEmail(email)) {
+        if (method.equals("create") && customerRepo.existsCustomerAccountByEmail(email)) {
             error = "Customer with this email already exists";
+        } else if (method.equals("update")) {
+            CustomerAccount customer = customerRepo.findCustomerAccountById(id);
+            if (customer != null && !customer.getEmail().equals(email) && customerRepo.existsCustomerAccountByEmail(email)) {
+                error = "Customer with this email already exists";
+            }
         }
         return error;
     }
