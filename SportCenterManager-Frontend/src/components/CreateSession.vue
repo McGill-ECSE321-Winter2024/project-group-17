@@ -1,8 +1,7 @@
 <template>
     <div>
-        <h1>Modify Session</h1>
-        <p style="font-weight: bold; font-size: 24px;">{{ this.courseName }}</p>
-        <p style= "font-size: 20px;">{{ this.instructorName }}</p>
+        <h1>Create Session</h1>
+        <p style="font-weight: bold; font-size: 24px;">{{ this.name }}</p>
         <div class="input-container">
             <label for="start-time">Select a start time:</label>
             <input type="time" class="input-style" id="start-time" v-model="start" step="1" />
@@ -10,13 +9,14 @@
             <input type="time" class="input-style" id="end-time" v-model="end" step="1" />
             <label for="end-time">Select a date:</label>
             <input type="date" class="input-style" id="date" v-model="date" />
-            <select class="input-style" v-model="instructor">
+            <select class="input-style" v-model="instructor" v-if="isOwner">
                 <option value="">Select an instructor</option>
                 <option v-for="instructor in instructors" :key="instructor.id" :value="instructor.id">{{ instructor.name }}</option>
             </select>
         </div>
-        <button class ="modify-btn" @click="modifySession()" v-bind:disabled="isModifyButtonDisabled">Modify</button>
+        <button class ="create-btn" @click="createSession()" v-bind:disabled="isCreateButtonDisabled">Create</button>
         <button class ="clear-btn"  @click="clearInputs()">Clear</button>
+        <button class ="create-btn"  @click="navigateToSessions()">Cancel</button>
     </div>
 </template>
 
@@ -33,9 +33,10 @@ const client = axios.create({
 });
 
 export default {
-    name: 'ModifySession',
+    name: 'CreateSession',
     data() {
         return {
+            sessions: [],
             start: null,
             end: null,
             date: null,
@@ -48,25 +49,7 @@ export default {
     async created() {
             try {
                 const response = await client.get("/courses/" + this.$route.params.courseId);
-                this.courseName = response.data.name;
-            }
-            catch (e) {
-                alert(e.response.data.message);
-            }
-
-            try {
-                const response = await client.get('/instructorAccounts/' + this.$route.params.instructorId);
-                this.instructorName = response.data.name;
-            }
-            catch (e) {
-                alert(e.response.data.message);
-            }
-
-            try {
-                const response = await client.get('/courses/' + this.$route.params.courseId + '/sessions/' + this.$route.params.sessionId);
-                this.start = response.data.startTime;
-                this.end = response.data.endTime;
-                this.date = response.data.date;
+                this.name = response.data.name;
             }
             catch (e) {
                 alert(e.response.data.message);
@@ -83,6 +66,10 @@ export default {
     methods: {
         async createSession() {
 
+            if (this.isInstructor){
+                this.instructor = localStorage.getItem("Id");
+            }
+
             if (this.instructor === '') {
                 this.instructor = -1;
             }
@@ -91,11 +78,11 @@ export default {
                 startTime: this.start,
                 endTime: this.end,
                 date: this.date,
-                instructorId: this.$route.params.instructorId,
-                courseId: this.$route.params.courseId
+                instructorId: this.instructor,
+                courseId: this.$route.params.courseId  
             };
             try {
-                await client.put('/courses/' + this.$route.params.courseId + '/sessions/' + this.$route.params.sessionId, sessionToModify);
+                await client.post(`/courses/` + this.$route.params.courseId + `/sessions`, sessionToCreate);
                 this.clearInputs();
                 this.navigateToSessions();
             }
@@ -106,17 +93,24 @@ export default {
         clearInputs() {
             this.start= null,
             this.end= null,
-            this.date= null
+            this.date= null,
+            this.instructor= null
         },
         navigateToSessions() {
             this.$router.push('/courses/sessions/' + this.$route.params.courseId);
         }
     },
     computed: {
-        isModifyButtonDisabled() {
+        isCreateButtonDisabled() {
             return (
                 !this.start || !this.end || !this.date
             );
+        },
+        isOwner(){
+            return localStorage.getItem("Status") === "Owner";
+        },
+        isInstructor(){
+            return localStorage.getItem("Status") === "Instructor";
         }
     }
 };
@@ -125,7 +119,7 @@ export default {
 h1 {
     position: relative;
 }
-.modify-btn {
+.create-btn {
     border: none;
     color: white;
     background-color: black;
