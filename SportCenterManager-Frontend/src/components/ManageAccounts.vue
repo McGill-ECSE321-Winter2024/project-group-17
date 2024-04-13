@@ -65,8 +65,13 @@ export default {
                 this.accounts = response.data.instructors;
             })
         }
-        catch (e) {
-            console.log(e);
+        catch (error) {
+            if (error.response && error.response.data) {
+          alert(error.response.data.message); 
+        } 
+        else {
+          alert('An error occurred while creating the account.'); 
+        }
         }
     },
 
@@ -82,8 +87,13 @@ export default {
                 await AXIOS.post('/instructorAccounts', newInstructor);
                 this.retrieveInstructors();
                 this.clearInputs();
-            } catch (e) {
-                console.log(e);
+            } catch (error) {
+                if (error.response && error.response.data) {
+                    alert(error.response.data.message); 
+                } 
+                else {
+                    alert('An error occurred while creating the account.'); 
+                }
             }
         },
 

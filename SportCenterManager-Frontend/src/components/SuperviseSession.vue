@@ -65,7 +65,7 @@ export default {
             this.session = response.data;
         }
         catch (e) {
-            (e.response.data.message);
+            alert(e.response.data.message);
         }
     }
 }
