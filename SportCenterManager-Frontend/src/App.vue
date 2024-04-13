@@ -25,6 +25,7 @@ export default {
         password: 'Password$',
       };
     try {
+      this.$router.push('/home');
       await client.post("/ownerAccount", owner);
     }
     catch (error) {

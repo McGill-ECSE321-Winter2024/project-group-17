@@ -63,8 +63,7 @@ export default {
             this.instructorName = response.data.name;
         }
         catch (e) {
-            //alert(e.response.data.message);
-            console.log(e);
+            alert(e.response.data.message);
         }
 
         try {
