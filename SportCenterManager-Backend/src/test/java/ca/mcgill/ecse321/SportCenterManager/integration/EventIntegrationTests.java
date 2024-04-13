@@ -60,9 +60,9 @@ public class EventIntegrationTests {
     private  Time ModifiedStartTime = Time.valueOf("12:00:00");
     private  Time validEndTime = Time.valueOf("12:00:00");
     private  Time ModifiedEndTime = Time.valueOf("14:00:00");
-    private  Date validDate = Date.valueOf("2024-04-13");
+    private  Date validDate = Date.valueOf("2026-04-13");
     private  Date inValidDate = Date.valueOf("2024-03-13");
-    private  Date ModifiedDate = Date.valueOf("2024-05-13");
+    private  Date ModifiedDate = Date.valueOf("2026-05-13");
     private int validInstructorId;
     private int validSessionId;
     
@@ -399,6 +399,24 @@ public class EventIntegrationTests {
     
     @Test
     @Order(17)
+    public void testGetSupervisedSessions() {
+    	//Setup
+    	String url = "/instructor/" + validInstructorId + "/sessions";
+    	
+    	//Execution
+    	ResponseEntity<SessionListDto> response = client.getForEntity(url, SessionListDto.class);
+    	SessionListDto sessions = response.getBody();
+    	
+    	//Asertions
+    	assertNotNull(response);
+    	assertEquals(HttpStatus.OK, response.getStatusCode());
+    	assertEquals(1, sessions.getSessions().size());
+    	assertEquals(validSessionId, sessions.getSessions().get(0).getId());
+    	
+    }
+    
+    @Test
+    @Order(18)
     public void testGetSpecificSession(){
         //Setup
         String url ="/courses/"+validCourseId+"/sessions/"+validSessionId;
@@ -420,7 +438,7 @@ public class EventIntegrationTests {
     }
 
     @Test
-    @Order(18)
+    @Order(19)
     public void testGetSpecificInvalidSession(){
         //Setup
         int invalidSessionId = this.validSessionId + 5;
@@ -437,8 +455,9 @@ public class EventIntegrationTests {
         assertEquals("Session with inputted id is not found.", error.getMessage());
     }
 
+    
     @Test
-    @Order(19)
+    @Order(20)
     public void testCreateInvalidSessionTime(){
         //setup
         SessionRequestDto request = new SessionRequestDto(inValidStartTime,validEndTime,validDate,validInstructorId,validCourseId);
@@ -456,7 +475,7 @@ public class EventIntegrationTests {
     }
 
     @Test
-    @Order(20)
+    @Order(21)
     public void testCreateInvalidSessionDate(){
         //setup
         SessionRequestDto request = new SessionRequestDto(validStartTime,validEndTime,inValidDate,validInstructorId,validCourseId);
@@ -474,7 +493,7 @@ public class EventIntegrationTests {
     }
 
     @Test
-    @Order(21)
+    @Order(22)
     public void testModifyValidSession(){
         //setup
         SessionRequestDto request = new SessionRequestDto(ModifiedStartTime, ModifiedEndTime, ModifiedDate, validInstructorId, validCourseId);
@@ -498,7 +517,7 @@ public class EventIntegrationTests {
     }
 
     @Test
-    @Order(22)
+    @Order(23)
     public void testModifySessionByInvalidId(){
         //setup
         SessionRequestDto request = new SessionRequestDto(ModifiedStartTime, ModifiedEndTime, ModifiedDate, validInstructorId, validCourseId);
@@ -515,7 +534,7 @@ public class EventIntegrationTests {
     }
 
     @Test
-    @Order(23)
+    @Order(24)
     public void testModifySessionByInvalidTime(){
         //setup
         SessionRequestDto request = new SessionRequestDto(inValidStartTime, ModifiedEndTime, ModifiedDate, validInstructorId, validCourseId);
@@ -530,7 +549,7 @@ public class EventIntegrationTests {
         assertEquals("End time must be be after the start time.", error.getMessage());
     }
     @Test
-    @Order(24)
+    @Order(25)
     public void testModifyCourseByInvalidDate(){
         //setup
         SessionRequestDto request = new SessionRequestDto(ModifiedStartTime, ModifiedEndTime, inValidDate, validInstructorId, validCourseId);
@@ -546,7 +565,7 @@ public class EventIntegrationTests {
     }
     
     @Test
-    @Order(25)
+    @Order(26)
     public void testDeleteSessionByInvalidId(){
         int invalidSessionId = validSessionId + 1000000000;
         String url = "/courses/" + validCourseId + "/sessions/" + invalidSessionId;
@@ -562,7 +581,7 @@ public class EventIntegrationTests {
     }
     
     @Test
-    @Order(26)
+    @Order(27)
     public void testDeleteSessionByValidId(){
         String url = "/courses/" + validCourseId + "/sessions/" + validSessionId;
 
@@ -577,7 +596,7 @@ public class EventIntegrationTests {
     }
     
     @Test
-    @Order(27)
+    @Order(28)
     public void testDeleteCourseByValidId(){
         // setup
         String url = "/courses/" + this.validCourseId;
@@ -595,7 +614,7 @@ public class EventIntegrationTests {
     }
 
     @Test
-    @Order(28)
+    @Order(29)
     public void testDeleteCourseByInvalidId(){
         // setup
         String url = "/courses/" + this.validCourseId;

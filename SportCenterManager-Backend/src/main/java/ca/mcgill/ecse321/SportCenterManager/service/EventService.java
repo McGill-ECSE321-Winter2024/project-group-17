@@ -239,6 +239,10 @@ public class EventService {
         Course aCourse = findCourseById(courseId);
         Schedule aSchedule = scheduleService.findSchedule();
         
+        if (start_time.before(aSchedule.getOpeningHours()) || end_time.after(aSchedule.getClosingHours())) {
+        	throw new ServiceException(HttpStatus.FORBIDDEN, "Cannot create a session outside of the center's open hours.");
+        }
+        
         Session sessionToCreate = new Session(start_time, end_time, date,aInstructorAccount,aCourse,aSchedule);
         return sessionRepo.save(sessionToCreate);
 	}

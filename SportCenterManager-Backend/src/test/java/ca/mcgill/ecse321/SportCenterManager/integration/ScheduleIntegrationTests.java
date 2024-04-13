@@ -5,9 +5,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.sql.Time;
 
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -16,22 +19,31 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import ca.mcgill.ecse321.SportCenterManager.dao.ScheduleRepository;
 import ca.mcgill.ecse321.SportCenterManager.dto.ErrorDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.ScheduleRequestDto;
 import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 public class ScheduleIntegrationTests {
 
     @Autowired
     private TestRestTemplate client;
+    @Autowired
+    private ScheduleRepository scheduleRepo;
 
     private final Time VALID_START_TIME = new Time(1);
     private final Time VALID_END_TIME = new Time(3600000);
     private final Time INVALID_START_TIME = null;
     private final Time INVALID_END_TIME = null;
+    
+    @BeforeAll
+    @AfterAll
+    public void clearDatabase() {
+    	scheduleRepo.deleteAll();
+    }
     
     @Test 
     @Order(1)
