@@ -8,14 +8,18 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import ca.mcgill.ecse321.SportCenterManager.dao.ScheduleRepository;
+import ca.mcgill.ecse321.SportCenterManager.dao.SessionRepository;
 import ca.mcgill.ecse321.SportCenterManager.exception.ServiceException;
 import ca.mcgill.ecse321.SportCenterManager.model.Schedule;
+import ca.mcgill.ecse321.SportCenterManager.model.Session;
 import jakarta.transaction.Transactional;
 
 @Service
 public class ScheduleService {
     @Autowired
     private ScheduleRepository scheduleRepo;
+    @Autowired
+    private SessionRepository sessionRepo;
 
     @Transactional
     //assuming valid time format due to fronted dropdown config
@@ -29,9 +33,16 @@ public class ScheduleService {
             if(scheduleRepo.count() == 0L){
                 Schedule schedule = new Schedule(startTime, endTime);
                 return scheduleRepo.save(schedule);
-            }else{
-                scheduleRepo.deleteAll();
+            } else {
+            	Schedule oldSchedule = ((List<Schedule>)scheduleRepo.findAll()).get(0);
                 Schedule schedule = new Schedule(startTime, endTime);
+                scheduleRepo.save(schedule);
+            	List<Session> allSessions = (List<Session>)sessionRepo.findAll();
+            	for (Session session: allSessions) {
+            		session.setSchedule(schedule);
+            		sessionRepo.save(session);
+                }
+                scheduleRepo.delete(oldSchedule);
                 return scheduleRepo.save(schedule);
             }
         }

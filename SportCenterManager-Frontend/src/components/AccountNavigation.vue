@@ -10,10 +10,10 @@
                 type="button" @click="toggleBilling">Payment Information</button>
         </router-link>
 
-        <router-link v-if="isCustomer" to="/myAccount/registrations">
+        <router-link to="/myAccount/registrations">
             <button class="acc-nav-btn state-btn" v-bind:disabled="registrationState"
                 style="margin-bottom: 2%; text-align: left;" type="button"
-                @click="toggleRegistration">Registrations</button>
+                @click="toggleRegistration">{{ registrationLabel }}</button>
         </router-link>
 
         <router-link v-if="isOwner" to="/myAccount/approve">
@@ -154,6 +154,18 @@ export default {
         },
         isOwner() {
             return localStorage.getItem('Status') === 'Owner';
+        },
+        isInstructor(){
+            return localStorage.getItem('Status') === 'Instructor';
+        },
+        registrationLabel(){
+            if (this.isCustomer) {
+                return "Registrations";
+            } else if (this.isInstructor){
+                return "Supervised Sessions";
+            } else if (this.isOwner){
+                return "Manage Registrations";
+            }
         }
     }
 }

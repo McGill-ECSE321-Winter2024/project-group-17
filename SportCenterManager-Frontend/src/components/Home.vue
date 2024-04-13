@@ -26,11 +26,7 @@
             <div id="second_block">
                 <div id="content_right">
                     <h2> About the Center </h2>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut
-                        labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in
-                        voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat
-                        non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. </p>
+                    <p> Accessible by metro, bus, car and walking, the centre is located in the bustling neighborhood of Milton Park. With passionate instructors, a diversity of courses available and sessions offered at all times of the day, there is something for everyone!  </p>
                     <h3> Opening Hours </h3>
                     <p> {{ openingHours }} to {{ closingHours }}</p>
                 </div>
@@ -103,6 +99,10 @@ a:hover {
     flex-direction: column;
     justify-content: center;
     width: 18%;
+    min-width: 200px;
+}
+h1{
+    font-size:  calc(24px + 4vw);
 }
 
 #buttons {
@@ -119,6 +119,7 @@ a:hover {
     margin: 5%;
     border-color: white;
     border-style: solid;
+    font-size:(18px+2vw);
 }
 
 #content {

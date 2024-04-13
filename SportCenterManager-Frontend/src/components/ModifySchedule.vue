@@ -3,6 +3,7 @@
         <p style="font-weight: bold; font-size: 25px;">MODIFY CENTER SCHEDULE</p>
         <div class="content">
             <p> Current Schedule: {{ curr_open }} to {{ curr_close }}</p>
+            <p> Note that this schedule will only apply to sessions created after its been updated. </p>
             <div class="time-div">
                 <p> Opening Time: </p>
                 <div>
