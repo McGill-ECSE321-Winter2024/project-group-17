@@ -128,5 +128,5 @@ public class ScheduleIntegrationTests {
         assertEquals("Cannot have closing hour occur before opening hour",createdSchedule.getMessage());
 
     }
-    
+      
 }
