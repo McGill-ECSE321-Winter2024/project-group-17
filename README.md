@@ -43,7 +43,7 @@ The wiki for Sprint 2 can be found [here](https://github.com/McGill-ECSE321-Wint
 ## Sprint 3 
 The wiki for Sprint 3 can be found [here](https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Sprint-3:-Report).
 
-| Name          | ID            | Deliverable 2 Role | Deliverable 2 Hours 
+| Name          | ID            | Deliverable 3 Role | Deliverable 3 Hours 
 | ------------- |:-------------:| :-----:|:-----------------|
 | Mahmoud Amin   | 261096406 | Frontend, Testing, Presentation |29.5 |
 | Thibaut Chan Teck Su   | 261120277    | Frontend, Testing, Presentation  |29.5|
