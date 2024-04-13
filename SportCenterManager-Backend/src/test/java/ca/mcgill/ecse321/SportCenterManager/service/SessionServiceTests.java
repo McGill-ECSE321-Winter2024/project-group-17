@@ -84,13 +84,13 @@ public class SessionServiceTests {
         Schedule schedule = new Schedule(Time.valueOf("8:00:00"), Time.valueOf("13:00:00"));
         Time startTime = Time.valueOf("10:00:00");
         Time endTime = Time.valueOf("12:00:00");
-        Date date = Date.valueOf("2024-03-15");
+        Date date = Date.valueOf("2026-03-15");
         Session session = new Session(startTime, endTime, date, instructor, course, schedule);
         int id = session.getId();
 
         Time newStartTime = Time.valueOf("11:00:00");
         Time newEndTime = Time.valueOf("13:00:00");
-        Date newDate = Date.valueOf("2024-04-16");
+        Date newDate = Date.valueOf("2026-04-16");
         Course newCourse = new Course("Zumba", "Intermediate class", 50 );
         int courseId = 1;
         InstructorAccount newInstructor = new InstructorAccount("Jannett", "jannett@gmail.com", "abcd");
@@ -125,7 +125,7 @@ public class SessionServiceTests {
 
         Time newStartTime = Time.valueOf("13:00:00");
         Time newEndTime = Time.valueOf("11:00:00");
-        Date newDate = Date.valueOf("2024-04-16");
+        Date newDate = Date.valueOf("2024-06-16");
         Course newCourse = new Course("Zumba", "Intermediate class", 50 );
         int courseId = 1;
         InstructorAccount newInstructor = new InstructorAccount("Jannett", "jannett@gmail.com", "abcd");
@@ -192,7 +192,7 @@ public class SessionServiceTests {
 
         Time newStartTime = Time.valueOf("10:00:00");
         Time newEndTime = Time.valueOf("11:00:00");
-        Date newDate = Date.valueOf("2024-04-15");
+        Date newDate = Date.valueOf("2026-04-15");
         Course newCourse = new Course("Zumba", "Intermediate class", 50 );
         int courseId = 1;
         InstructorAccount newInstructor = new InstructorAccount("Jannett", "jannett@gmail.com", "abcd");
@@ -221,7 +221,7 @@ public class SessionServiceTests {
         int instructorId = 1;
         Time startTime = Time.valueOf("10:00:00");
         Time endTime = Time.valueOf("12:00:00");
-        Date date = Date.valueOf("2024-04-15");
+        Date date = Date.valueOf("2026-04-15");
         Schedule schedule = new Schedule(Time.valueOf("9:00:00"), Time.valueOf("16:00:00"));
         Session session = new Session(startTime, endTime, date, instructor, course, schedule);
         		
@@ -253,7 +253,7 @@ public class SessionServiceTests {
         int instructorId = 1;
         Time startTime = Time.valueOf("13:00:00");
         Time endTime = Time.valueOf("12:00:00");
-        Date date = Date.valueOf("2024-03-15");
+        Date date = Date.valueOf("2026-03-15");
         Schedule schedule = new Schedule(Time.valueOf("9:00:00"), Time.valueOf("16:00:00"));
 
         lenient().when(sessionRepo.save(any(Session.class))).thenReturn(null);
@@ -269,6 +269,56 @@ public class SessionServiceTests {
         verify(sessionRepo, never()).save(any(Session.class));
     }
 
+    @Test
+    public void testCreateInvalidSessionAfterClosing(){
+        //Setup
+        Course course = new Course("yoga", "Beginner class", 44 );
+        int courseId = 1;
+        InstructorAccount instructor = new InstructorAccount("Bob", "bob@gmail.com", "1234");
+        int instructorId = 1;
+        Time startTime = Time.valueOf("12:00:00");
+        Time endTime = Time.valueOf("13:00:00");
+        Date date = Date.valueOf("2026-03-15");
+        Schedule schedule = new Schedule(Time.valueOf("9:00:00"), Time.valueOf("12:30:00"));
+
+        lenient().when(sessionRepo.save(any(Session.class))).thenReturn(null);
+        lenient().when(instructorService.findInstructorById(instructorId)).thenReturn(instructor);
+        lenient().when(courseRepo.findCourseById(courseId)).thenReturn(course);
+        lenient().when(scheduleService.findSchedule()).thenReturn(schedule);
+
+        ServiceException exception = assertThrows(ServiceException.class, () ->
+                service.createSession(startTime, endTime, date, instructorId, courseId)
+        );
+
+        assertEquals("Cannot create a session outside of the center's open hours.", exception.getMessage());
+        verify(sessionRepo, never()).save(any(Session.class));
+    }
+    
+    @Test
+    public void testCreateInvalidSessionBeforeOpening() {
+    	//Setup
+        Course course = new Course("yoga", "Beginner class", 44 );
+        int courseId = 1;
+        InstructorAccount instructor = new InstructorAccount("Bob", "bob@gmail.com", "1234");
+        int instructorId = 1;
+        Time startTime = Time.valueOf("12:00:00");
+        Time endTime = Time.valueOf("13:00:00");
+        Date date = Date.valueOf("2026-03-15");
+        Schedule schedule = new Schedule(Time.valueOf("12:30:00"), Time.valueOf("15:30:00"));
+
+        lenient().when(sessionRepo.save(any(Session.class))).thenReturn(null);
+        lenient().when(instructorService.findInstructorById(instructorId)).thenReturn(instructor);
+        lenient().when(courseRepo.findCourseById(courseId)).thenReturn(course);
+        lenient().when(scheduleService.findSchedule()).thenReturn(schedule);
+
+        ServiceException exception = assertThrows(ServiceException.class, () ->
+                service.createSession(startTime, endTime, date, instructorId, courseId)
+        );
+
+        assertEquals("Cannot create a session outside of the center's open hours.", exception.getMessage());
+        verify(sessionRepo, never()).save(any(Session.class));
+    }
+    
     @Test
     public void testCreateInvalidSessionDate(){
         //Setup
