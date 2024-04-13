@@ -10,9 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.springframework.web.bind.annotation.RestController;
 
-import ca.mcgill.ecse321.SportCenterManager.dto.CustomerResponseDto;
 import ca.mcgill.ecse321.SportCenterManager.dto.LoginDto;
-import ca.mcgill.ecse321.SportCenterManager.model.CustomerAccount;
 import ca.mcgill.ecse321.SportCenterManager.service.CustomerAccountService;
 
 import org.springframework.beans.factory.annotation.Autowired;
