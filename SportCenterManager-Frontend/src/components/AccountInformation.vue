@@ -120,18 +120,19 @@ export default {
                 password: this.password,
             };
             if (this.checkInput()) {
+                this.swapButtons();
                 try {
-                    this.swapButtons();
+                    //this.swapButtons();
                     if (this.status === 'Owner') {
-                        await client.put("/ownerAccount", accountInformation);
+                        await client.put('/ownerAccount', accountInformation);
                     }
                     else if (this.status === 'Instructor') {
-                        await client.put("/instructorAccounts/" + this.id, accountInformation);
+                        await client.put('/instructorAccounts/' + this.id, accountInformation);
                     }
                     else if (this.status === 'Customer') {
-                        await client.put("/customerAccounts/" + this.id, accountInformation);
+                        await client.put('/customerAccounts/' + this.id, accountInformation);
                     }
-                    //this.swapButtons();
+                    this.swapButtons();
                 }
                 catch (e) {
                     console.log(e);
@@ -140,18 +141,18 @@ export default {
         },
         async clearAccountInformation() {
             if (this.status === 'Owner') {
-                const response = await client.get("/ownerAccount");
+                const response = await client.get('/ownerAccount');
                 this.name = null;
                 this.password = null;
             }
             else if (this.status === 'Instructor') {
-                const response = await client.get("/instructorAccounts/" + this.id);
+                const response = await client.get('/instructorAccounts/' + this.id);
                 this.name = null;
                 this.email = null;
                 this.password = null;
             }
             else if (this.status === 'Customer') {
-                const response = await client.get("/customerAccounts/" + this.id);
+                const response = await client.get('/customerAccounts/' + this.id);
                 this.name = null;
                 this.email = null;
                 this.password = null;
