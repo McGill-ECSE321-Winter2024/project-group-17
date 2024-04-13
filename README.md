@@ -39,3 +39,15 @@ The wiki for Sprint 2 can be found [here](https://github.com/McGill-ECSE321-Wint
 | Jennifer Tram Su | 260923530      | Services & Controllers, Endpoint Design, Unit Testing, Integration Testing |19.5|
 | Angela Xiaomeng Zhu | 260982612    | Services & Controllers, Endpoint Design, Unit Testing, Integration Testing |20.5|
 | Eric Zhu | 261116298    | Project Management, Quality Assurance, Services & Controllers, Unit Testing, Integration Testing |30.5|
+
+## Sprint 3 
+The wiki for Sprint 3 can be found [here](https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Sprint-3:-Report).
+
+| Name          | ID            | Deliverable 3 Role | Deliverable 3 Hours 
+| ------------- |:-------------:| :-----:|:-----------------|
+| Mahmoud Amin   | 261096406 | Frontend, Testing, Presentation |29.5 |
+| Thibaut Chan Teck Su   | 261120277    | Frontend, Testing, Presentation  |29.5|
+| Namir Habib | 261115885    | Frontend, Testing, Presentation |34|
+| Jennifer Tram Su | 260923530      | Frontend, Testing, Presentation |29.5|
+| Angela Xiaomeng Zhu | 260982612    | Frontend, Testing, Presentation, Documentation |27.5|
+| Eric Zhu | 261116298    | Frontend, QA, Testing |24.5|
