@@ -1,8 +1,15 @@
 <template>
    <div>
-    <div v-if="isOwnerOrInstructor">
+    <div v-if="isOwner">
       <div class="createbtn-container">
         <button @click="openCreateModal" class="course-createbtn">Create Course</button>
+      </div>
+      <CreateCourseModal :is-open="isCreateModalOpen" @close="closeCreateModal" />
+    </div>
+
+    <div v-if="isInstructor">
+      <div class="createbtn-container">
+        <button @click="openCreateModal" class="course-createbtn">Suggest Course</button>
       </div>
       <CreateCourseModal :is-open="isCreateModalOpen" @close="closeCreateModal" />
     </div>
@@ -110,8 +117,15 @@ export default {
     openCreateModal() {
       this.isCreateModalOpen = true;
     },
-    closeCreateModal() {
+    async closeCreateModal() {
       this.isCreateModalOpen = false;
+      try {
+        const response = await client.get('/courses/approved');
+        this.courses = response.data.courses;
+      }
+      catch (e) {
+        alert(e.response.data.message);
+      }
     },
     openModifyModal() {
       this.isModifyModalOpen = true;
@@ -160,8 +174,8 @@ export default {
         course.name.toLowerCase().includes(this.searchTerm.toLowerCase())
       );
     },
-    isOwnerOrInstructor() {
-      return localStorage.getItem("Status") === 'Owner' || localStorage.getItem("Status") === 'Instructor';
+    isInstructor() {
+      return localStorage.getItem("Status") === 'Instructor';
     },
     isOwner() {
       return localStorage.getItem("Status") === 'Owner';

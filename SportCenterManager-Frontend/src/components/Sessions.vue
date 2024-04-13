@@ -1,12 +1,16 @@
 <template>
     <div>
-        <div v-if="isOwner">
+        <div class="createbtn-container" v-if="isOwner || isInstructor">
             <button @click="navigateToCreate" class="createbtn btn">Create Session</button>
         </div>
 
         <p style="font-weight: bold; font-size: 48px; text-align: left; margin-left: 200px; margin-bottom: 0px;">{{ name }}</p>
         <p style="font-style: italic; font-size: 24px; text-align: left; margin-left: 200px;margin-bottom: 10px;">${{ costPerSession }}/session</p>
         <p style="font-size: 18px; text-align: left; margin-left: 200px;">{{ description }}</p>
+
+        <div v-if="sessions.length === 0">
+            <p>No sessions currently available.</p>
+        </div>
     
         <div class="session-grid">
             <div v-for="session in sessions" :key="session.id" class="session-box">
@@ -28,7 +32,7 @@
                     
                 </div>
                 
-                <div v-if="isOwner">
+                <div v-if="isOwner || session.instructor.id.toString() === currInstructor.toString()">
                     <router-link :to="{ name: 'ModifySession', params: { sessionId: session.id, courseId: courseId, instructorId: session.instructor.id} }">
                         <button class="btn">MODIFY</button>
                     </router-link>
@@ -59,10 +63,12 @@ export default {
             costPerSession: null,
             sessions: [],
             instructors: {},
-            courseId: this.$route.params.courseId
+            courseId: this.$route.params.courseId,
+            currInstructor: localStorage.getItem("Id")
         };
     },
     async created() {
+        console.log(this.currInstructor);
         this.$set(this.instructors, 0, 'TBD');
         try {
             const response = await client.get('/courses/' + this.$route.params.courseId);
@@ -82,6 +88,7 @@ export default {
         }
         this.sessions.forEach(session => {
             this.findInstructor(session.instructor.id);
+            console.log(session.instructor.id);
         });
     },
     methods: {
