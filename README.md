@@ -19,35 +19,35 @@ We are Group 17 of the Winter 2024 session of the ECSE321- Introduction to Softw
 ## Sprint 1
 The wiki for Sprint 1 can be found [here](https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Sprint-1:-Report).
 
-| Name          | ID            | Deliverable 1 Role | Deliverable 1 Hours 
-| ------------- |:-------------:| :-----:|:-----------------|
-| Mahmoud Amin   | 261096406 | Requirements, Persistence Layer |10.25 |
-| Thibaut Chan Teck Su   | 261120277    | Domain model, Persistence Layer |11|
-| Namir Habib | 261115885    | Domain model, Persistence Layer |10|
-| Jennifer Tram Su | 260923530      | Requirements, Use Case Diagram |9|
-| Angela Xiaomeng Zhu | 260982612    | Requirements, Documentation |11.25|
-| Eric Zhu | 261116298    | Use Case Diagram, Testing |12.5|
+| Name          | Deliverable 1 Role | Deliverable 1 Hours 
+| ------------- | :-----:|:-----------------|
+| Mahmoud Amin   | Requirements, Persistence Layer |10.25 |
+| Thibaut Chan Teck Su   | Domain model, Persistence Layer |11|
+| Namir Habib | Domain model, Persistence Layer |10|
+| Jennifer Tram Su | Requirements, Use Case Diagram |9|
+| Angela Xiaomeng Zhu | Requirements, Documentation |11.25|
+| Eric Zhu | Use Case Diagram, Testing |12.5|
 
 ## Sprint 2
 The wiki for Sprint 2 can be found [here](https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Sprint-2:-Report).
 
-| Name          | ID            | Deliverable 2 Role | Deliverable 2 Hours 
-| ------------- |:-------------:| :-----:|:-----------------|
-| Mahmoud Amin   | 261096406 | Unit Testing, Integration Testing, API Documentation |23.5 |
-| Thibaut Chan Teck Su   | 261120277    | Unit Testing, Integration Testing, API Documentation |26.5|
-| Namir Habib | 261115885    | Unit Testing, Integration Testing, API Documentation |22.5|
-| Jennifer Tram Su | 260923530      | Services & Controllers, Endpoint Design, Unit Testing, Integration Testing |19.5|
-| Angela Xiaomeng Zhu | 260982612    | Services & Controllers, Endpoint Design, Unit Testing, Integration Testing |20.5|
-| Eric Zhu | 261116298    | Project Management, Quality Assurance, Services & Controllers, Unit Testing, Integration Testing |30.5|
+| Name          | Deliverable 2 Role | Deliverable 2 Hours 
+| ------------- | :-----:|:-----------------|
+| Mahmoud Amin   | Unit Testing, Integration Testing, API Documentation |23.5 |
+| Thibaut Chan Teck Su   | Unit Testing, Integration Testing, API Documentation |26.5|
+| Namir Habib | Unit Testing, Integration Testing, API Documentation |22.5|
+| Jennifer Tram Su | Services & Controllers, Endpoint Design, Unit Testing, Integration Testing |19.5|
+| Angela Xiaomeng Zhu | Services & Controllers, Endpoint Design, Unit Testing, Integration Testing |20.5|
+| Eric Zhu | Project Management, Quality Assurance, Services & Controllers, Unit Testing, Integration Testing |30.5|
 
 ## Sprint 3 
 The wiki for Sprint 3 can be found [here](https://github.com/McGill-ECSE321-Winter2024/project-group-17/wiki/Sprint-3:-Report).
 
-| Name          | ID            | Deliverable 3 Role | Deliverable 3 Hours 
-| ------------- |:-------------:| :-----:|:-----------------|
-| Mahmoud Amin   | 261096406 | Frontend, Testing, Presentation |29.5 |
-| Thibaut Chan Teck Su   | 261120277    | Frontend, Testing, Presentation  |29.5|
-| Namir Habib | 261115885    | Frontend, Testing, Presentation |34|
-| Jennifer Tram Su | 260923530      | Frontend, Testing, Presentation |29.5|
-| Angela Xiaomeng Zhu | 260982612    | Frontend, Testing, Presentation, Documentation |27.5|
-| Eric Zhu | 261116298    | Frontend, QA, Testing |24.5|
+| Name          | Deliverable 3 Role | Deliverable 3 Hours 
+| ------------- | :-----:|:-----------------|
+| Mahmoud Amin   | Frontend, Testing, Presentation |29.5 |
+| Thibaut Chan Teck Su  | Frontend, Testing, Presentation  |29.5|
+| Namir Habib | Frontend, Testing, Presentation |34|
+| Jennifer Tram Su | Frontend, Testing, Presentation |29.5|
+| Angela Xiaomeng Zhu | Frontend, Testing, Presentation, Documentation |27.5|
+| Eric Zhu | Frontend, QA, Testing |24.5|
